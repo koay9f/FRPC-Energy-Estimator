@@ -16,14 +16,21 @@ shinyUI(fluidPage(
 
   # Sidebar with a slider input for number of bins
   sidebarLayout(
+    sidebarPanel(
+    img(scr = "CFRP Scope.png", height = 150),
+    #WHY ISN'T THE PICTURE APPEARING?
+    p("This tool is being developed by ORNL to provide CFRP researchers and manufacturers the ability to quickly estimate the embodied energy use of their CFRP manufactuing process and compare it to other processes")
+    
+      ),
+  
 
-  selectizeInput("moldingInput", label = ("Molding Technology Options"),
-                 choices = NULL,
-                 selected = "",
-                 multiple = FALSE
-                 ),
   mainPanel(
-    textOutput("EnergyNum")
-  )
-  )
-))
+    
+    selectizeInput("moldingInput", label = ("Molding Technology Options"),
+                   choices = NULL,
+                   selected = "",
+                   multiple = FALSE
+    ),
+    h3("Embodied energy of molding technology:"),
+    h3(textOutput("EnergyNum"),"MJ/kg")
+  ))))
