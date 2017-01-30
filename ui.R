@@ -22,7 +22,24 @@ shinyUI(fluidPage(theme = "bootstrap.css",
                     mainPanel(
                       tabsetPanel(
                         tabPanel("Guide",h1("Tool Guide"),img(src = "CFRPScope.png", height = 300),p(("This tool is being developed by ORNL to provide CFRP researchers and manufacturers the ability to quickly estimate the embodied energy use of their CFRP manufactuing process and compare it to other processes"))),
-                        tabPanel("Initial Inputs", h1("Initial"), p("This is where users will input information like part name, part weight, and molding technology to be used")),
+                        tabPanel("Initial Inputs", h1("Initial"), p("This is where users will input information like part name, part weight, and molding technology to be used"),
+                        
+                        column(6,
+                               h3("Technology Set 1"),
+                               textInput("name1", "Part Name",""),
+                               numericInput("finalweight1","Final Part Weight (kg)",0,100000,100000)
+                               ),
+                        column(6,
+                               h3("Technology Set 2"),
+                               textInput("name2", "Part Name",""),
+                               numericInput("finalweight2","Final Part Weight (kg)",0,100000,100000)
+                        )
+                        ),
+                      
+                        
+                        
+                        
+                        
                         tabPanel("Fiber", h1("Fiber Manufacturing"), p("This is where users will choose fiber type, tow and intermediates and set fiber fraction and layup scrap rate")),
                         tabPanel("Matrix", h1("Matrix Materials Manufacturing"), 
                                  p("This is where users will choose the primary matrix material and other materials (additional matrix, additives, fillers and inserts) and the mass fraction of each")),
