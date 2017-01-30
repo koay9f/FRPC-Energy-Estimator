@@ -16,12 +16,12 @@ moldenergy = Data_Mold$Energy_Mold
 shinyServer(function(input, output, session) {
   
   
-  updateSelectizeInput(session, 'moldingInput',
+  updateSelectizeInput(session, 'moldingInput1',
                     choices = moldnames,
                     selected = "",
                     server = TRUE)
-  moldenergyvalue <- eventReactive(input$moldingInput, {
-    moldenergy[moldnames %in% input$moldingInput]
+  moldenergyvalue <- eventReactive(input$moldingInput1, {
+    moldenergy[moldnames %in% input$moldingInput1]
   })
   output$EnergyNum <- renderText(moldenergyvalue())
 })

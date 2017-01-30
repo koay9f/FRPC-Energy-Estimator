@@ -21,37 +21,52 @@ shinyUI(fluidPage(theme = "bootstrap.css",
                     
                     mainPanel(
                       tabsetPanel(
-                        tabPanel("Guide",h1("Tool Guide"),img(src = "CFRPScope.png", height = 300),p(("This tool is being developed by ORNL to provide CFRP researchers and manufacturers the ability to quickly estimate the embodied energy use of their CFRP manufactuing process and compare it to other processes"))),
-                        tabPanel("Initial Inputs", h1("Initial"), p("This is where users will input information like part name, part weight, and molding technology to be used"),
-                        
-                        column(6,
+                        tabPanel("Guide",h1("Tool Guide"),img(src = "CFRPScope.png", height = 300),p(("This tool is 
+                            being developed by ORNL to provide CFRP researchers and manufacturers the ability 
+                            to quickly estimate the embodied energy use of their CFRP manufactuing process 
+                            and compare it to other processes"))),
+                      
+                          
+                      tabPanel("Initial Inputs", h1("Initial"), p("This is where users will input information 
+                                  like part name, part weight, and molding technology to be used"),
+                        fluidRow(
+                          column(6,
                                h3("Technology Set 1"),
                                textInput("name1", "Part Name",""),
-                               numericInput("finalweight1","Final Part Weight (kg)",0,100000,100000)
-                               ),
-                        column(6,
+                               numericInput("finalweight1","Final Part Weight (kg)", 1,  min = 0,NA,NA)
+                               
+                           ),
+                           column(6,
                                h3("Technology Set 2"),
                                textInput("name2", "Part Name",""),
-                               numericInput("finalweight2","Final Part Weight (kg)",0,100000,100000)
-                        )
+                               numericInput("finalweight2","Final Part Weight (kg)", 1, min = 0,NA,NA)
+                           )
                         ),
+                        fluidRow(h3("Molding Technology Options")),
+                        fluidRow(
+                          column(6,
+                        selectizeInput("moldingInput1", label = "",
+                                       choices = NULL,
+                                       selected = "",
+                                       multiple = FALSE,
+                                       options = list(placeholder = 'Choose Molding Technology')),
+                        h3("Embodied energy:"),
+                        fluidRow(column (4,wellPanel(h4(textOutput("EnergyNum")))), column(2, offset = 1,h4("MJ/kg")))
+                        )
+                       
+                        )),
                       
                         
-                        
-                        
-                        
-                        tabPanel("Fiber", h1("Fiber Manufacturing"), p("This is where users will choose fiber type, tow and intermediates and set fiber fraction and layup scrap rate")),
+                        tabPanel("Fiber", h1("Fiber Manufacturing"), p("This is where users will choose fiber type, 
+                          tow and intermediates and set fiber fraction and layup scrap rate")),
                         tabPanel("Matrix", h1("Matrix Materials Manufacturing"), 
-                                 p("This is where users will choose the primary matrix material and other materials (additional matrix, additives, fillers and inserts) and the mass fraction of each")),
+                                 p("This is where users will choose the primary matrix material and other materials 
+                                   (additional matrix, additives, fillers and inserts) and the mass fraction of each")),
                         
                         
                         tabPanel("Molding", h1("Molding, Curing & Finishing"),
-                                 p("This is where users will choose curing technology, amount of finishing, finishing scrap rate and confirm the molding technology and molding yield"),
-                                 selectizeInput("moldingInput", label = (h3("Molding Technology Options")),
-                                                choices = NULL,
-                                                selected = "",
-                                                multiple = FALSE   ),
-                                 h3("Embodied energy:", textOutput("EnergyNum"),"MJ/kg")
+                                 p("This is where users will choose curing technology, amount of finishing, 
+                                   finishing scrap rate and confirm the molding technology and molding yield")
                         ),
                         tabPanel("Summary", h1("Summary"),
                                  p("This is where users will be able to review all of the previous choices")),
