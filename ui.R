@@ -67,8 +67,7 @@ shinyUI(fluidPage(theme = "bootstrap.css",
                       
                       # FiberTab ----
                         tabPanel("Fiber", h1("Fiber Manufacturing & Layup") 
-                       , p("Enter information on modeled part: fiber type, 
-                          tow and intermediates, and fiber fraction and layup scrap rate")
+                       , p("Enter information on modeled part: fiber type, tow and intermediates, and fiber fraction and layup scrap rate")
                         
                       #Display Part Name & Weight & Molding Process
                       , fluidRow( 
@@ -80,23 +79,45 @@ shinyUI(fluidPage(theme = "bootstrap.css",
                       #Display fiber fraction associated with molding process
                       ,    h5(div("Default Fiber Fraction: ",textOutput("moldfracNum1")))
                        ),
+                      
+                      column(6,
+                             h3("Technology Set 2")
+                             ,    h4(textOutput("partname2"), textOutput("partweight2"))
+                             ,    h5(div("Molding Techology: ", textOutput("moldname2")))
+                             
+                             #Display fiber fraction associated with molding process
+                             ,    h5(div("Default Fiber Fraction: ",textOutput("moldfracNum2")))
+                      )
+                      ),
                       #Place to enter Mass fraction?
                       
                       #select tow size (don't really need fiber type right now... ask sujit)
                       #select intermediate
+                      fluidRow(h3("Intermediate Fiber Technology Options")),
+                      fluidRow(
+                        column(6,
+                               selectizeInput("intInput1", label = "",
+                                              choices = NULL,
+                                              selected = "",
+                                              multiple = FALSE,
+                                              options = list(placeholder = 'Choose Intermediate Technology')),
+                               h3("Embodied energy:"),
+                               fluidRow(column (3,wellPanel(h4(textOutput("intEnergyNum1")))), column(2, offset = 1,h4("MJ/kg")))
+                        ), column(6,
+                               selectizeInput("intInput2", label = "",
+                                              choices = NULL,
+                                              selected = "",
+                                              multiple = FALSE,
+                                              options = list(placeholder = 'Choose Intermediate Technology')),
+                               h3("Embodied energy:"),
+                               fluidRow(column (3,wellPanel(h4(textOutput("intEnergyNum2")))), column(2, offset = 1,h4("MJ/kg")))
+                        ))
+                      
                       #display default scrap
                       #enter user scrap
                       #enter recycle
-                      column(6,
-                            h3("Technology Set 2")
-                       ,    h4(textOutput("partname2"), textOutput("partweight2"))
-                       ,    h5(div("Molding Techology: ", textOutput("moldname2")))
-
-                             #Display fiber fraction associated with molding process
-                       ,    h5(div("Default Fiber Fraction: ",textOutput("moldfracNum2")))
-                      )                       
-                       
-                      )),
+                      
+                  ),
                       
                       
                       # MatrixTab ----
