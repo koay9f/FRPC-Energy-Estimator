@@ -1,0 +1,24 @@
+Name_Matrix,Energy_Matrix,Type_Matrix
+TS Epoxy,113.30,Matrix
+TS Unsaturated polyester with styrene,96.30,Matrix
+TS Phenol,76.20,Matrix
+TS Polyurethane,92.75,Matrix
+TS Vinyl ester with styrene,101.90,Matrix
+TP Polystyrene,82.60,Matrix
+TP Polypropylene,75.80,Matrix
+TP Nylon 6,117.31,Matrix
+TP Nylon 66,140.75,Matrix
+TP PEEK,288.00,Matrix
+Not Used,0.00,Other
+Calcium Carbonate,6.24,Filler
+Kaolin Clay,16.90,Filler
+Magnesium Oxide,7.28,Additive
+Polyvinyl acetate,58.20,Additive
+Steel,115.00,Insert
+Aluminum,297.50,Insert
+Titanium,560.00,Insert
+SMC GFRP,34.00,Insert
+HDPE,111.50,Insert
+PVC,79.50,Insert
+TP Polypropylene,75.80,Insert
+Polyurethane Foam,105.00,Insert
