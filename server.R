@@ -32,10 +32,11 @@ fiberenergy = Data_Fiber$Energy_Fiber
 
 shinyServer(function(input, output, session) {
   
-  output$partname1 <- renderText({paste("Part Name:",input$name1)})
-  output$partweight1 <- renderText({paste("Part Weight:",input$finalweight1, "kg")})
-  output$partname2 <- renderText({paste("Part Name:",input$name2)})
-  output$partweight2 <- renderText({paste("Part Weight:",input$finalweight2, "kg")})
+  # General Definations ----
+  output$partname1a <- output$partname1 <- renderText({paste("Part Name:",input$name1)})
+  output$partweight1a <- output$partweight1 <- renderText({paste("Part Weight:",input$finalweight1, "kg")})
+  output$partname2a <- output$partname2 <- renderText({paste("Part Name:",input$name2)})
+  output$partweight2a <- output$partweight2 <- renderText({paste("Part Weight:",input$finalweight2, "kg")})
   
   # Mold1 ----
   # Make List for Box
@@ -47,7 +48,7 @@ shinyServer(function(input, output, session) {
   moldnamefetch1 <- eventReactive(input$moldingInput1, {
     moldnames[moldnames %in% input$moldingInput1]
   })
-  output$moldname1 <- renderText(moldnamefetch1())
+  output$moldname1a <- output$moldname1 <- renderText(moldnamefetch1())
   
    # Associate Energy value with mold type name
   moldenergyfetch1 <- eventReactive(input$moldingInput1, {
@@ -77,7 +78,7 @@ shinyServer(function(input, output, session) {
   moldnamefetch2 <- eventReactive(input$moldingInput2, {
     moldnames[moldnames %in% input$moldingInput2]
   })
-  output$moldname2 <- renderText(moldnamefetch2())
+  output$moldname2a <- output$moldname2 <- renderText(moldnamefetch2())
   
   moldenergyfetch2 <- eventReactive(input$moldingInput2, {
     moldenergy[moldnames %in% input$moldingInput2]
@@ -94,15 +95,7 @@ shinyServer(function(input, output, session) {
     moldyield[moldnames %in% input$moldingInput2]
   })
   output$moldyieldNum2 <- renderText(moldyieldfetch2())
- 
 
-  
-  
-  
-  
-  
-  
-  
   # Fiber1 ----
   # Make List for Box
   updateSelectizeInput(session, 'fiberInput1',

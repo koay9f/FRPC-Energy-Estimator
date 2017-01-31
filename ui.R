@@ -115,6 +115,18 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                                  , p("Enter information on modeled part: intermediate type layup scrap rate")
                                  
                                  #CANNOT REDISPLAY MOLDING INFO
+                                 #Display Part Name & Weight & Molding Process & Fiber Fraction
+                                 , fluidRow( 
+                                   column(6,
+                                          h2("Technology Set 1")
+                                          , h5(textOutput("partname1a"), textOutput("partweight1a"))
+                                          , h5(span("Molding Techology: ", textOutput("moldname1a")))
+                                   )    
+                                   , column(6,
+                                            h2("Technology Set 2")
+                                            , h5(textOutput("partname2a"), textOutput("partweight2a"))
+                                            , h5(span("Molding Techology: ", textOutput("moldname2a")))
+                                   ))
                                  
                                  # INTERMEDIATE SELECT BOXES & display energy
                                  ,  fluidRow(h3("Intermediate Fiber Technology Options", align = "center")),
