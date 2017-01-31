@@ -10,15 +10,24 @@ library(readr)
 library(plotly)
 source("math.R")
 
+#Name Data_Mold columns
 Data_Mold = read_csv("data/Data_Mold.csv")
 moldnames = Data_Mold$Name_Mold
 moldenergy = Data_Mold$Energy_Mold
 moldfrac = Data_Mold$Frac_Fiber
 moldyield = Data_Mold$Yield_Mold
+
+#Name Data_Int columns
 Data_Int = read_csv("data/Data_Int.csv")
 intnames = Data_Int$Name_Int
 intenergy = Data_Int$Energy_Int
 intscrap = Data_Int$Scrap_Int
+
+#Name Data_Fiber columns
+Data_Fiber = read.csv("data/Data_Fiber.csv")
+fibernames = Data_Fiber$Name_Fiber
+fiberenergy = Data_Fiber$Energy_Fiber
+
 
 
 shinyServer(function(input, output, session) {
@@ -93,6 +102,41 @@ shinyServer(function(input, output, session) {
   
   
   
+  
+  # Fiber1 ----
+  # Make List for Box
+  updateSelectizeInput(session, 'fiberInput1',
+                       choices = fibernames,
+                       selected = "",
+                       server = TRUE)
+  # Associate Name value with fiber type name
+  fibernamefetch1 <- eventReactive(input$fiberInput1, {
+    fibernames[fibernames %in% input$fiberInput1]
+  })
+  output$fibername1 <- renderText(fibernamefetch1())
+  
+  # Associate Energy value with fiber type name
+  fiberenergyfetch1 <- eventReactive(input$fiberInput1, {
+    fiberenergy[fibernames %in% input$fiberInput1]
+  })
+  output$fiberEnergyNum1 <- renderText(fiberenergyfetch1())
+  # Fiber2 ----
+  # Make List for Box
+  updateSelectizeInput(session, 'fiberInput2',
+                       choices = fibernames,
+                       selected = "",
+                       server = TRUE)
+  # Associate Name value with fiber type name
+  fibernamefetch2 <- eventReactive(input$fiberInput2, {
+    fibernames[fibernames %in% input$fiberInput2]
+  })
+  output$fibername2 <- renderText(fibernamefetch2())
+  
+  # Associate Energy value with fiber type name
+  fiberenergyfetch2 <- eventReactive(input$fiberInput2, {
+    fiberenergy[fibernames %in% input$fiberInput2]
+  })
+  output$fiberEnergyNum2 <- renderText(fiberenergyfetch2())
   
   # Int1 ----
   
