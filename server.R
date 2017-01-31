@@ -97,7 +97,7 @@ shinyServer(function(input, output, session) {
   # Int1 ----
   
   #Make List for box
-  updateSelectizeInput(session, 'IntInput1',
+  updateSelectizeInput(session, 'intInput1',
                        choices = intnames,
                        selected = "",
                        server = TRUE)
@@ -109,7 +109,7 @@ shinyServer(function(input, output, session) {
   
   # Associate Energy value with int type name
   intenergyfetch1 <- eventReactive(input$intInput1, {
-    intenergy[moldnames %in% input$intInput1]
+    intenergy[intnames %in% input$intInput1]
   })
   output$intEnergyNum1 <- renderText(intenergyfetch1())
   
@@ -122,7 +122,7 @@ shinyServer(function(input, output, session) {
   # Int2 ----
   
   #Make List for box
-  updateSelectizeInput(session, 'IntInput2',
+  updateSelectizeInput(session, 'intInput2',
                        choices = intnames,
                        selected = "",
                        server = TRUE)
@@ -134,7 +134,7 @@ shinyServer(function(input, output, session) {
   
   # Associate Energy value with int type name
   intenergyfetch2 <- eventReactive(input$intInput2, {
-    intenergy[moldnames %in% input$intInput2]
+    intenergy[intnames %in% input$intInput2]
   })
   output$intEnergyNum2 <- renderText(intenergyfetch2())
   
