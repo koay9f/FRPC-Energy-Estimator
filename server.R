@@ -47,7 +47,7 @@ shinyServer(function(input, output, session) {
   })
   output$moldfracNum1 <- renderText(moldfracvalue1())
   
-    # Associate Layup yield with mold type name
+    # Associate Molding yield with mold type name
   moldyieldvalue1 <- eventReactive(input$moldingInput1,{
     moldyield[moldnames %in% input$moldingInput1]
   })
