@@ -32,8 +32,8 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                                   , numericInput("finalweight1","Final Part Weight (kg)", 1,  min = 0,NA,NA)
                                   , selectizeInput("moldingInput1", label = "Molding Technology Options",
                                                    choices = NULL, selected = "", multiple = FALSE,
-                                                   options = list(placeholder = 'Choose Molding Technology'))
-                                  , column (4,"Embodied Energy:"),column(1,textOutput("EnergyNum1"), align = "right"), column(1, "MJ/kg")
+                                                   options = list(placeholder = 'Choose Molding Technology    '))
+                                  , column (4,h5("Embodied Energy:")),column(1,textOutput("EnergyNum1"), align = "right"), column(1, "MJ/kg")
                                    )
                              #TechSet2
                                 , column(6
@@ -42,8 +42,8 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                                   , numericInput("finalweight2","Final Part Weight (kg)", 1, min = 0,NA,NA)
                                   , selectizeInput("moldingInput2", label = "Molding Technology Options",
                                                    choices = NULL, selected = "", multiple = FALSE,
-                                                   options = list(placeholder = 'Choose Molding Technology'))
-                                  , column (2,"Embodied Energy:"),column(1,textOutput("EnergyNum2"), align = "right"), column(3, "MJ/kg")
+                                                   options = list(placeholder = 'Choose Molding Technology    '))
+                                  , column (4,h5("Embodied Energy:")),column(1,textOutput("EnergyNum2"), align = "right"), column(1, "MJ/kg")
                                    )
                                  )
                          #EndTab
@@ -66,7 +66,7 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                                                   numericInput("moldfracUSERNum1","User defined Mass Fraction", 0.0,  min = 0.0, max = 1.0,0.1))   
                                           , selectizeInput("fiberInput1", label = "",
                                                   choices = NULL, selected = "", multiple = FALSE,
-                                                  options = list(placeholder = 'Choose Fiber Type/Tow'))
+                                                  options = list(placeholder = 'Choose Fiber Type/Tow     '))
                                           , column (4,h5("Embodied Energy:")),column (1,textOutput("fiberEnergyNum1"), align = "right"), column(1, "MJ/kg")   
                                    )  
                                    #TechSet2
@@ -80,7 +80,7 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                                                    numericInput("moldfracUSERNum2","User defined Mass Fraction", 0.0,  min = 0.0, max = 1.0,0.1))
                                             , selectizeInput("fiberInput2", label = "",
                                                       choices = NULL, selected = "", multiple = FALSE,
-                                                      options = list(placeholder = 'Choose Fiber Type/Tow'))
+                                                      options = list(placeholder = 'Choose Fiber Type/Tow     '))
                                             , column (4,h5("Embodied Energy:")),column (1,textOutput("fiberEnergyNum2"), align = "right"), column(1, "MJ/kg")
                                             
                                    )
@@ -101,13 +101,13 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                                           , fluidRow(column(3, h5("Molding Techology: ")), column(3, textOutput("moldname1a")))
                                           , selectizeInput("intInput1", label = "Choose Fiber Intermediate",
                                                            choices = NULL,  selected = "",  multiple = FALSE,
-                                                           options = list(placeholder = 'Choose Intermediate'))
+                                                           options = list(placeholder = 'Choose Fiber Intermediate     '))
                                           , fluidRow(column(4, h5("Embodied Energy:")), column(1,textOutput("intEnergyNum1"), align = "right"), column(1, "MJ/kg"))
-                                          , fluidRow(column(4, h5("Default Layup Scrap Rate: ")), column(1, textOutput("intscrapNum1")), column(1,checkboxInput("intscrapUSERYN1", "Use Default?",TRUE)))
+                                          , fluidRow(column(3, h5("Default Layup Scrap Rate: ")), column(1, textOutput("intscrapNum1")), column(2,checkboxInput("intscrapUSERYN1", "Use Default?",TRUE)))
                                           , conditionalPanel(
                                                 condition = "input.intscrapUSERYN1 == false",
                                                 numericInput("intscrapUSERNum1","User defined layup scrap", 0.0,  min = 0.0, max = 1.0,0.1))
-                                          ,numericInput("intscraprecycle1","Layup Recycle Rate", 0.0,  min = 0.0, max = 1.0,0.1)
+                                          ,numericInput("intscraprecycle1",p("Layup Recycle Rate", span( h6("(% scrap that is recycled)"))), 0.0,  min = 0.0, max = 1.0,0.1)
                                             )    
                                    #TechSet2
                                    , column(6
@@ -116,13 +116,13 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                                             , fluidRow(column(3, h5("Molding Techology: ")), column(3, textOutput("moldname2a")))
                                             , selectizeInput("intInput2", label = "Choose Fiber Intermediate",
                                                              choices = NULL,  selected = "",  multiple = FALSE,
-                                                             options = list(placeholder = 'Choose Fiber Intermediate'))
+                                                             options = list(placeholder = 'Choose Fiber Intermediate     '))
                                             , fluidRow(column(4, h5("Embodied Energy:")), column (1,textOutput("intEnergyNum2"), align = "right"), column(1, "MJ/kg") )
                                             , fluidRow(column(4, h5("Default Layup Scrap Rate: ")), column(1, textOutput("intscrapNum2")), column(1,checkboxInput("intscrapUSERYN2", "Use Default?",TRUE)))
                                             , conditionalPanel(      
                                                      condition = "input.intscrapUSERYN2 == false",    
                                                       numericInput("intscrapUSERNum2","User defined layup scrap", 0.0,  min = 0.0, max = 1.0,0.1))
-                                            ,  numericInput("intscraprecycle2","Layup Recycle Rate", 0.0,  min = 0.0, max = 1.0,0.1)
+                                            ,  numericInput("intscraprecycle2",p("Layup Recycle Rate", span( h6("(% scrap that is recycled)"))), 0.0,  min = 0.0, max = 1.0,0.1)
                                             ))
                                   #END TAB
                         ),
@@ -130,7 +130,7 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                         
                         # MatrixTab ----
                         tabPanel("Matrix", h1("Matrix Materials Manufacturing"), 
-                                 p("This is where users will choose the primary matrix material and other materials 
+                                 p("Enter information on modeled part: primary matrix material and other materials 
                                    (additional matrix, additives, fillers and inserts) and the mass fraction of each")
                   , fluidRow( 
                     #Techset1
@@ -138,7 +138,7 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                            , h2("Technology Set 1")
                            , h5(textOutput("partname1b"), textOutput("partweight1b"))
                            , fluidRow(column(3, h5("Molding Techology: ")), column(3, textOutput("moldname1b")))
-                           
+                           , fluidRow(column(4, h5("Fiber Mass Fraction:")), column(2, textOutput("fiberfrac1")))
                            #Matrix Stuff
                            #Choose Primary Matrix
                            , selectizeInput("PriMatrixInput1", label = "Choose Primary Matrix Material",
@@ -188,7 +188,8 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                           , conditionalPanel(
                             condition = "input.insertsAUSERYN1 == true"
                             , selectizeInput("InsertsAInput1", label = "Choose Insert Type",
-                                             choices = NULL,  selected = "Not Used",  multiple = FALSE)
+                                             choices = NULL,  selected = "Not Used",  multiple = FALSE,
+                                             options = list(placeholder = 'Choose Insert     '))
                             , fluidRow(column(4, h5("Embodied Energy:")), column(1,textOutput("insertsAEnergyNum1"), align = "right"), column(1, "MJ/kg"))
                             # mass frac 
                             , numericInput("insertsAfrac1","Insert Mass Fraction", 0.0,  min = 0.0, max = 1.0,0.1)
@@ -199,7 +200,8 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                           , conditionalPanel(
                             condition = "input.insertsBUSERYN1 == true"
                             , selectizeInput("InsertsBInput1", label = "Choose Additional Insert Type",
-                                             choices = NULL,  selected = "Not Used",  multiple = FALSE)
+                                             choices = NULL,  selected = "Not Used",  multiple = FALSE,
+                                             options = list(placeholder = 'Choose Insert     '))
                             , fluidRow(column(4, h5("Embodied Energy:")), column(1,textOutput("insertsBEnergyNum1"), align = "right"), column(1, "MJ/kg"))
                             # mass frac 
                             , numericInput("insertsBfrac1","Additional Insert Mass Fraction", 0.0,  min = 0.0, max = 1.0,0.1)
@@ -214,6 +216,7 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                              , h2("Technology Set 2")
                              , h5(textOutput("partname2b"), textOutput("partweight2b"))
                              , fluidRow(column(3, h5("Molding Techology: ")), column(3, textOutput("moldname2b")))
+                             , fluidRow(column(4, h5("Fiber Mass Fraction:")), column(2, "OUTPUT"))
                              
                              #Matrix Stuff
                              #Matrix Stuff
@@ -229,7 +232,7 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                              , checkboxInput("othermatrixAUSERYN2", "Use Additional Matrix Materials?",FALSE)
                              # WOULD LIKE TO ADD BOX TO choose additive/fiber/matrix AND LIMIT OTHERMATRIXA TO THAT TYPE
                                  , conditionalPanel(
-                                     condition = "input.othermatrixAUSERYN2 == true"
+                                     condition = "input.othermatrixAUSERYN2"
                                     , selectizeInput("OtherMatrixAInput2", label = "Choose Other Matrix Material",
                                                 choices = NULL,  selected = "Not Used",  multiple = FALSE)
                                     , fluidRow(column(4, h5("Embodied Energy:")), column(1,textOutput("othermatrixAEnergyNum2"), align = "right"), column(1, "MJ/kg"))
@@ -263,7 +266,8 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                              , conditionalPanel(
                                         condition = "input.insertsAUSERYN2 == true"
                                       , selectizeInput("InsertsAInput2", label = "Choose Insert Type",
-                                                choices = NULL,  selected = "Not Used",  multiple = FALSE)
+                                                choices = NULL,  selected = "Not Used",  multiple = FALSE,
+                                                options = list(placeholder = 'Choose Insert     '))
                                       , fluidRow(column(4, h5("Embodied Energy:")), column(1,textOutput("insertsAEnergyNum2"), align = "right"), column(1, "MJ/kg"))
                                       , numericInput("insertsAfrac2","Insert Mass Fraction", 0.0,  min = 0.0, max = 1.0,0.1)
                                
@@ -271,7 +275,8 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                                       , conditionalPanel(
                                           condition = "input.insertsBUSERYN2 == true"
                                             , selectizeInput("InsertsBInput2", label = "Choose Additional Insert Type",
-                                                  choices = NULL,  selected = "Not Used",  multiple = FALSE)
+                                                  choices = NULL,  selected = "Not Used",  multiple = FALSE,
+                                                  options = list(placeholder = 'Choose Insert     '))
                                            , fluidRow(column(4, h5("Embodied Energy:")), column(1,textOutput("insertsBEnergyNum2"), align = "right"), column(1, "MJ/kg"))
                                  # mass frac 
                                          , numericInput("insertsBfrac2","Additional Insert Mass Fraction", 0.0,  min = 0.0, max = 1.0,0.1)
@@ -288,16 +293,71 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                   
                         # MoldingTab ----  
                         tabPanel("Molding", h1("Molding, Curing & Finishing"),
-                                 p("This is where users will choose curing technology, amount of finishing, 
+                                 p("Enter information on modeled part: curing technology, amount of finishing, 
                                    finishing scrap rate and confirm the molding technology and molding yield")
                                  , fluidRow(
-                                   column(6,numericInput("finishscrap1","Finish Scrap Rate", 0.0,  min = 0.0, max = 1.0,0.1))
-                                   , column(6,  numericInput("finishscrap2","Finiah Scrap Rate", 0.0,  min = 0.0, max = 1.0,0.1))
+                                   #TechSet1
+                                   column(6
+                                   , h2("Technology Set 1")
+                                   , h5(textOutput("partname1c"), textOutput("partweight1c"))
+                                   , fluidRow(column(3, h5("Molding Techology: ")), column(3, textOutput("moldname1c")))
+                                   
+                                   #Molding Stuff
+                                   #molding yield
+                                   , fluidRow(column(4, h5("Default Molding Yield: ")), column(1, textOutput("moldyieldNum1")), column(1,checkboxInput("moldyieldUSERYN1", "Use Default?",TRUE)))
+                                   , conditionalPanel(
+                                     condition = "input.moldyieldUSERYN1 == false",
+                                     numericInput("moldyieldUSERNum1","User defined molding yield", 0.0,  min = 0.0, max = 1.0,0.1))
+                                   , numericInput("moldyieldrecycle1",p("Molding Recycle Rate", span( h6("(% scrap that is recycled)"))), 0.0,  min = 0.0, max = 1.0,0.1)
+                                  
+                                   #curing tech & energy
+                                   , selectizeInput("cureInput1", label = "Curing Technology Options",
+                                                    choices = NULL, selected = "", multiple = FALSE,
+                                                    options = list(placeholder = 'Choose Curing Technology    '))
+                                   , fluidRow(column (4,h5("Embodied Energy:")),column(1,textOutput("cureEnergyNum1"), align = "right"), column(1, "MJ/kg"))
+                                   
+                                   #finishing level & scrap
+                                   , br()
+                                   , selectizeInput("finishInput1", label = "Finishing Level Options",
+                                                    choices = NULL, selected = "", multiple = FALSE,
+                                                    options = list(placeholder = 'Choose Finishing Level    '))
+                                   , fluidRow(column (4,h5("Embodied Energy:")),column(1,textOutput("finishEnergyNum1"), align = "right"), column(1, "MJ/kg"))
+                                   , numericInput("finishscrap1","Finish Scrap Rate", 0.0,  min = 0.0, max = 1.0,0.1)
+                                   , numericInput("finishscraprecycle1",p("Finish Recycle Rate", span( h6("(% scrap that is recycled)"))), 0.0,  min = 0.0, max = 1.0,0.1)
                                    )
-                                 , fluidRow(
-                                   column(6,numericInput("finishscraprecycle1","Finish Recycle Rate (% scrap that is recycled)", 0.0,  min = 0.0, max = 1.0,0.1))
-                                   , column(6,  numericInput("finishscraprecycle2","Finish Recycle Rate (% scrap that is recycled)", 0.0,  min = 0.0, max = 1.0,0.1))
+                                 #TechSet2
+                                 , column(6
+                                   , h2("Technology Set 2")
+                                   , h5(textOutput("partname2c"), textOutput("partweight2c"))
+                                   , fluidRow(column(3, h5("Molding Techology: ")), column(3, textOutput("moldname2c")))
+                                          
+                                   #Molding Stuff
+                                   #molding yield
+                                   , fluidRow(
+                                     column(4, h5("Default Molding Yield: ")), column(1, textOutput("moldyieldNum2")), column(1,checkboxInput("moldyieldUSERYN2", "Use Default?",TRUE)))
+                                   , conditionalPanel(
+                                     condition = "input.moldyieldUSERYN2 == false",
+                                     numericInput("moldyieldUSERNum2","User defined molding yield", 0.0,  min = 0.0, max = 1.0,0.1))
+                                   , numericInput("moldyieldrecycle2",p("Finish Recycle Rate", span( h6("(% scrap that is recycled)"))), 0.0,  min = 0.0, max = 1.0,0.1)
+                                  
+                                    #curing tech & energy
+                                   , selectizeInput("cureInput2", label = "Curing Technology Options",
+                                                    choices = NULL, selected = "", multiple = FALSE,
+                                                    options = list(placeholder = 'Choose Curing Technology    '))
+                                   , fluidRow(column (4,h5("Embodied Energy:")),column(1,textOutput("cureEnergyNum2"), align = "right"), column(1, "MJ/kg"))
+                                   
+                                   #finishing level & scrap
+                                   , br()
+                                   , selectizeInput("finishInput2", label = "Finishing Level Options",
+                                                    choices = NULL, selected = "", multiple = FALSE,
+                                                    options = list(placeholder = 'Choose Finishing Level    '))
+                                   , fluidRow(column (4,h5("Embodied Energy:")),column(1,textOutput("finishEnergyNum2"), align = "right"), column(1, "MJ/kg"))
+                                   , numericInput("finishscrap2","Finish Scrap Rate", 0.0,  min = 0.0, max = 1.0,0.1)
+                                   , numericInput("finishscraprecycle2",p("Finish Recycle Rate", span( h6("(% scrap that is recycled)"))), 0.0,  min = 0.0, max = 1.0,0.1)
                                    )
+                                 #End fluid row 
+                                 )
+                                 #EndTab
                                  ),
                         # SummaryTab ----
                         tabPanel("Summary", h1("Summary"),

@@ -9,7 +9,9 @@ library(shiny)
 library(readr)
 library(plotly)
 source("math.R")
+library(tidyverse)
 
+#Naming variables & data sheets ---- 
 #Name Data_Mold columns
 Data_Mold = read_csv("data/Data_Mold.csv")
 moldnames = Data_Mold$Name_Mold
@@ -22,6 +24,7 @@ Data_Int = read_csv("data/Data_Int.csv")
 intnames = Data_Int$Name_Int
 intenergy = Data_Int$Energy_Int
 intscrap = Data_Int$Scrap_Int
+intprepreg = Data_Int$Prepreg_Int
 
 #Name Data_Fiber columns
 Data_Fiber = read.csv("data/Data_Fiber.csv")
@@ -40,6 +43,19 @@ othermatrixnames = Data_othermatrix$Name_Matrix
 Data_inserts <- subset(Data_MatrixM, Type_Matrix == "Insert")
 insertsnames = Data_inserts$Name_Matrix
 
+#Name Data_Cure columns
+Data_Cure = read.csv("data/Data_Cure.csv")
+curenames = Data_Cure$Name_Cure
+cureenergy = Data_Cure$Energy_Cure
+
+#Name Data_Finishing columns
+Data_Finish = read.csv("data/Data_Finishing.csv")
+finishnames = Data_Finish$Name_Finish
+finishenergy = Data_Finish$Energy_Finish
+
+
+
+#Talk to server ----
 shinyServer(function(input, output, session) {
   
   # General Definations ----
@@ -48,7 +64,7 @@ shinyServer(function(input, output, session) {
   output$partweight1z <- output$partweight1e <- output$partweight1d <- output$partweight1c <- output$partweight1b <- output$partweight1a <- output$partweight1 <- renderText({paste("Part Weight:",input$finalweight1, "kg")})
   output$partname2e <-output$partname2d <-output$partname2c <-output$partname2b <-output$partname2a <- output$partname2 <- renderText({paste("Part Name:",input$name2)})
   output$partweight2z <-  output$partweight2e <- output$partweight2d <- output$partweight2c <- output$partweight2b <- output$partweight2a <- output$partweight2 <- renderText({paste("Part Weight:",input$finalweight2, "kg")})
-  
+
   # Mold1 ----
   # Make List for Box
   updateSelectizeInput(session, 'moldingInput1',
@@ -71,7 +87,7 @@ output$moldname1e <- output$moldname1d <- output$moldname1c <- output$moldname1b
    moldfracfetch1 <- eventReactive(input$moldingInput1,{
     moldfrac[moldnames %in% input$moldingInput1]
   })
-   output$moldfracNum1z <-output$moldfracNum1 <- renderText(moldfracfetch1())
+   output$moldfracNum1z <- output$moldfracNum1y <-output$moldfracNum1 <- renderText(moldfracfetch1())
   
     # Associate Molding yield with mold type name
   moldyieldfetch1 <- eventReactive(input$moldingInput1,{
@@ -89,7 +105,7 @@ output$moldname1e <- output$moldname1d <- output$moldname1c <- output$moldname1b
   moldnamefetch2 <- eventReactive(input$moldingInput2, {
     moldnames[moldnames %in% input$moldingInput2]
   })
-  output$moldname2z <-output$moldname2a <- output$moldname2 <- renderText(moldnamefetch2())
+  output$moldname2z <-output$moldname2c <- output$moldname2b <- output$moldname2a <- output$moldname2 <- renderText(moldnamefetch2())
   
   moldenergyfetch2 <- eventReactive(input$moldingInput2, {
     moldenergy[moldnames %in% input$moldingInput2]
@@ -124,7 +140,12 @@ output$moldname1e <- output$moldname1d <- output$moldname1c <- output$moldname1b
     fiberenergy[fibernames %in% input$fiberInput1]
   })
   output$fiberEnergyNum1z <-output$fiberEnergyNum1 <- renderText(fiberenergyfetch1())
-  # Fiber2 ----
+  
+
+  output$fiberfrac1<- renderText(fiberfetch(input$moldfracUSERYN1, input$moldfracNum1y, input$moldfracUSERNum))
+ 
+  
+   # Fiber2 ----
   # Make List for Box
   updateSelectizeInput(session, 'fiberInput2',
                        choices = fibernames,
@@ -167,6 +188,11 @@ output$moldname1e <- output$moldname1d <- output$moldname1c <- output$moldname1b
   })
   output$intscrapNum1z <-output$intscrapNum1 <- renderText(intscrapfetch1())
   
+  intprepregfetch1 <- eventReactive(input$intInput1, {
+    intprepreg[intnames %in% input$intInput1]
+  })
+  output$intprepregYN1z <-renderText(intenergyfetch1())
+  
   # Int2 ----
   
   #Make List for box
@@ -191,6 +217,11 @@ output$moldname1e <- output$moldname1d <- output$moldname1c <- output$moldname1b
     intscrap[intnames %in% input$intInput2]
   })
   output$intscrapNum2z <-output$intscrapNum2 <- renderText(intscrapfetch2())
+  
+  intprepregfetch2 <- eventReactive(input$intInput2, {
+    intprepreg[intnames %in% input$intInput2]
+  })
+  output$intprepregYN2z <-renderText(intenergyfetch2())
   
   # Matrix1 ----
   
@@ -408,4 +439,82 @@ output$moldname1e <- output$moldname1d <- output$moldname1c <- output$moldname1b
   })
   output$othermatrixBEnergyNum2z <-output$insertsBEnergyNum2 <- renderText(insertsBenergyfetch2())
   
+  # Cure1 ----
+  # Make List for Box
+  updateSelectizeInput(session, 'cureInput1',
+                       choices = curenames,
+                       selected = "",
+                       server = TRUE)
+  
+  # Associate Name value with cure type name
+  curenamefetch1 <- eventReactive(input$cureInput1, {
+    curenames[curenames %in% input$cureInput1]
+  })
+  output$curename1e <- output$curename1 <- renderText(curenamefetch1())
+  
+  # Associate Energy value with cure type name
+  cureenergyfetch1 <- eventReactive(input$cureInput1, {
+    cureenergy[curenames %in% input$cureInput1]
+  })
+  output$cureEnergyNum1z <-output$cureEnergyNum1 <- renderText(cureenergyfetch1())
+  
+  # Cure2 ----
+  # Make List for Box
+  updateSelectizeInput(session, 'cureInput2',
+                       choices = curenames,
+                       selected = "",
+                       server = TRUE)
+  # Associate Name value with cure type name
+  curenamefetch2 <- eventReactive(input$cureInput2, {
+    curenames[curenames %in% input$cureInput2]
+  })
+  output$curename2e <- output$curename2 <- renderText(curenamefetch2())
+  
+  # Associate Energy value with cure type name
+  cureenergyfetch2 <- eventReactive(input$cureInput2, {
+    cureenergy[curenames %in% input$cureInput2]
+  })
+  output$cureEnergyNum2z <-output$cureEnergyNum2 <- renderText(cureenergyfetch2())  
+  
+  # Finish1 ----
+  # Make List for Box
+  updateSelectizeInput(session, 'finishInput1',
+                       choices = finishnames,
+                       selected = "",
+                       server = TRUE)
+  # Associate Name value with finish type name
+  finishnamefetch1 <- eventReactive(input$finishInput1, {
+    finishnames[finishnames %in% input$finishInput1]
+  })
+  output$finishname1e <- output$finishname1 <- renderText(finishnamefetch1())
+  
+  # Associate Energy value with finish type name
+  finishenergyfetch1 <- eventReactive(input$finishInput1, {
+    finishenergy[finishnames %in% input$finishInput1]
+  })
+  output$finishEnergyNum1z <-output$finishEnergyNum1 <- renderText(finishenergyfetch1())  
+  
+  
+  
+  # Finish2 ----
+  # Make List for Box
+  updateSelectizeInput(session, 'finishInput2',
+                       choices = finishnames,
+                       selected = "",
+                       server = TRUE)
+  # Associate Name value with finish type name
+  finishnamefetch2 <- eventReactive(input$finishInput2, {
+    finishnames[finishnames %in% input$finishInput2]
+  })
+  output$finishname2e <- output$finishname2 <- renderText(finishnamefetch2())
+  
+  # Associate Energy value with finish type name
+  finishenergyfetch2 <- eventReactive(input$finishInput2, {
+    finishenergy[finishnames %in% input$finishInput2]
+  })
+  output$finishEnergyNum2z <-output$finishEnergyNum2 <- renderText(finishenergyfetch2())  
+  
+  
+  
+  # End ----
    })
