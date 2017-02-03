@@ -5,7 +5,7 @@ library(tidyverse)
 
 yfs <- function(scrap){(1-scrap)}
 
-#Define which yields are being used ----
+# Define which yields are being used ----
 # Layup - convert scrap --> yield; deside if default or user, reduce by amt of recycling
 yield_layup <- function(int_scrap_use_default, int_scrap_default_val, int_scrap_user_val, int_scrap_recycle_val) {
   if (int_scrap_use_default){
@@ -69,58 +69,109 @@ YN2 <- prepregYN(intprepregYN2z)
 
 
 
-#BUILD DATAFRAME YIELD ----
-techset <- c(rep("ts1", 9), rep("ts2", 9))
-stage <- c(rep(c("finish", "mold", "layup"),6))
-material <- c(rep(c(rep("fiber",3), rep("matrix", 3), rep("insert", 3)), 2))
-massfrac <- c (rep(massfrac1[1], 3),rep(massfrac1[2],3), rep(massfrac1[3],3), rep(massfrac2[1], 3), rep(massfrac2[2],3), rep(massfrac2[3],3))
-stageyield <-  c(rep(c(finishyield1, moldyield1, layupyield1), 6), rep(c(finishyield2, moldyield2, layupyield2),6))
-applyyield <- c(1,1,1, 1,1,YN1, 0, 1, 0, 1,1,1, 1,1,YN2, 0, 1, 0)
+# BUILD DATAFRAME YIELD ----
 
 Data_yield <- data_frame(
-  techset = techset,
-  material = material,
-  stage = stage,
-  massfrac = massfrac,
-  stageyield = stageyield,
-  applyyield = applyyield
+  techset = c(rep("ts1", 9), rep("ts2", 9)),
+  
+  material = c(rep(c(rep("fiber",3), rep("matrix", 3), rep("insert", 3)), 2)),
+  
+  stage = c(rep(c("finish", "mold", "layup"),6)),
+  
+  massfrac = c(rep(massfracs1[1], 3),rep(massfracs1[2],3), rep(massfracs1[3],3), rep(massfracs2[1], 3), rep(massfracs2[2],3), rep(massfracs2[3],3)),
+  
+  stageyield = c(rep(c(finishyield1, moldyield1, layupyield1), 3), rep(c(finishyield2, moldyield2, layupyield2),3)),
+  
+  applyyield = c(1,1,1, 1,1,YN1, 0, 1, 0, 1,1,1, 1,1,YN2, 0, 1, 0)
 )
+# DATAFRAME FUNCTIONS ----
+    m.f.mat_fxn <- function(mat,stg, ts) {
+        finalmass <- if (ts == "ts1") {
+        finalpartmass1Z
+      } else {finalpartmass2z}
   
-yield <- function(material,stage, techset){
-  yield.df <- Data_yield %>% filter(material == material & stage == stage & techset == techset)
-  yield <- yield.df["stageyield"]
-  yield}
+      massfrac_fxn <- function(mat,stg, ts){
+        massfraction.df <- dplyr::filter(Data_yield, material == mat, stage == stg, techset == ts) %>%
+          select(4)
+        frac <- unname(unlist(massfraction.df))
+        frac
+        }
+    
+    final_mass_material <- finalmass*massfrac_fxn(mat,stg, ts)
+      
+    return(final_mass_material)
+    }
 
-applyyield_fxn <- function(material,stage, techset){
-  yield.df <- Data_yield %>% filter (material == material & stage == stage & techset == techset)
-  applyyield <- yield.df[applyyield]
-  applyyield}
-  
-finalmass_material <- function(material,stage, techset) {
-  finalmass <- if (techset == "ts1") {
-    finalpartmass1Z
-  } else finalpartmass2z
-       massfrac <- function(material, stage, techset){
-       massfrac <- Data_yield %>% filter (material == material & stage == stage & techset == techset)
-       massfrac}
-      finall_mass_material <- function(finalmass,massfrac){
-       final_mass_material <- finalmass*massfrac}
-  final_mass_material
-}
-
-yield_actual_gen <- function(material,stage, techset,){
-  switch(stage,
-         finish = (yield(material,"finish", techset)) ^ (applyyield_fxn(material,"finish", techset)),
-         mold = (yield(material,"finish", techset) * yield(material,"mold", techset)) ^ (applyyield_fxn(material,"mold", techset)),
-         layup = (yield(material,"finish", techset) * yield(material,"mold", techset) * yield(material,"layup", techset)) ^ (applyyield_fxn(material,"layup", techset)))
-  yield_actual_gen }
-
-
+  yield_overall_fxn <- function(mat,stg, ts){
+    yield <- function(mat,stg, ts){
+      syield.df <- dplyr::filter(Data_yield, material == mat, stage == stg, techset == ts) %>%
+        select(stageyield)
+      yield <- unname(unlist(syield.df))
+      yield
+      }
+    
+    applyyield_fxn <- function(mat,stg, ts){
+      ayield.df <- dplyr::filter(Data_yield, material == mat, stage == stg, techset == ts) %>%
+        select(6)
+      apply_yield <- unname(unlist(ayield.df))
+      apply_yield
+      }
+    
+   yield_overall <- switch(stg,
+                     finish =  yield(mat, "finish", ts) ^ applyyield_fxn(mat, "finish", ts),
+                     mold   = (yield(mat, "finish", ts) ^ applyyield_fxn(mat, "finish", ts)) * (yield(mat, "mold", ts)  ^ applyyield_fxn(mat, "mold", ts)),
+                     layup  = (yield(mat, "finish", ts) ^ applyyield_fxn(mat, "finish", ts)) * (yield(mat, "mold", ts)  ^ applyyield_fxn(mat, "mold", ts)) * (yield(mat,"layup", ts) ^ applyyield_fxn(mat, "layup", ts))
+          )
+   print(yield_overall)
+   yield_overall
+  }
+ 
+ 
 mass_initial_gen <- function(finalpartmass, yield){finalpartmass/yield}
 
+# APPEND DATAFRAME ----
 
-
+# create col with "actual yield
 Data_yield <- Data_yield %>%
-  mutate(yield_actual = yield_actual_gen(material == material,stage == stage, techset == techset, applyyield == applyyield)) %>%
-  mutate(material_mass = finalmass_material(material == material,techset == techset, massfrac == massfrac)) %>%
-  mutate(mass_initial = mass_initial_gen(material_mass == finalpartmass, yield_actual == yield)) 
+  rowwise() %>%
+  mutate(yield_actual = yield_overall_fxn(material, stage, techset))
+
+# creates col: the final part mass of each material
+Data_yield <- Data_yield %>%
+  rowwise() %>%
+  mutate(material_final_mass = m.f.mat_fxn(material,stage, techset))
+
+ # creates col: divides the final mass by the  yield     
+Data_yield <- Data_yield %>%   
+  rowwise() %>%
+        mutate(mass_initial = mass_initial_gen(material_final_mass, yield_actual)) 
+
+# CALC ENERGY FOR EACH MATERIAL & PROCESS ----
+# FIBER
+
+  # FIBER ENERGY VALUE * MASS OF FIBER (BEFORE LAYUP)
+
+# INTERMEDIATE
+
+  # INT ENERGY VALUE * MASS OF FIBER (BEFORE LAYUP) (I THINK THE NUMBER IS BASED ON FIBER WEIGHT ONLY)
+
+# MATRIX
+
+  # PRIMARY MATRIX ENERGY VALUE * MASS OF ALL MATRIX (FRACTION PRIMARY / FRACTION ALL MATRIX)
+  # MATRIX A ENERGY VALUE * MASS OF ALL MATRIX (BEFORE LAYUP) (FRACTION A / FRACTION ALL MATRIX)
+  # MATRIX B ENERGY VALUE * MASS OF ALL MATRIX (BEFORE LAYUP) (FRACTION B / FRACTION ALL MATRIX)
+  # MATRIX C ENERGY VALUE * MASS OF ALL MATRIX (BEFORE LAYUP) (FRACTION C / FRACTION ALL MATRIX)
+  # INSERT A ENERGY VALUE * MASS OF ALL INSERT (BEFORE LAYUP) (FRACTION A / FRACTION ALL INSERT)
+  # INSERT B ENERGY VALUE * MASS OF ALL INSERT (BEFORE LAYUP) (FRACTION B / FRACTION ALL INSERT)
+
+# MOLD
+
+  # MOLD ENERGY VALUE * MASS OF ALL MATERIALS BEING MOLDED (BEFORE MOLDING) (MASS FIBER + MASS MATRIX + MASS INSERTS)
+
+# CURE
+
+  # CURE ENERGY VALUE * MASS OF ALL MATERIALS BEING CURED (BEFORE FINISHING) (MASS FIBER + MASS MATRIX + MASS INSERTS)
+
+# FINISH
+
+  # FINISH ENERGY VALUE * MASS OF ALL MATERIALS BEING CURED (BEFORE FINISHING) (MASS FIBER + MASS MATRIX + MASS INSERTS)
