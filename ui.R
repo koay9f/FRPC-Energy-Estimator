@@ -59,7 +59,7 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                                    column(6,
                                           h2("Technology Set 1")
                                           , h5(textOutput("partname1"), textOutput("partweight1"))
-                                          , fluidRow(column(3, h5("Molding Techology: ")), column(3, textOutput("moldname1")))
+                                          , fluidRow(column(3, h5("Molding Techology: ")), column(3, textOutput("moldshort1")))
                                           , fluidRow(column(4, h5("Default Fiber Fraction: ")), column(1, textOutput("moldfracNum1")), column(1, checkboxInput("moldfracUSERYN1", "Use Default?",TRUE)))
                                           , conditionalPanel(
                                                   condition = "input.moldfracUSERYN1 == false",
@@ -73,7 +73,7 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                                    , column(6,
                                             h2("Technology Set 2")
                                             , h5(textOutput("partname2"), textOutput("partweight2"))
-                                            , fluidRow(column(3, h5("Molding Techology: ")), column(3, textOutput("moldname2")))
+                                            , fluidRow(column(3, h5("Molding Techology: ")), column(3, textOutput("moldshort2")))
                                             , fluidRow(column(4, h5("Default Fiber Fraction: ")), column(1, textOutput("moldfracNum2")), column(1, checkboxInput("moldfracUSERYN2", "Use Default?",TRUE)))
                                             , conditionalPanel(      
                                                    condition = "input.moldfracUSERYN2 == false",    
@@ -98,7 +98,7 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                                    column(6
                                           , h2("Technology Set 1")
                                           , h5(textOutput("partname1a"), textOutput("partweight1a"))
-                                          , fluidRow(column(3, h5("Molding Techology: ")), column(3, textOutput("moldname1a")))
+                                          , fluidRow(column(3, h5("Molding Techology: ")), column(3, textOutput("moldshort1a")))
                                           , selectizeInput("intInput1", label = "Choose Fiber Intermediate",
                                                            choices = NULL,  selected = "",  multiple = FALSE,
                                                            options = list(placeholder = 'Choose Fiber Intermediate     '))
@@ -113,7 +113,7 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                                    , column(6
                                             , h2("Technology Set 2")
                                             , h5(textOutput("partname2a"), textOutput("partweight2a"))
-                                            , fluidRow(column(3, h5("Molding Techology: ")), column(3, textOutput("moldname2a")))
+                                            , fluidRow(column(3, h5("Molding Techology: ")), column(3, textOutput("moldshort2a")))
                                             , selectizeInput("intInput2", label = "Choose Fiber Intermediate",
                                                              choices = NULL,  selected = "",  multiple = FALSE,
                                                              options = list(placeholder = 'Choose Fiber Intermediate     '))
@@ -137,7 +137,7 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                     column(6
                            , h2("Technology Set 1")
                            , h5(textOutput("partname1b"), textOutput("partweight1b"))
-                           , fluidRow(column(3, h5("Molding Techology: ")), column(3, textOutput("moldname1b")))
+                           , fluidRow(column(3, h5("Molding Techology: ")), column(3, textOutput("moldshort1b")))
                            , fluidRow(column(4, h5("Fiber Mass Fraction:")), column(2, textOutput("fiberfrac1")))
                            #Matrix Stuff
                            #Choose Primary Matrix
@@ -215,7 +215,7 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                     , column(6
                              , h2("Technology Set 2")
                              , h5(textOutput("partname2b"), textOutput("partweight2b"))
-                             , fluidRow(column(3, h5("Molding Techology: ")), column(3, textOutput("moldname2b")))
+                             , fluidRow(column(3, h5("Molding Techology: ")), column(3, textOutput("moldshort2b")))
                              , fluidRow(column(4, h5("Fiber Mass Fraction:")), column(2, "OUTPUT"))
                              
                              #Matrix Stuff
@@ -300,7 +300,7 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                                    column(6
                                    , h2("Technology Set 1")
                                    , h5(textOutput("partname1c"), textOutput("partweight1c"))
-                                   , fluidRow(column(3, h5("Molding Techology: ")), column(3, textOutput("moldname1c")))
+                                   , fluidRow(column(3, h5("Molding Techology: ")), column(3, textOutput("moldshort1c")))
                                    
                                    #Molding Stuff
                                    #molding yield
@@ -329,7 +329,7 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                                  , column(6
                                    , h2("Technology Set 2")
                                    , h5(textOutput("partname2c"), textOutput("partweight2c"))
-                                   , fluidRow(column(3, h5("Molding Techology: ")), column(3, textOutput("moldname2c")))
+                                   , fluidRow(column(3, h5("Molding Techology: ")), column(3, textOutput("moldshort2c")))
                                           
                                    #Molding Stuff
                                    #molding yield

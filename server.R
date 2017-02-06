@@ -8,13 +8,14 @@
 library(shiny)
 library(readr)
 library(plotly)
-source("math.R")
+#source("math.R")
 library(tidyverse)
 
 #Naming variables & data sheets ---- 
 #Name Data_Mold columns
 Data_Mold = read_csv("data/Data_Mold.csv")
 moldnames = Data_Mold$Name_Mold
+moldshort = Data_Mold$ShortName_Mold
 moldenergy = Data_Mold$Energy_Mold
 moldfrac = Data_Mold$Frac_Fiber
 moldyield = Data_Mold$Yield_Mold
@@ -76,7 +77,14 @@ shinyServer(function(input, output, session) {
     moldnames[moldnames %in% input$moldingInput1]
   })
 output$moldname1e <- output$moldname1d <- output$moldname1c <- output$moldname1b <- output$moldname1a <- output$moldname1 <- renderText(moldnamefetch1())
-  
+
+
+moldshortfetch1 <- eventReactive(input$moldingInput1, {
+  moldshort[moldnames %in% input$moldingInput1]
+})
+output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldshort1b <- output$moldshort1a <- output$moldshort1 <- renderText(moldshortfetch1())
+
+
    # Associate Energy value with mold type name
   moldenergyfetch1 <- eventReactive(input$moldingInput1, {
     moldenergy[moldnames %in% input$moldingInput1]
@@ -107,6 +115,13 @@ output$moldname1e <- output$moldname1d <- output$moldname1c <- output$moldname1b
   })
   output$moldname2z <-output$moldname2c <- output$moldname2b <- output$moldname2a <- output$moldname2 <- renderText(moldnamefetch2())
   
+  moldshortfetch2 <- eventReactive(input$moldingInput2, {
+    moldshort[moldnames %in% input$moldingInput2]
+  })
+  output$moldshort2e <- output$moldshort2d <- output$moldshort2c <- output$moldshort2b <- output$moldshort2a <- output$moldshort2 <- renderText(moldshortfetch2())
+  
+  
+  # Associate energy with mold type name
   moldenergyfetch2 <- eventReactive(input$moldingInput2, {
     moldenergy[moldnames %in% input$moldingInput2]
   })
