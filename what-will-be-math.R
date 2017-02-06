@@ -3,6 +3,13 @@
 
 library(tidyverse)
 
+
+fiberfetch <- function(USERYN, DEFAULT, USER){
+  ff <- if(USERYN) {
+    DEFAULT
+  }else USER
+  ff}
+
 yfs <- function(scrap){(1-scrap)}
 
 # Define which yields are being used ----
@@ -43,6 +50,20 @@ finishyield2 <-  yield_finish(output$finishscrap2, output$finishscraprecycle2)
 
 
 # Define all mass fractions ----
+f.pm1 <- output$primatrixfrac1 
+f.ma1 <- output$othermatrixAfrac1 
+f.mb1 <- output$othermatrixBfrac1 
+f.mc1 <- output$othermatrixCfrac1
+f.ia1 <- output$insertsAfrac1
+f.ib1 <- output$insertsBfrac1
+f.pm2 <- output$primatrixfrac2 
+f.ma2 <- output$othermatrixAfrac2 
+f.mb2 <- output$othermatrixBfrac2 
+f.mc2 <- output$othermatrixCfrac2
+f.ia2 <- output$insertsAfrac2
+f.ib2 <- output$insertsBfrac2
+
+
 massfracs <- function(ff_use_default, ff_default, ff_user, fm_pri, foa, fob, foc, fia, fib) {
   ff <- if(ff_use_default) {
     ff_default
@@ -54,8 +75,8 @@ massfracs <- function(ff_use_default, ff_default, ff_user, fm_pri, foa, fob, foc
   massfracs_list
     }
   
-massfracs1 <- massfracs(output$moldfracUSERYN1, moldfracNum1z,output$moldfracUSERNum1, fm1, foa1, fob1, foc1, fia1, fib1)  
-massfracs2 <- massfracs(output$moldfracUSERYN2, moldfracNum2z,output$moldfracUSERNum2, fm2, foa2, fob2, foc2, fia2, fib2)
+massfracs1 <- massfracs(output$moldfracUSERYN1, moldfracNum1z,output$moldfracUSERNum1, f.pm1, f.ma1, f.mb1, f.mc1, f.ia1, f.ib1)  
+massfracs2 <- massfracs(output$moldfracUSERYN2, moldfracNum2z,output$moldfracUSERNum2, f.pm2, f.ma2, f.mb2, f.mc2, f.ia2, f.ib2)
 
 
 # prepreg yn
@@ -147,31 +168,54 @@ Data_yield <- Data_yield %>%
         mutate(mass_initial = mass_initial_gen(material_final_mass, yield_actual)) 
 
 # CALC ENERGY FOR EACH MATERIAL & PROCESS ----
-# FIBER
+# BUILD DATA FRAME
+mass_fxn <- function(mat,stg, ts){
+  layupmass.df <- dplyr::filter(Data_yield, material == mat, stage == stg, techset == ts) %>%
+    select(mass_initial)
+  mass_i <- unname(unlist(layupmass.df))
+  mass_i
+}
 
-  # FIBER ENERGY VALUE * MASS OF FIBER (BEFORE LAYUP)
+massfrac_fxn <- function(mat,stg, ts){
+  massfraction.df <- dplyr::filter(Data_yield, material == mat, stage == stg, techset == ts) %>%
+    select(4)
+  frac <- unname(unlist(massfraction.df))
+  frac
+}
 
-# INTERMEDIATE
 
-  # INT ENERGY VALUE * MASS OF FIBER (BEFORE LAYUP) (I THINK THE NUMBER IS BASED ON FIBER WEIGHT ONLY)
+fib.mass.i1 <- int.fib.mass.i1 <- mass_fxn("fiber", "layup", "ts1")
+fib.mass.i2 <- int.fib.mass.i2 <- mass_fxn("fiber", "layup", "ts1")
 
-# MATRIX
+matrix.mass.i1 <- c(f.pm1, f.ma1, f.mb1, f.mc1) * mass_fxn("fiber", "layup", "ts1")/massfrac_fxn("fiber", "layup", "ts1")
+matrix.mass.i2 <- c(f.pm2, f.ma2, f.mb2, f.mc2) * mass_fxn("fiber", "layup", "ts2")/massfrac_fxn("fiber", "layup", "ts2")
 
-  # PRIMARY MATRIX ENERGY VALUE * MASS OF ALL MATRIX (FRACTION PRIMARY / FRACTION ALL MATRIX)
-  # MATRIX A ENERGY VALUE * MASS OF ALL MATRIX (BEFORE LAYUP) (FRACTION A / FRACTION ALL MATRIX)
-  # MATRIX B ENERGY VALUE * MASS OF ALL MATRIX (BEFORE LAYUP) (FRACTION B / FRACTION ALL MATRIX)
-  # MATRIX C ENERGY VALUE * MASS OF ALL MATRIX (BEFORE LAYUP) (FRACTION C / FRACTION ALL MATRIX)
-  # INSERT A ENERGY VALUE * MASS OF ALL INSERT (BEFORE LAYUP) (FRACTION A / FRACTION ALL INSERT)
-  # INSERT B ENERGY VALUE * MASS OF ALL INSERT (BEFORE LAYUP) (FRACTION B / FRACTION ALL INSERT)
+insert.mass.i1 <- c(f.ia1, f.ib1)* mass_fxn("insert", "layup", "ts1")/massfrac_fxn("insert", "layup", "ts1")
+insert.mass.i2 <- c(f.ia2, f.ib2)* mass_fxn("insert", "layup", "ts2")/massfrac_fxn("insert", "layup", "ts2")
 
-# MOLD
+mold.mass1 <- sum(mass_fxn("fiber", "mold", "ts1"), mass_fxn("matrix", "mold", "ts1"), mass_fxn("insert", "mold", "ts1"))
+mold.mass2 <- sum(mass_fxn("fiber", "mold", "ts2"), mass_fxn("matrix", "mold", "ts2"), mass_fxn("insert", "mold", "ts2"))
 
-  # MOLD ENERGY VALUE * MASS OF ALL MATERIALS BEING MOLDED (BEFORE MOLDING) (MASS FIBER + MASS MATRIX + MASS INSERTS)
+finish.mass1 <- cure.mass1 <- sum(mass_fxn("fiber", "finish", "ts1"), mass_fxn("matrix", "finish", "ts1"), mass_fxn("insert", "finish", "ts1"))
+finish.mass2 <- cure.mass2 <- sum(mass_fxn("fiber", "finish", "ts2"), mass_fxn("matrix", "finish", "ts2"), mass_fxn("insert", "finish", "ts2"))
 
-# CURE
+# Build Data Frame
+Data_energy <- data_frame(
+  techset = c(rep("ts1", 11), rep("ts2", 11)),
+  process_step = c(rep(c("Fiber", "Intermediate", "PriMatrix", "Matrix.a", "Matrix.b", "Matrix.c", "Insert.a", "Insert.b", "Mold", "Cure", "Finish"), 2)),
+  mass_materials = c(fib.mass.i1 , int.fib.mass.i1, matrix.mass.i1, insert.mass.i1, mold.mass1, cure.mass1, finish.mass1, 
+                     fib.mass.i2, int.fib.mass.i2, matrix.mass.i2, insert.mass.i2, mold.mass2, cure.mass2, finish.mass2),
+  energy_materials = c(fiberEnergyNum1z, intEnergyNum1z, primatrixEnergyNum1z, othermatrixAEnergyNum1z, othermatrixBEnergyNum1z, othermatrixCEnergyNum1z, 
+                       insertsAEnergyNum1z, insertsBEnergyNum1z, EnergyNum1z, cureEnergyNum1z, finishEnergyNum1z,
+                     fiberEnergyNum2z, intEnergyNum2z, primatrixEnergyNum2z, othermatrixAEnergyNum2z, othermatrixBEnergyNum2z, othermatrixCEnergyNum2z, 
+                     insertsAEnergyNum2z, insertsBEnergyNum2z, EnergyNum2z, cureEnergyNum2z, finishEnergyNum2z)
+  
+  )
 
-  # CURE ENERGY VALUE * MASS OF ALL MATERIALS BEING CURED (BEFORE FINISHING) (MASS FIBER + MASS MATRIX + MASS INSERTS)
+# Calc total energy per part
+Data_energy <- Data_energy %>%
+  rowwise() %>%
+  mutate(finalenergy = mass_materials*energy_materials)
 
-# FINISH
 
-  # FINISH ENERGY VALUE * MASS OF ALL MATERIALS BEING CURED (BEFORE FINISHING) (MASS FIBER + MASS MATRIX + MASS INSERTS)
+# Calc energy for each segment
