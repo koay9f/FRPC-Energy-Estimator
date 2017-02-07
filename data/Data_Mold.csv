@@ -1,17 +1,17 @@
 Name_Mold,ShortName_Mold,Energy_Mold,Frac_Fiber,Yield_Mold
-Wet (Hand) Lay up,WL,0.4,0.35,0.97
-Vacuum Bag (Autoclave),VB,0.4,0.65,0.93
-Spray Up,SU,46.8,0.4,0.95
+Wet (Hand) Lay up,Wet Layup,0.4,0.35,0.97
+Vacuum Bag (Autoclave),Vacuum Bag,0.4,0.65,0.93
+Spray Up,Spray Up,46.8,0.4,0.95
 Automatic Fiber Placement,AFP,8.8,0.6,0.95
 Automatic Tape Placement,ATP,8.8,0.6,0.95
-Pultrusion,Pul,9.7,0.7,0.98
-Filament Winding,FW,4.6,0.6,0.95
-Compression Molding,CM,27.7,0.3,0.95
+Pultrusion,Pultrusion,9.7,0.7,0.98
+Filament Winding,Filament Winding,4.6,0.6,0.95
+Compression Molding,Compression Molding,27.7,0.3,0.95
 Sheet Molding Compound,SMC,27.7,0.3,0.95
 Thermo-hydroforming,THF,42.5,0.5,0.93
 Resin Transfer Molding,RTM,40.2,0.6,0.93
-Vacuum Assisted-RTM,VARTM,32.0,0.7,0.95
-Seeman Composite Resin Infusion Molding Process,SCRIMP,32.0,0.7,0.95
+Vacuum Assisted-RTM,VARTM,32,0.7,0.95
+Seeman Composite Resin Infusion Molding Process,SCRIMP,32,0.7,0.95
 High Pressure-RTM,HPRTM,60.3,0.75,0.93
-Injection Molding,IM,11.0,0.2,0.95
+Injection Molding,IM,11,0.2,0.95
 Structural Reaction Injection Molding,SRIM,34.5,0.4,0.94
