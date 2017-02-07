@@ -60,10 +60,11 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                                           h2("Technology Set 1")
                                           , h5(textOutput("partname1"), textOutput("partweight1"))
                                           , fluidRow(column(3, h5("Molding Techology: ")), column(3, textOutput("moldshort1")))
-                                          , fluidRow(column(4, h5("Default Fiber Fraction: ")), column(1, textOutput("moldfracNum1")), column(1, checkboxInput("moldfracUSERYN1", "Use Default?",TRUE)))
+                                          , fluidRow(column(5, h5("Default Fiber Fraction: ")), column(1, textOutput("moldfracNum1")))
+                                          , checkboxInput("moldfracUSERYN1", "Use Default Fiber Fraction?",TRUE)
                                           , conditionalPanel(
                                                   condition = "input.moldfracUSERYN1 == false",
-                                                  numericInput("moldfracUSERNum1","User defined Mass Fraction", 0.0,  min = 0.0, max = 1.0,0.1))   
+                                                  numericInput("moldfracUSERNum1","User defined mass fraction", 0.0,  min = 0.0, max = 1.0,0.1))   
                                           , selectizeInput("fiberInput1", label = "",
                                                   choices = NULL, selected = "", multiple = FALSE,
                                                   options = list(placeholder = 'Choose Fiber Type/Tow     '))
@@ -74,10 +75,11 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                                             h2("Technology Set 2")
                                             , h5(textOutput("partname2"), textOutput("partweight2"))
                                             , fluidRow(column(3, h5("Molding Techology: ")), column(3, textOutput("moldshort2")))
-                                            , fluidRow(column(4, h5("Default Fiber Fraction: ")), column(1, textOutput("moldfracNum2")), column(1, checkboxInput("moldfracUSERYN2", "Use Default?",TRUE)))
+                                            , fluidRow(column(4, h5("Default Fiber Fraction: ")), column(1, textOutput("moldfracNum2")))
+                                            , checkboxInput("moldfracUSERYN2", "Use Default Fiber Fraction?",TRUE)
                                             , conditionalPanel(      
                                                    condition = "input.moldfracUSERYN2 == false",    
-                                                   numericInput("moldfracUSERNum2","User defined Mass Fraction", 0.0,  min = 0.0, max = 1.0,0.1))
+                                                   numericInput("moldfracUSERNum2","User defined mass fraction", 0.0,  min = 0.0, max = 1.0,0.1))
                                             , selectizeInput("fiberInput2", label = "",
                                                       choices = NULL, selected = "", multiple = FALSE,
                                                       options = list(placeholder = 'Choose Fiber Type/Tow     '))
@@ -87,47 +89,6 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                                )
                                  #EndFiber   
                         ),
-                        # IntTab ----
-                        tabPanel("Intermediate", h1("Fiber Intermediate Manufacturing & Layup") 
-                                 , p("Enter information on modeled part: intermediate type layup scrap rate")
-                                 
-                                 #CANNOT REDISPLAY MOLDING INFO
-                                 #Display Part Name & Weight & Molding Process & Fiber Fraction
-                                 , fluidRow( 
-                                   #Techset1
-                                   column(6
-                                          , h2("Technology Set 1")
-                                          , h5(textOutput("partname1a"), textOutput("partweight1a"))
-                                          , fluidRow(column(3, h5("Molding Techology: ")), column(3, textOutput("moldshort1a")))
-                                          , selectizeInput("intInput1", label = "Choose Fiber Intermediate",
-                                                           choices = NULL,  selected = "",  multiple = FALSE,
-                                                           options = list(placeholder = 'Choose Fiber Intermediate     '))
-                                          , fluidRow(column(4, h5("Embodied Energy:")), column(1,textOutput("intEnergyNum1"), align = "right"), column(1, "MJ/kg"))
-                                          , fluidRow(column(3, h5("Default Layup Scrap Rate: ")), column(1, textOutput("intscrapNum1")), column(2,checkboxInput("intscrapUSERYN1", "Use Default?",TRUE)))
-                                          , conditionalPanel(
-                                                condition = "input.intscrapUSERYN1 == false",
-                                                numericInput("intscrapUSERNum1","User defined layup scrap", 0.0,  min = 0.0, max = 1.0,0.1))
-                                          ,numericInput("intscraprecycle1",p("Layup Recycle Rate", span( h6("(% scrap that is recycled)"))), 0.0,  min = 0.0, max = 1.0,0.1)
-                                            )    
-                                   #TechSet2
-                                   , column(6
-                                            , h2("Technology Set 2")
-                                            , h5(textOutput("partname2a"), textOutput("partweight2a"))
-                                            , fluidRow(column(3, h5("Molding Techology: ")), column(3, textOutput("moldshort2a")))
-                                            , selectizeInput("intInput2", label = "Choose Fiber Intermediate",
-                                                             choices = NULL,  selected = "",  multiple = FALSE,
-                                                             options = list(placeholder = 'Choose Fiber Intermediate     '))
-                                            , fluidRow(column(4, h5("Embodied Energy:")), column (1,textOutput("intEnergyNum2"), align = "right"), column(1, "MJ/kg") )
-                                            , fluidRow(column(4, h5("Default Layup Scrap Rate: ")), column(1, textOutput("intscrapNum2")), column(1,checkboxInput("intscrapUSERYN2", "Use Default?",TRUE)))
-                                            , conditionalPanel(      
-                                                     condition = "input.intscrapUSERYN2 == false",    
-                                                      numericInput("intscrapUSERNum2","User defined layup scrap", 0.0,  min = 0.0, max = 1.0,0.1))
-                                            ,  numericInput("intscraprecycle2",p("Layup Recycle Rate", span( h6("(% scrap that is recycled)"))), 0.0,  min = 0.0, max = 1.0,0.1)
-                                            ))
-                                  #END TAB
-                        ),
-                        
-                        
                         # MatrixTab ----
                         tabPanel("Matrix", h1("Matrix Materials Manufacturing"), 
                                  p("Enter information on modeled part: primary matrix material and other materials 
@@ -144,10 +105,12 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                            , selectizeInput("PriMatrixInput1", label = "Choose Primary Matrix Material",
                                            choices = NULL,  selected = "",  multiple = FALSE,
                                            options = list(placeholder = 'Choose Matrix  '))
-                           , fluidRow(column(4, h5("Embodied Energy:")), column(1,textOutput("primatrixEnergyNum1"), align = "right"), column(1, "MJ/kg"))
+                           
                            # mass frac 
                            , numericInput("primatrixfrac1","Primary Matrix Mass Fraction", 0.0,  min = 0.0, max = 1.0,0.1)
                     
+                           
+                           , fluidRow(column(4, h5("Embodied Energy:")), column(1,textOutput("primatrixEnergyNum1"), align = "right"), column(1, "MJ/kg"))
                           # Y/N use additional matrix materials
                           , checkboxInput("othermatrixAUSERYN1", "Use Additional Matrix Materials?",FALSE)
                           # WOULD LIKE TO ADD BOX TO choose additive/fiber/matrix AND LIMIT OTHERMATRIXA TO THAT TYPE
@@ -155,9 +118,9 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                              condition = "input.othermatrixAUSERYN1 == true"
                              , selectizeInput("OtherMatrixAInput1", label = "Choose Other Matrix Material",
                                            choices = NULL,  selected = "Not Used",  multiple = FALSE)
-                              , fluidRow(column(4, h5("Embodied Energy:")), column(1,textOutput("othermatrixAEnergyNum1"), align = "right"), column(1, "MJ/kg"))
                           # mass frac 
                               , numericInput("othermatrixAfrac1","Other Material A Mass Fraction", 0.0,  min = 0.0, max = 1.0,0.1)
+                          , fluidRow(column(4, h5("Embodied Energy:")), column(1,textOutput("othermatrixAEnergyNum1"), align = "right"), column(1, "MJ/kg"))
                           
                           # Y/N use additional matrix materials
                              , checkboxInput("othermatrixBUSERYN1", "Use Additional Matrix Materials?",FALSE)
@@ -166,10 +129,10 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                                    condition = "input.othermatrixBUSERYN1 == true"
                                  , selectizeInput("OtherMatrixBInput1", label = "Choose Other Matrix Material",
                                              choices = NULL,  selected = "Not Used",  multiple = FALSE)
-                                , fluidRow(column(4, h5("Embodied Energy:")), column(1,textOutput("othermatrixBEnergyNum1"), align = "right"), column(1, "MJ/kg"))
                             # mass frac 
                                 , numericInput("othermatrixBfrac1","Other Material B Mass Fraction", 0.0,  min = 0.0, max = 1.0,0.1)
-                         
+                            , fluidRow(column(4, h5("Embodied Energy:")), column(1,textOutput("othermatrixBEnergyNum1"), align = "right"), column(1, "MJ/kg"))
+                            
                           # Y/N use additional matrix materials
                              , checkboxInput("othermatrixCUSERYN1", "Use Additional Matrix Materials?",FALSE)
                           # WOULD LIKE TO ADD BOX TO choose additive/fiber/matrix AND LIMIT OTHERMATRIXC TO THAT TYPE
@@ -177,9 +140,10 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                             condition = "input.othermatrixCUSERYN1 == true"
                                   , selectizeInput("OtherMatrixCInput1", label = "Choose Other Matrix Material",
                                              choices = NULL,  selected = "Not Used",  multiple = FALSE)
-                                    , fluidRow(column(4, h5("Embodied Energy:")), column(1,textOutput("othermatrixCEnergyNum1"), align = "right"), column(1, "MJ/kg"))
                             # mass frac 
                                  , numericInput("othermatrixCfrac1","Other Material C Mass Fraction", 0.0,  min = 0.0, max = 1.0,0.1)
+                            , fluidRow(column(4, h5("Embodied Energy:")), column(1,textOutput("othermatrixCEnergyNum1"), align = "right"), column(1, "MJ/kg"))
+                            
                           )))
                           
                           # Y/N use inserts
@@ -190,10 +154,10 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                             , selectizeInput("InsertsAInput1", label = "Choose Insert Type",
                                              choices = NULL,  selected = "Not Used",  multiple = FALSE,
                                              options = list(placeholder = 'Choose Insert     '))
-                            , fluidRow(column(4, h5("Embodied Energy:")), column(1,textOutput("insertsAEnergyNum1"), align = "right"), column(1, "MJ/kg"))
                             # mass frac 
                             , numericInput("insertsAfrac1","Insert Mass Fraction", 0.0,  min = 0.0, max = 1.0,0.1)
-                          
+                            , fluidRow(column(4, h5("Embodied Energy:")), column(1,textOutput("insertsAEnergyNum1"), align = "right"), column(1, "MJ/kg"))
+                            
                           # Y/N use additional matrix materials
                           , checkboxInput("insertsBUSERYN1", "Use Additional Insert?",FALSE)
                           # WOULD LIKE TO ADD BOX TO choose additive/fiber/matrix AND LIMIT OTHERMATRIXC TO THAT TYPE
@@ -202,9 +166,10 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                             , selectizeInput("InsertsBInput1", label = "Choose Additional Insert Type",
                                              choices = NULL,  selected = "Not Used",  multiple = FALSE,
                                              options = list(placeholder = 'Choose Insert     '))
-                            , fluidRow(column(4, h5("Embodied Energy:")), column(1,textOutput("insertsBEnergyNum1"), align = "right"), column(1, "MJ/kg"))
                             # mass frac 
                             , numericInput("insertsBfrac1","Additional Insert Mass Fraction", 0.0,  min = 0.0, max = 1.0,0.1)
+                            , fluidRow(column(4, h5("Embodied Energy:")), column(1,textOutput("insertsBEnergyNum1"), align = "right"), column(1, "MJ/kg"))
+                            
                           ))
                             # choose specific & display energy
                             # make them know the mass fraction
@@ -216,7 +181,7 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                              , h2("Technology Set 2")
                              , h5(textOutput("partname2b"), textOutput("partweight2b"))
                              , fluidRow(column(3, h5("Molding Techology: ")), column(3, textOutput("moldshort2b")))
-                             , fluidRow(column(4, h5("Fiber Mass Fraction:")), column(2, "OUTPUT"))
+                             , fluidRow(column(4, h5("Fiber Mass Fraction:")), column(2, textOutput("fiberfrac2")))
                              
                              #Matrix Stuff
                              #Matrix Stuff
@@ -224,9 +189,9 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                              , selectizeInput("PriMatrixInput2", label = "Choose Primary Matrix Material",
                                               choices = NULL,  selected = "",  multiple = FALSE,
                                               options = list(placeholder = 'Choose Matrix  '))
-                             , fluidRow(column(4, h5("Embodied Energy:")), column(1,textOutput("primatrixEnergyNum2"), align = "right"), column(1, "MJ/kg"))
                              # mass frac 
                              , numericInput("primatrixfrac2","Primary Matrix Mass Fraction", 0.0,  min = 0.0, max = 1.0,0.1)
+                             , fluidRow(column(4, h5("Embodied Energy:")), column(1,textOutput("primatrixEnergyNum2"), align = "right"), column(1, "MJ/kg"))
                              
                              # Y/N use additional matrix materials
                              , checkboxInput("othermatrixAUSERYN2", "Use Additional Matrix Materials?",FALSE)
@@ -235,9 +200,9 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                                      condition = "input.othermatrixAUSERYN2"
                                     , selectizeInput("OtherMatrixAInput2", label = "Choose Other Matrix Material",
                                                 choices = NULL,  selected = "Not Used",  multiple = FALSE)
-                                    , fluidRow(column(4, h5("Embodied Energy:")), column(1,textOutput("othermatrixAEnergyNum2"), align = "right"), column(1, "MJ/kg"))
                                # mass frac 
                                    , numericInput("othermatrixAfrac2","Other Material A Mass Fraction", 0.0,  min = 0.0, max = 1.0,0.1)
+                               , fluidRow(column(4, h5("Embodied Energy:")), column(1,textOutput("othermatrixAEnergyNum2"), align = "right"), column(1, "MJ/kg"))
                                
                                # Y/N use additional matrix materials
                                     , checkboxInput("othermatrixBUSERYN2", "Use Additional Matrix Materials?",FALSE)
@@ -246,9 +211,9 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                                          condition = "input.othermatrixBUSERYN2 == true"
                                          , selectizeInput("OtherMatrixBInput2", label = "Choose Other Matrix Material",
                                                   choices = NULL,  selected = "Not Used",  multiple = FALSE)
-                                        , fluidRow(column(4, h5("Embodied Energy:")), column(1,textOutput("othermatrixBEnergyNum2"), align = "right"), column(1, "MJ/kg"))
                                  # mass frac 
                                         , numericInput("othermatrixBfrac2","Other Material B Mass Fraction", 0.0,  min = 0.0, max = 1.0,0.1)
+                                 , fluidRow(column(4, h5("Embodied Energy:")), column(1,textOutput("othermatrixBEnergyNum2"), align = "right"), column(1, "MJ/kg"))
                                  
                                  # Y/N use additional matrix materials
                                        , checkboxInput("othermatrixCUSERYN2", "Use Additional Matrix Materials?",FALSE)
@@ -257,8 +222,9 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                                                condition = "input.othermatrixCUSERYN2 == true"
                                                , selectizeInput("OtherMatrixCInput2", label = "Choose Other Matrix Material",
                                                     choices = NULL,  selected = "Not Used",  multiple = FALSE)
-                                                , fluidRow(column(4, h5("Embodied Energy:")), column(1,textOutput("othermatrixCEnergyNum2"), align = "right"), column(1, "MJ/kg"))
                                                , numericInput("othermatrixCfrac2","Other Material C Mass Fraction", 0.0,  min = 0.0, max = 1.0,0.1)
+                                               , fluidRow(column(4, h5("Embodied Energy:")), column(1,textOutput("othermatrixCEnergyNum2"), align = "right"), column(1, "MJ/kg"))
+                                               
                                  )))
                              
                              # Y/N use inserts
@@ -268,18 +234,19 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                                       , selectizeInput("InsertsAInput2", label = "Choose Insert Type",
                                                 choices = NULL,  selected = "Not Used",  multiple = FALSE,
                                                 options = list(placeholder = 'Choose Insert     '))
-                                      , fluidRow(column(4, h5("Embodied Energy:")), column(1,textOutput("insertsAEnergyNum2"), align = "right"), column(1, "MJ/kg"))
                                       , numericInput("insertsAfrac2","Insert Mass Fraction", 0.0,  min = 0.0, max = 1.0,0.1)
-                               
+                                      , fluidRow(column(4, h5("Embodied Energy:")), column(1,textOutput("insertsAEnergyNum2"), align = "right"), column(1, "MJ/kg"))
+                                      
                                       , checkboxInput("insertsBUSERYN2", "Use Additional Insert?",FALSE)
                                       , conditionalPanel(
                                           condition = "input.insertsBUSERYN2 == true"
                                             , selectizeInput("InsertsBInput2", label = "Choose Additional Insert Type",
                                                   choices = NULL,  selected = "Not Used",  multiple = FALSE,
                                                   options = list(placeholder = 'Choose Insert     '))
-                                           , fluidRow(column(4, h5("Embodied Energy:")), column(1,textOutput("insertsBEnergyNum2"), align = "right"), column(1, "MJ/kg"))
                                  # mass frac 
                                          , numericInput("insertsBfrac2","Additional Insert Mass Fraction", 0.0,  min = 0.0, max = 1.0,0.1)
+                                 , fluidRow(column(4, h5("Embodied Energy:")), column(1,textOutput("insertsBEnergyNum2"), align = "right"), column(1, "MJ/kg"))
+                                 
                                ))
                              # ERROR IF MASS FRACS + FIBER MASS FRAC =/= 1
                              
@@ -290,6 +257,50 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                   
                   #END TAB
                     ),
+                  
+                        # IntTab ----
+                      tabPanel("Intermediate", h1("Fiber Intermediate Manufacturing & Layup") 
+                           , p("Enter information on modeled part: intermediate type layup scrap rate")
+                           
+                           #CANNOT REDISPLAY MOLDING INFO
+                           #Display Part Name & Weight & Molding Process & Fiber Fraction
+                           , fluidRow( 
+                             #Techset1
+                             column(6
+                                    , h2("Technology Set 1")
+                                    , h5(textOutput("partname1a"), textOutput("partweight1a"))
+                                    , fluidRow(column(3, h5("Molding Techology: ")), column(3, textOutput("moldshort1a")))
+                                    , selectizeInput("intInput1", label = "Choose Fiber Intermediate",
+                                                     choices = NULL,  selected = "",  multiple = FALSE,
+                                                     options = list(placeholder = 'Choose Fiber Intermediate     '))
+                                    , fluidRow(column(4, h5("Embodied Energy:")), column(1,textOutput("intEnergyNum1"), align = "right"), column(1, "MJ/kg"))
+                                    , fluidRow(column(5, h5("Default Layup Scrap Rate: ")), column(1, textOutput("intscrapNum1")))
+                                    , checkboxInput("intscrapUSERYN1", "Use Default Scrap Rate?",TRUE)
+                                    , conditionalPanel(
+                                      condition = "input.intscrapUSERYN1 == false",
+                                      numericInput("intscrapUSERNum1","User defined layup scrap", 0.0,  min = 0.0, max = 1.0,0.1))
+                                    ,numericInput("intscraprecycle1",p("Layup Recycle Rate", span( h6("(% scrap that is recycled)"))), 0.0,  min = 0.0, max = 1.0,0.1)
+                             )    
+                             #TechSet2
+                             , column(6
+                                      , h2("Technology Set 2")
+                                      , h5(textOutput("partname2a"), textOutput("partweight2a"))
+                                      , fluidRow(column(3, h5("Molding Techology: ")), column(3, textOutput("moldshort2a")))
+                                      , selectizeInput("intInput2", label = "Choose Fiber Intermediate",
+                                                       choices = NULL,  selected = "",  multiple = FALSE,
+                                                       options = list(placeholder = 'Choose Fiber Intermediate     '))
+                                      , fluidRow(column(4, h5("Embodied Energy:")), column (1,textOutput("intEnergyNum2"), align = "right"), column(1, "MJ/kg") )
+                                      , fluidRow(column(4, h5("Default Layup Scrap Rate: ")), column(1, textOutput("intscrapNum2")))
+                                      , checkboxInput("intscrapUSERYN2", "Use Default Scrap Rate?",TRUE)
+                                      , conditionalPanel(      
+                                        condition = "input.intscrapUSERYN2 == false",    
+                                        numericInput("intscrapUSERNum2","User defined layup scrap", 0.0,  min = 0.0, max = 1.0,0.1))
+                                      ,  numericInput("intscraprecycle2",p("Layup Recycle Rate", span( h6("(% scrap that is recycled)"))), 0.0,  min = 0.0, max = 1.0,0.1)
+                             ))
+                           #END TAB
+                  ),
+                  
+                  
                   
                         # MoldingTab ----  
                         tabPanel("Molding", h1("Molding, Curing & Finishing"),
@@ -304,7 +315,8 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                                    
                                    #Molding Stuff
                                    #molding yield
-                                   , fluidRow(column(4, h5("Default Molding Yield: ")), column(1, textOutput("moldyieldNum1")), column(1,checkboxInput("moldyieldUSERYN1", "Use Default?",TRUE)))
+                                   , fluidRow(column(5, h5("Default Molding Yield: ")), column(1, textOutput("moldyieldNum1")))
+                                   , checkboxInput("moldyieldUSERYN1", "Use Default Yield?",TRUE)
                                    , conditionalPanel(
                                      condition = "input.moldyieldUSERYN1 == false",
                                      numericInput("moldyieldUSERNum1","User defined molding yield", 0.0,  min = 0.0, max = 1.0,0.1))
@@ -334,7 +346,8 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                                    #Molding Stuff
                                    #molding yield
                                    , fluidRow(
-                                     column(4, h5("Default Molding Yield: ")), column(1, textOutput("moldyieldNum2")), column(1,checkboxInput("moldyieldUSERYN2", "Use Default?",TRUE)))
+                                     column(5, h5("Default Molding Yield: ")), column(1, textOutput("moldyieldNum2")))
+                                   , checkboxInput("moldyieldUSERYN2", "Use Default Yield?",TRUE)
                                    , conditionalPanel(
                                      condition = "input.moldyieldUSERYN2 == false",
                                      numericInput("moldyieldUSERNum2","User defined molding yield", 0.0,  min = 0.0, max = 1.0,0.1))
