@@ -62,10 +62,15 @@ shinyServer(function(input, output, session) {
   # General Definations ----
   # (none) = first use a = int b = matrix c = mold d= summary e = results z = calcs
   output$partname1e <- output$partname1d <- output$partname1c <- output$partname1b <- output$partname1a <- output$partname1 <- renderText({paste("Part Name:",input$name1)})
-  partweight1z <- output$partweight1e <- output$partweight1d <- output$partweight1c <- output$partweight1b <- output$partweight1a <- output$partweight1 <- renderText({paste("Part Weight:",input$finalweight1, "kg")})
+  output$partweight1e <- output$partweight1d <- output$partweight1c <- output$partweight1b <- output$partweight1a <- output$partweight1 <- renderText({paste("Part Weight:",input$finalweight1, "kg")})
+  
+  partweight1z <- renderText(input$finalweight1)
+  
   output$partname2e <-output$partname2d <-output$partname2c <-output$partname2b <-output$partname2a <- output$partname2 <- renderText({paste("Part Name:",input$name2)})
-  partweight2z <-  output$partweight2e <- output$partweight2d <- output$partweight2c <- output$partweight2b <- output$partweight2a <- output$partweight2 <- renderText({paste("Part Weight:",input$finalweight2, "kg")})
-
+  output$partweight2e <- output$partweight2d <- output$partweight2c <- output$partweight2b <- output$partweight2a <- output$partweight2 <- renderText({paste("Part Weight:",input$finalweight2, "kg")})
+  partweight2z <- renderText(input$finalweight2)
+  
+  
   # Mold1 ----
   # Make List for Box
   updateSelectizeInput(session, 'moldingInput1',
@@ -97,8 +102,7 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
   })
    moldfracNum1z  <-output$moldfracNum1 <- renderText(moldfracfetch1())
    moldfracNum1y  <- reactive(moldfracfetch1())
-   print(moldfracNum1y)
-   
+
     # Associate Molding yield with mold type name
   moldyieldfetch1 <- eventReactive(input$moldingInput1,{
     moldyield[moldnames %in% input$moldingInput1]
@@ -161,7 +165,7 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
   
 
   output$fiberfrac1<- renderText(fiberfetch(input$moldfracUSERYN1, moldfracfetch1(), input$moldfracUSERNum1))
-  output$f.f1 <-output$fiberfrac1e <- output$fiberfrac1d<-renderText(fiberfetch(input$moldfracUSERYN1, moldfracNum1y, input$moldfracUSERNum1))
+  raw.f.f1 <-output$fiberfrac1e <- output$fiberfrac1d<-renderText(fiberfetch(input$moldfracUSERYN1, moldfracNum1y, input$moldfracUSERNum1))
   
   # Fiber2 ----
   # Make List for Box
@@ -182,7 +186,7 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
   output$fiberEnergyNum2z <-output$fiberEnergyNum2e <-output$fiberEnergyNum2d <-output$fiberEnergyNum2 <- renderText(fiberenergyfetch2())
   
   output$fiberfrac2<- renderText(fiberfetch(input$moldfracUSERYN2, moldfracfetch2(), input$moldfracUSERNum2))
-  output$f.f2 <-output$fiberfrac2e <- output$fiberfrac2d<- renderText(fiberfetch(input$moldfracUSERYN2, input$moldfracNum2y, input$moldfracUSERNum2))
+  raw.f.f2 <-output$fiberfrac2e <- output$fiberfrac2d<- renderText(fiberfetch(input$moldfracUSERYN2, input$moldfracNum2y, input$moldfracUSERNum2))
   
   # Int1 ----
   
@@ -555,26 +559,45 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
   output$finishyield2 <-  output$actfinyield2d <- renderText(yield_finish(input$finishscrap2, input$finishscraprecycle2))
   
   # User Input --> variables ----
-  output$f.pm1 <- renderText(input$primatrixfrac1) 
-  output$f.ma1 <- renderText(input$othermatrixAfrac1)
-  output$f.mb1 <- renderText(input$othermatrixBfrac1) 
-  output$f.mc1 <- renderText(input$othermatrixCfrac1)
-  output$f.ia1 <- renderText(input$insertsAfrac1)
-  output$f.ib1 <- renderText(input$insertsBfrac1)
-  output$f.pm2 <- renderText(input$primatrixfrac2) 
-  output$f.ma2 <- renderText(input$othermatrixAfrac2) 
-  output$f.mb2 <- renderText(input$othermatrixBfrac2)
-  output$f.mc2 <- renderText(input$othermatrixCfrac2)
+  raw.f.pm1 <- renderText(input$primatrixfrac1)
+  raw.f.ma1 <- renderText(input$othermatrixAfrac1)
+  raw.f.mb1 <- renderText(input$othermatrixBfrac1)
+  raw.f.mc1 <- renderText(input$othermatrixCfrac1)
+  
+  raw.f.pm2 <- renderText(input$primatrixfrac2)
+  raw.f.ma2 <- renderText(input$othermatrixAfrac2)
+  raw.f.mb2 <- renderText(input$othermatrixBfrac2)
+  raw.f.mc2 <- renderText(input$othermatrixCfrac2)
+  
+  m.ia1 <- renderText(input$insertsAfrac1)
+  m.ib1 <- renderText(input$insertsBfrac1)
+  m.ia2 <- renderText(input$insertsAfrac2)
+  m.ib2 <- renderText(input$insertsBfrac2)
   
   
-  
-  output$f.ia2 <- renderText(input$insertsAfrac2)
-  output$f.ib2 <- renderText(input$insertsBfrac2)
-  
-  
-  
+  #fraccheck1 <- sum(raw.f.f1,raw.f.pm1, raw.f.ma1, raw.f.mb1, raw.f.mc1)
+  #fraccheck1 <- sum(raw.f.f2,raw.f.pm2, raw.f.ma2, raw.f.mb2, raw.f.mc2)
+ 
+  f.f1 <- newmassfrac_fxn(raw.f.f1, partweight1z, m.ia1, m.iab)
   
   
+  #f.f1 <- raw.f.f1*(partweight1z - m.ia1 - m.ib1) / partweight1z
+  #f.f2 <- raw.f.f2*(partweight2z - m.ia2 - m.ib2) / partweight2z
+  
+  #f.pm1 <- raw.f.pm1*(partweight1z - m.ia1 - m.ib1) / partweight1z
+  #f.ma1 <- raw.fma1*(partweight1z - m.ia1 - m.ib1) / partweight1z
+  #f.mb1 <- raw.fmb1*(partweight1z - m.ia1 - m.ib1) / partweight1z
+  #f.mc1 <- raw.fmc1*(partweight1z - m.ia1 - m.ib1) / partweight1z
+  
+  #f.pm1 <- raw.f.pm2*(partweight2z - m.ia2 - m.ib2) / partweight2z
+  #f.ma2 <- raw.fma2*(partweight2z - m.ia2 - m.ib2) / partweight2z
+  #f.mb2 <- raw.fmb2*(partweight2z - m.ia2 - m.ib2) / partweight2z
+  #f.mc2 <- raw.fmc2*(partweight2z - m.ia2 - m.ib2) / partweight2z
+  
+  #f.ia1 <- m.ia1 / partweight1z
+  #f.ib1 <- m.ib1 / partweight1z
+  #f.ia2 <- m.ia2 / partweight2z
+  #f.ib2 <- m.ib2 / partweight2z
   
   
   

@@ -14,6 +14,10 @@ fiberfetch <- function(USERYN, FFA, FFB){
 
 yfs <- function(scrap){(1-scrap)}
 
+newmassfrac_fxn <- function(oldfrac, weight, inserta, insertb){
+  newfrac <- oldfrac*(weight - inserta - insertb)/weight
+  newfrac
+}
 
 
 # Define which yields are being used ----

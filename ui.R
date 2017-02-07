@@ -34,6 +34,21 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                                                    choices = NULL, selected = "", multiple = FALSE,
                                                    options = list(placeholder = 'Choose Molding Technology    '))
                                   , column (4,h5("Embodied Energy:")),column(1,textOutput("EnergyNum1"), align = "right"), column(1, "MJ/kg")
+                                  , checkboxInput("insertsAUSERYN1", "Does the part use inserts or a core?",FALSE)
+                                  , conditionalPanel(
+                                    condition = "input.insertsAUSERYN1 == true"
+                                    , p("The final mass of the part should include the mass of the inserts or cores.")
+                                   #THIS SHOULD BE MASS OF INSERT AND THEN NEED A CALC TO DETERMINE THE TRUE MASS FRACS
+                                    , numericInput("insertsAfrac1","Insert/Core Mass", 0.0,  min = 0.0, NA, NA)
+                                  
+                                   , checkboxInput("insertsBUSERYN1", "Use Additional Insert/Core Material?",FALSE)
+                                  
+                                   #THIS SHOULD BE MASS OF INSERT AND THEN NEED A CALC TO DETERMINE THE TRUE MASS FRACS
+                                   , conditionalPanel(
+                                     condition = "input.insertsBUSERYN1 == true"
+                                   , numericInput("insertsBfrac1","Additional Insert/Core Mass", 0.0,  min = 0.0, NA, NA))
+                                  )
+                                    
                                    )
                              #TechSet2
                                 , column(6
@@ -44,6 +59,23 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                                                    choices = NULL, selected = "", multiple = FALSE,
                                                    options = list(placeholder = 'Choose Molding Technology    '))
                                   , column (4,h5("Embodied Energy:")),column(1,textOutput("EnergyNum2"), align = "right"), column(1, "MJ/kg")
+                                  
+                                  , checkboxInput("insertsAUSERYN2", "Does the part use inserts or a core?",FALSE)
+                                  , conditionalPanel(
+                                    condition = "input.insertsAUSERYN2 == true"
+                                    , p("The final mass of the part should include the mass of the inserts or cores.")
+                                    #THIS SHOULD BE MASS OF INSERT AND THEN NEED A CALC TO DETERMINE THE TRUE MASS FRACS
+                                    , numericInput("insertsAfrac2","Insert/Core Mass", 0.0,  min = 0.0, NA, NA)
+                                    
+                                    , checkboxInput("insertsBUSERYN2", "Use Additional Insert/Core Material?",FALSE)
+                                    
+                                    #THIS SHOULD BE MASS OF INSERT AND THEN NEED A CALC TO DETERMINE THE TRUE MASS FRACS
+                                    , conditionalPanel(
+                                      condition = "input.insertsBUSERYN2 == true"
+                                      , numericInput("insertsBfrac2","Additional Insert/Core Mass", 0.0,  min = 0.0, NA, NA))
+                                  )
+                                  
+                                  
                                    )
                                  )
                          #EndTab
@@ -107,7 +139,7 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                                            options = list(placeholder = 'Choose Matrix  '))
                            
                            # mass frac 
-                           , numericInput("primatrixfrac1","Primary Matrix Mass Fraction", 0.0,  min = 0.0, max = 1.0,0.1)
+                           , numericInput("primatrixfrac1","Primary Matrix Mass Fraction", 0.0,  min = 0.0, max = 100,0.1)
                     
                            
                            , fluidRow(column(4, h5("Embodied Energy:")), column(1,textOutput("primatrixEnergyNum1"), align = "right"), column(1, "MJ/kg"))
@@ -119,7 +151,7 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                              , selectizeInput("OtherMatrixAInput1", label = "Choose Other Matrix Material",
                                            choices = NULL,  selected = "Not Used",  multiple = FALSE)
                           # mass frac 
-                              , numericInput("othermatrixAfrac1","Other Material A Mass Fraction", 0.0,  min = 0.0, max = 1.0,0.1)
+                              , numericInput("othermatrixAfrac1","Other Material A Mass Fraction", 0.0,  min = 0.0, max = 100,0.1)
                           , fluidRow(column(4, h5("Embodied Energy:")), column(1,textOutput("othermatrixAEnergyNum1"), align = "right"), column(1, "MJ/kg"))
                           
                           # Y/N use additional matrix materials
@@ -130,7 +162,7 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                                  , selectizeInput("OtherMatrixBInput1", label = "Choose Other Matrix Material",
                                              choices = NULL,  selected = "Not Used",  multiple = FALSE)
                             # mass frac 
-                                , numericInput("othermatrixBfrac1","Other Material B Mass Fraction", 0.0,  min = 0.0, max = 1.0,0.1)
+                                , numericInput("othermatrixBfrac1","Other Material B Mass Fraction", 0.0,  min = 0.0, max = 100,0.1)
                             , fluidRow(column(4, h5("Embodied Energy:")), column(1,textOutput("othermatrixBEnergyNum1"), align = "right"), column(1, "MJ/kg"))
                             
                           # Y/N use additional matrix materials
@@ -141,25 +173,22 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                                   , selectizeInput("OtherMatrixCInput1", label = "Choose Other Matrix Material",
                                              choices = NULL,  selected = "Not Used",  multiple = FALSE)
                             # mass frac 
-                                 , numericInput("othermatrixCfrac1","Other Material C Mass Fraction", 0.0,  min = 0.0, max = 1.0,0.1)
+                                 , numericInput("othermatrixCfrac1","Other Material C Mass Fraction", 0.0,  min = 0.0, max = 100,0.1)
                             , fluidRow(column(4, h5("Embodied Energy:")), column(1,textOutput("othermatrixCEnergyNum1"), align = "right"), column(1, "MJ/kg"))
                             
                           )))
                           
                           # Y/N use inserts
                           # Y/N use additional matrix materials
-                          , checkboxInput("insertsAUSERYN1", "Use Inserts?",FALSE)
                           , conditionalPanel(
                             condition = "input.insertsAUSERYN1 == true"
                             , selectizeInput("InsertsAInput1", label = "Choose Insert Type",
                                              choices = NULL,  selected = "Not Used",  multiple = FALSE,
                                              options = list(placeholder = 'Choose Insert     '))
                             # mass frac 
-                            , numericInput("insertsAfrac1","Insert Mass Fraction", 0.0,  min = 0.0, max = 1.0,0.1)
                             , fluidRow(column(4, h5("Embodied Energy:")), column(1,textOutput("insertsAEnergyNum1"), align = "right"), column(1, "MJ/kg"))
                             
                           # Y/N use additional matrix materials
-                          , checkboxInput("insertsBUSERYN1", "Use Additional Insert?",FALSE)
                           # WOULD LIKE TO ADD BOX TO choose additive/fiber/matrix AND LIMIT OTHERMATRIXC TO THAT TYPE
                           , conditionalPanel(
                             condition = "input.insertsBUSERYN1 == true"
@@ -167,7 +196,6 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                                              choices = NULL,  selected = "Not Used",  multiple = FALSE,
                                              options = list(placeholder = 'Choose Insert     '))
                             # mass frac 
-                            , numericInput("insertsBfrac1","Additional Insert Mass Fraction", 0.0,  min = 0.0, max = 1.0,0.1)
                             , fluidRow(column(4, h5("Embodied Energy:")), column(1,textOutput("insertsBEnergyNum1"), align = "right"), column(1, "MJ/kg"))
                             
                           ))
@@ -190,7 +218,7 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                                               choices = NULL,  selected = "",  multiple = FALSE,
                                               options = list(placeholder = 'Choose Matrix  '))
                              # mass frac 
-                             , numericInput("primatrixfrac2","Primary Matrix Mass Fraction", 0.0,  min = 0.0, max = 1.0,0.1)
+                             , numericInput("primatrixfrac2","Primary Matrix Mass Fraction", 0.0,  min = 0.0, max = 100,0.1)
                              , fluidRow(column(4, h5("Embodied Energy:")), column(1,textOutput("primatrixEnergyNum2"), align = "right"), column(1, "MJ/kg"))
                              
                              # Y/N use additional matrix materials
@@ -201,7 +229,7 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                                     , selectizeInput("OtherMatrixAInput2", label = "Choose Other Matrix Material",
                                                 choices = NULL,  selected = "Not Used",  multiple = FALSE)
                                # mass frac 
-                                   , numericInput("othermatrixAfrac2","Other Material A Mass Fraction", 0.0,  min = 0.0, max = 1.0,0.1)
+                                   , numericInput("othermatrixAfrac2","Other Material A Mass Fraction", 0.0,  min = 0.0, max = 100,0.1)
                                , fluidRow(column(4, h5("Embodied Energy:")), column(1,textOutput("othermatrixAEnergyNum2"), align = "right"), column(1, "MJ/kg"))
                                
                                # Y/N use additional matrix materials
@@ -212,7 +240,7 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                                          , selectizeInput("OtherMatrixBInput2", label = "Choose Other Matrix Material",
                                                   choices = NULL,  selected = "Not Used",  multiple = FALSE)
                                  # mass frac 
-                                        , numericInput("othermatrixBfrac2","Other Material B Mass Fraction", 0.0,  min = 0.0, max = 1.0,0.1)
+                                        , numericInput("othermatrixBfrac2","Other Material B Mass Fraction", 0.0,  min = 0.0, max = 100,0.1)
                                  , fluidRow(column(4, h5("Embodied Energy:")), column(1,textOutput("othermatrixBEnergyNum2"), align = "right"), column(1, "MJ/kg"))
                                  
                                  # Y/N use additional matrix materials
@@ -222,29 +250,25 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                                                condition = "input.othermatrixCUSERYN2 == true"
                                                , selectizeInput("OtherMatrixCInput2", label = "Choose Other Matrix Material",
                                                     choices = NULL,  selected = "Not Used",  multiple = FALSE)
-                                               , numericInput("othermatrixCfrac2","Other Material C Mass Fraction", 0.0,  min = 0.0, max = 1.0,0.1)
+                                               , numericInput("othermatrixCfrac2","Other Material C Mass Fraction", 0.0,  min = 0.0, max = 100,0.1)
                                                , fluidRow(column(4, h5("Embodied Energy:")), column(1,textOutput("othermatrixCEnergyNum2"), align = "right"), column(1, "MJ/kg"))
                                                
                                  )))
                              
                              # Y/N use inserts
-                             , checkboxInput("insertsAUSERYN2", "Use Inserts?",FALSE)
                              , conditionalPanel(
                                         condition = "input.insertsAUSERYN2 == true"
                                       , selectizeInput("InsertsAInput2", label = "Choose Insert Type",
                                                 choices = NULL,  selected = "Not Used",  multiple = FALSE,
                                                 options = list(placeholder = 'Choose Insert     '))
-                                      , numericInput("insertsAfrac2","Insert Mass Fraction", 0.0,  min = 0.0, max = 1.0,0.1)
                                       , fluidRow(column(4, h5("Embodied Energy:")), column(1,textOutput("insertsAEnergyNum2"), align = "right"), column(1, "MJ/kg"))
                                       
-                                      , checkboxInput("insertsBUSERYN2", "Use Additional Insert?",FALSE)
                                       , conditionalPanel(
                                           condition = "input.insertsBUSERYN2 == true"
                                             , selectizeInput("InsertsBInput2", label = "Choose Additional Insert Type",
                                                   choices = NULL,  selected = "Not Used",  multiple = FALSE,
                                                   options = list(placeholder = 'Choose Insert     '))
                                  # mass frac 
-                                         , numericInput("insertsBfrac2","Additional Insert Mass Fraction", 0.0,  min = 0.0, max = 1.0,0.1)
                                  , fluidRow(column(4, h5("Embodied Energy:")), column(1,textOutput("insertsBEnergyNum2"), align = "right"), column(1, "MJ/kg"))
                                  
                                ))
