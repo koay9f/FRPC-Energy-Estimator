@@ -8,7 +8,7 @@
 library(shiny)
 library(readr)
 library(plotly)
-#source("math.R")
+source("math.R")
 library(tidyverse)
 
 #Naming variables & data sheets ---- 
@@ -113,7 +113,7 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
   moldnamefetch2 <- eventReactive(input$moldingInput2, {
     moldnames[moldnames %in% input$moldingInput2]
   })
-  output$moldname2z <-output$moldname2c <- output$moldname2b <- output$moldname2a <- output$moldname2 <- renderText(moldnamefetch2())
+  output$moldname2e <-output$moldname2d <-output$moldname2c <- output$moldname2b <- output$moldname2a <- output$moldname2 <- renderText(moldnamefetch2())
   
   moldshortfetch2 <- eventReactive(input$moldingInput2, {
     moldshort[moldnames %in% input$moldingInput2]
@@ -130,13 +130,13 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
   moldfracfetch2 <- eventReactive(input$moldingInput2,{
     moldfrac[moldnames %in% input$moldingInput2]
   })
-  output$moldfracNum2z <-output$moldfracNum2 <- renderText(moldfracfetch2())
+  output$moldfracNum2z <-output$moldfracNum2y <-output$moldfracNum2 <- renderText(moldfracfetch2())
   
   # Associate Layup yield with mold type name
   moldyieldfetch2 <- eventReactive(input$moldingInput2,{
     moldyield[moldnames %in% input$moldingInput2]
   })
-  output$moldyieldNum2z <-output$moldyieldNum2 <- renderText(moldyieldfetch2())
+  output$output$moldyieldNum2z <-output$moldyieldNum2 <- renderText(moldyieldfetch2())
 
   # Fiber1 ----
   # Make List for Box
@@ -148,19 +148,19 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
   fibernamefetch1 <- eventReactive(input$fiberInput1, {
     fibernames[fibernames %in% input$fiberInput1]
   })
-  output$fibername1 <- renderText(fibernamefetch1())
+  output$fibername1e <- output$fibername1d  <- output$fibername1 <- renderText(fibernamefetch1())
   
   # Associate Energy value with fiber type name
   fiberenergyfetch1 <- eventReactive(input$fiberInput1, {
     fiberenergy[fibernames %in% input$fiberInput1]
   })
-  output$fiberEnergyNum1z <-output$fiberEnergyNum1 <- renderText(fiberenergyfetch1())
+  output$fiberEnergyNum1z <-output$fiberEnergyNum1e <-output$fiberEnergyNum1d <-output$fiberEnergyNum1 <- renderText(fiberenergyfetch1())
   
 
-  output$fiberfrac1<- renderText(fiberfetch(input$moldfracUSERYN1, input$moldfracNum1y, input$moldfracUSERNum))
+  output$f.f1 <-output$fiberfrac1e <- output$fiberfrac1d<-output$fiberfrac1<- renderText(fiberfetch(input$moldfracUSERYN1, input$moldfracNum1y, input$moldfracUSERNum1))
  
   
-   # Fiber2 ----
+  # Fiber2 ----
   # Make List for Box
   updateSelectizeInput(session, 'fiberInput2',
                        choices = fibernames,
@@ -176,7 +176,10 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
   fiberenergyfetch2 <- eventReactive(input$fiberInput2, {
     fiberenergy[fibernames %in% input$fiberInput2]
   })
-  output$fiberEnergyNum2z <-output$fiberEnergyNum2 <- renderText(fiberenergyfetch2())
+  output$fiberEnergyNum2z <-output$fiberEnergyNum2e <-output$fiberEnergyNum2d <-output$fiberEnergyNum2 <- renderText(fiberenergyfetch2())
+  
+  output$f.f2 <-output$fiberfrac2e <- output$fiberfrac2d<-output$fiberfrac2<- renderText(fiberfetch(input$moldfracUSERYN2, input$moldfracNum2y, input$moldfracUSERNum2))
+  
   
   # Int1 ----
   
@@ -528,6 +531,15 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
     finishenergy[finishnames %in% input$finishInput2]
   })
   output$finishEnergyNum2z <-output$finishEnergyNum2 <- renderText(finishenergyfetch2())  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
   
   
