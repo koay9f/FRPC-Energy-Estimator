@@ -54,25 +54,17 @@ Data_mass_fxn <- function(mass, r.f.f, r.f.pm, r.f.ma, r.f.mb, r.f.mc, r.m.ia, r
 
 # Define which yields are being used ----
 # Layup - convert scrap --> yield; deside if default or user, reduce by amt of recycling
-yield_layup <- function(int_scrap_use_default, int_scrap_default_val, int_scrap_user_val, int_scrap_recycle_val) {
-  if (int_scrap_use_default){
-    yield_val <- yfs(int_scrap_default_val) + int_scrap_recycle_val * int_scrap_default_val
-  } else {
+yield_layup <- function(int_scrap_user_val, int_scrap_recycle_val) {
     yield_val <- yfs(int_scrap_user_val) + int_scrap_recycle_val * int_scrap_user_val
-  }
-  yield_val
+    yield_val
 }
 
 
 
 # Mold - deside if default or user, reduce by amt of recycling
-yield_mold <- function(mold_yield_use_default, mold_yield_default_val, mold_yield_user_val, mold_yield_recycle_val) {
-  if (mold_yield_use_default){
-    yield_val <- mold_yield_default_val + mold_yield_recycle_val * yfs(mold_yield_default_val)
-  } else {
-    yield_val <- mold_yield_user_val + mold_yield_recycle_val * yfs(mold_yield_user_val)
-  }
-  yield_val
+yield_mold <- function( mold_yield_user_val, mold_yield_recycle_val) {
+      yield_val <- mold_yield_user_val + mold_yield_recycle_val * yfs(mold_yield_user_val)
+    yield_val
 }
 
 

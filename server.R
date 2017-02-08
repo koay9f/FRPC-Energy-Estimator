@@ -64,11 +64,9 @@ shinyServer(function(input, output, session) {
   output$partname1e <- output$partname1d <- output$partname1c <- output$partname1b <- output$partname1a <- output$partname1 <- renderText({paste("Part Name:",input$name1)})
   output$partweight1e <- output$partweight1d <- output$partweight1c <- output$partweight1b <- output$partweight1a <- output$partweight1 <- renderText({paste("Part Weight:",input$finalweight1, "kg")})
   
-  finalweight1 <- reactive({input$finalweight1})
   
   output$partname2e <-output$partname2d <-output$partname2c <-output$partname2b <-output$partname2a <- output$partname2 <- renderText({paste("Part Name:",input$name2)})
   output$partweight2e <- output$partweight2d <- output$partweight2c <- output$partweight2b <- output$partweight2a <- output$partweight2 <- renderText({paste("Part Weight:",input$finalweight2, "kg")})
-  finalweight2 <- reactive({input$finalweight2})
   
   
   # Mold1 ----
@@ -548,20 +546,21 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
   
  
   # User Input --> variables ----
-  #Scrap & yield
-  int_scrap_val1z <- reactive(input$intscrapUSERNum1)
-  int_scrap_val1z <- reactive(input$intscrapUSERNum1)
-  mold_yield_val1z <- reactive(input$moldyieldUSERNum1)
-  mold_yield_val1z <- reactive(input$moldyieldUSERNum2)
-  fin_scrap_val1z <- reactive(input$finishscrap1)
-  fin_scrap_val1z <- reactive(input$finishscrap2)
+  #Yield
   
+
+  layup_yield_val1 <- reactive(yield_layup(input$intscrapUSERNum1,input$intscraprecycle1))
+  layup_yield_val2 <- reactive(yield_layup(input$intscrapUSERNum2,input$intscraprecycle2))
+  mold_yield_val1 <- reactive(yield_mold(input$moldyieldUSERNum1, input$moldyieldrecycle1))
+  mold_yield_val2 <- reactive(yield_mold(input$moldyieldUSERNum2, input$moldyieldrecycle2))
+  finish_yield_val1 <- reactive(yield_finish(input$finishscrap1, input$finishscraprecycle1))
+  finish_yield_val2 <- reactive(yield_finish(input$finishscrap2, input$finishscraprecycle2))
   
-  
-  int_yield_val1 <- yfs(int_scrap_val1z)
   
   
   #mass fracs
+  finalweight1 <- reactive({input$finalweight1})
+  
   raw.f.f1 <- reactive({input$moldfracUSERNum1})
   raw.f.pm1 <- reactive({input$primatrixfrac1})
   raw.f.ma1 <- reactive({input$othermatrixAfrac1})
@@ -570,13 +569,46 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
   m.ia1 <- reactive({input$insertsAfrac1})
   m.ib1 <- reactive({input$insertsBfrac1})
   
-  raw.f.f1 <- reactive({input$moldfracUSERNum2})
+  finalweight2 <- reactive({input$finalweight2})
+  raw.f.f2 <- reactive({input$moldfracUSERNum2})
   raw.f.pm2 <- reactive({input$primatrixfrac2})
   raw.f.ma2 <- reactive({input$othermatrixAfrac2})
   raw.f.mb2 <- reactive({input$othermatrixBfrac2})
   raw.f.mc2 <- reactive({input$othermatrixCfrac2})
   m.ia2 <- reactive({input$insertsAfrac2})
   m.ib2 <- reactive({input$insertsBfrac2})
+  
+  #fraccheck1 <- sum(raw.f.f1,raw.f.pm1, raw.f.ma1, raw.f.mb1, raw.f.mc1)
+  #fraccheck1 <- sum(raw.f.f2,raw.f.pm2, raw.f.ma2, raw.f.mb2, raw.f.mc2)
+  
+  f.f1 <- reactive(newmassfrac_fxn(raw.f.f1, finalweight1, m.ia1, m.iab))
+  output$testff <- renderText(m.ia1())
+  
+  
+  #f.f1 <- raw.f.f1*(partweight1z - m.ia1 - m.ib1) / partweight1z
+  #f.f2 <- raw.f.f2*(partweight2z - m.ia2 - m.ib2) / partweight2z
+  
+  #f.pm1 <- raw.f.pm1*(partweight1z - m.ia1 - m.ib1) / partweight1z
+  #f.ma1 <- raw.fma1*(partweight1z - m.ia1 - m.ib1) / partweight1z
+  #f.mb1 <- raw.fmb1*(partweight1z - m.ia1 - m.ib1) / partweight1z
+  #f.mc1 <- raw.fmc1*(partweight1z - m.ia1 - m.ib1) / partweight1z
+  
+  #f.pm1 <- raw.f.pm2*(partweight2z - m.ia2 - m.ib2) / partweight2z
+  #f.ma2 <- raw.fma2*(partweight2z - m.ia2 - m.ib2) / partweight2z
+  #f.mb2 <- raw.fmb2*(partweight2z - m.ia2 - m.ib2) / partweight2z
+  #f.mc2 <- raw.fmc2*(partweight2z - m.ia2 - m.ib2) / partweight2z
+  
+  #f.ia1 <- m.ia1 / partweight1z
+  #f.ib1 <- m.ib1 / partweight1z
+  #f.ia2 <- m.ia2 / partweight2z
+  #f.ib2 <- m.ib2 / partweight2z
+  
+  
+  
+  
+  
+  
+  
   
   
   # Change user values to default ----
@@ -598,30 +630,6 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
     
   })
  
-  
-  #fraccheck1 <- sum(raw.f.f1,raw.f.pm1, raw.f.ma1, raw.f.mb1, raw.f.mc1)
-  #fraccheck1 <- sum(raw.f.f2,raw.f.pm2, raw.f.ma2, raw.f.mb2, raw.f.mc2)
- 
-  #f.f1 <- newmassfrac_fxn(raw.f.f1, partweight1z, m.ia1, m.iab)
-  
-  
-  #f.f1 <- raw.f.f1*(partweight1z - m.ia1 - m.ib1) / partweight1z
-  #f.f2 <- raw.f.f2*(partweight2z - m.ia2 - m.ib2) / partweight2z
-  
-  #f.pm1 <- raw.f.pm1*(partweight1z - m.ia1 - m.ib1) / partweight1z
-  #f.ma1 <- raw.fma1*(partweight1z - m.ia1 - m.ib1) / partweight1z
-  #f.mb1 <- raw.fmb1*(partweight1z - m.ia1 - m.ib1) / partweight1z
-  #f.mc1 <- raw.fmc1*(partweight1z - m.ia1 - m.ib1) / partweight1z
-  
-  #f.pm1 <- raw.f.pm2*(partweight2z - m.ia2 - m.ib2) / partweight2z
-  #f.ma2 <- raw.fma2*(partweight2z - m.ia2 - m.ib2) / partweight2z
-  #f.mb2 <- raw.fmb2*(partweight2z - m.ia2 - m.ib2) / partweight2z
-  #f.mc2 <- raw.fmc2*(partweight2z - m.ia2 - m.ib2) / partweight2z
-  
-  #f.ia1 <- m.ia1 / partweight1z
-  #f.ib1 <- m.ib1 / partweight1z
-  #f.ia2 <- m.ia2 / partweight2z
-  #f.ib2 <- m.ib2 / partweight2z
   
   
   

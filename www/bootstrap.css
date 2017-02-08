@@ -40,7 +40,7 @@ canvas,
 progress,
 video {
   display: inline-block;
-  vertical-align: baseline;
+  vertical-align: bottom;
 }
 audio:not([controls]) {
   display: none;
@@ -83,7 +83,7 @@ sup {
   font-size: 75%;
   line-height: 0;
   position: relative;
-  vertical-align: baseline;
+  vertical-align: bottom;
 }
 sup {
   top: -0.5em;
@@ -2668,7 +2668,7 @@ input[type="search"] {
   display: inline-block;
   padding-left: 20px;
   margin-bottom: 0;
-  vertical-align: middle;
+  vertical-align: baseline;
   font-weight: normal;
   cursor: pointer;
 }
@@ -2925,14 +2925,14 @@ select[multiple].input-lg {
   .form-inline .form-control {
     display: inline-block;
     width: auto;
-    vertical-align: middle;
+    vertical-align: bottom;
   }
   .form-inline .form-control-static {
     display: inline-block;
   }
   .form-inline .input-group {
     display: inline-table;
-    vertical-align: middle;
+    vertical-align: bottom;
   }
   .form-inline .input-group .input-group-addon,
   .form-inline .input-group .input-group-btn,
@@ -2944,14 +2944,14 @@ select[multiple].input-lg {
   }
   .form-inline .control-label {
     margin-bottom: 0;
-    vertical-align: middle;
+    vertical-align: bottom;
   }
   .form-inline .radio,
   .form-inline .checkbox {
     display: inline-block;
     margin-top: 0;
     margin-bottom: 0;
-    vertical-align: middle;
+    vertical-align: bottom;
   }
   .form-inline .radio label,
   .form-inline .checkbox label {
@@ -3009,7 +3009,7 @@ select[multiple].input-lg {
   margin-bottom: 0;
   font-weight: normal;
   text-align: center;
-  vertical-align: middle;
+  vertical-align: bottom;
   -ms-touch-action: manipulation;
       touch-action: manipulation;
   cursor: pointer;
@@ -3508,7 +3508,7 @@ tbody.collapse.in {
   width: 0;
   height: 0;
   margin-left: 2px;
-  vertical-align: middle;
+  vertical-align: bottom;
   border-top: 4px dashed;
   border-top: 4px solid \9;
   border-right: 4px solid transparent;
@@ -3650,7 +3650,7 @@ tbody.collapse.in {
 .btn-group-vertical {
   position: relative;
   display: inline-block;
-  vertical-align: middle;
+  vertical-align: bottom;
 }
 .btn-group > .btn,
 .btn-group-vertical > .btn {
@@ -3897,7 +3897,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .input-group-btn {
   width: 1%;
   white-space: nowrap;
-  vertical-align: middle;
+  vertical-align: bottom;
 }
 .input-group-addon {
   padding: 8px 12px;
@@ -4383,19 +4383,19 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   .navbar-form .form-group {
     display: inline-block;
     margin-bottom: 0;
-    vertical-align: middle;
+    vertical-align: bottom;
   }
   .navbar-form .form-control {
     display: inline-block;
     width: auto;
-    vertical-align: middle;
+    vertical-align: bottom;
   }
   .navbar-form .form-control-static {
     display: inline-block;
   }
   .navbar-form .input-group {
     display: inline-table;
-    vertical-align: middle;
+    vertical-align: bottom;
   }
   .navbar-form .input-group .input-group-addon,
   .navbar-form .input-group .input-group-btn,
@@ -4407,14 +4407,14 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   }
   .navbar-form .control-label {
     margin-bottom: 0;
-    vertical-align: middle;
+    vertical-align: bottom;
   }
   .navbar-form .radio,
   .navbar-form .checkbox {
     display: inline-block;
     margin-top: 0;
     margin-bottom: 0;
-    vertical-align: middle;
+    vertical-align: bottom;
   }
   .navbar-form .radio label,
   .navbar-form .checkbox label {
@@ -4855,7 +4855,7 @@ fieldset[disabled] .navbar-inverse .btn-link:focus {
   color: #ffffff;
   text-align: center;
   white-space: nowrap;
-  vertical-align: baseline;
+  vertical-align: bottom;
   border-radius: .25em;
 }
 a.label:hover,
@@ -4921,7 +4921,7 @@ a.label:focus {
   font-weight: bold;
   color: #ffffff;
   line-height: 1;
-  vertical-align: middle;
+  vertical-align: bottom;
   white-space: nowrap;
   text-align: center;
   background-color: #4582ec;
@@ -5229,7 +5229,7 @@ a.thumbnail.active {
 .media-right,
 .media-body {
   display: table-cell;
-  vertical-align: top;
+  vertical-align: bottom;
 }
 .media-middle {
   vertical-align: middle;

@@ -380,11 +380,12 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                                  ),
                         # SummaryTab ----
                         tabPanel("Summary", h1("Summary"),
-                                 p("This is where users will be able to review all of the previous choices"),
+                                 p("This is where users will be able to review all of the previous choices")
+                                 , fluidRow(column(5, h5("check ")), column(1, textOutput("testff")))
                                  
                                  
                                  
-                                 tableOutput("table1")
+                                 #,tableOutput("table1")
                                  
                                  
                                  #End Tab
