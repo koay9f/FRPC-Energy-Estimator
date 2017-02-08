@@ -2,13 +2,6 @@ library(tidyverse)
 
 # ADDITIONAL BACKGROUND FUNCTIONS
 
-fiberfetch <- function(USERYN, FFA, FFB){
-  ff <- if(USERYN) {
-    FFA
-  }else FFB
-  
-  ff
-  }
 
 
 
@@ -18,6 +11,45 @@ newmassfrac_fxn <- function(oldfrac, weight, inserta, insertb){
   newfrac <- oldfrac*(weight - inserta - insertb)/weight
   newfrac
 }
+
+
+
+Data_mass_fxn <- function(mass, r.f.f, r.f.pm, r.f.ma, r.f.mb, r.f.mc, r.m.ia, r.m.ib){
+  massfrac.df <- data_frame(
+    vari.name = c("fiber","pm", "ma", "mb", "mc"),
+    raw.value = c(r.f.f, r.f.pm, r.f.ma, r.f.mb, r.f.mc)
+  )
+    
+  insertmass.df <- data_frame(
+    vari.name = c("ia","ib"),
+    raw.value = c(r.m.ia, r.m.ib)
+    )  
+
+ 
+ calc.mass.frac.df <- bind_rows(massfrac.df, insertmass.df)
+  calc.mass.frac.df
+  
+  }
+  
+  
+  
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # Define which yields are being used ----
@@ -50,7 +82,7 @@ yield_finish <- function(fin_scrap_user_val, fin_scrap_recycle_val)  {
   yield_val
 }
 
-
+# BIGFUNCTION1 ----
 BIGFUNCTION1 <- function(
   finishyield1, moldyield1, layupyield1,
   finishyield2, moldyield2, layupyield2,
@@ -75,7 +107,7 @@ BIGFUNCTION1 <- function(
   massfracs2 <- massfracs(f.f2, f.pm2, f.ma2, f.mb2, f.mc2, f.ia2, f.ib2)
   
   
-  # prepreg yn
+  # prepreg yn ----
   prepregYN <- function(prepreg){
     YN <- if(prepreg) {
       1

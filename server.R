@@ -64,11 +64,11 @@ shinyServer(function(input, output, session) {
   output$partname1e <- output$partname1d <- output$partname1c <- output$partname1b <- output$partname1a <- output$partname1 <- renderText({paste("Part Name:",input$name1)})
   output$partweight1e <- output$partweight1d <- output$partweight1c <- output$partweight1b <- output$partweight1a <- output$partweight1 <- renderText({paste("Part Weight:",input$finalweight1, "kg")})
   
-  partweight1z <- renderText(input$finalweight1)
+  finalweight1 <- reactive({input$finalweight1})
   
   output$partname2e <-output$partname2d <-output$partname2c <-output$partname2b <-output$partname2a <- output$partname2 <- renderText({paste("Part Name:",input$name2)})
   output$partweight2e <- output$partweight2d <- output$partweight2c <- output$partweight2b <- output$partweight2a <- output$partweight2 <- renderText({paste("Part Weight:",input$finalweight2, "kg")})
-  partweight2z <- renderText(input$finalweight2)
+  finalweight2 <- reactive({input$finalweight2})
   
   
   # Mold1 ----
@@ -164,8 +164,7 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
   output$fiberEnergyNum1z <-output$fiberEnergyNum1e <-output$fiberEnergyNum1d <-output$fiberEnergyNum1 <- renderText(fiberenergyfetch1())
   
 
-  output$fiberfrac1<- renderText(fiberfetch(input$moldfracUSERYN1, moldfracfetch1(), input$moldfracUSERNum1))
-  raw.f.f1 <-output$fiberfrac1e <- output$fiberfrac1d<-renderText(fiberfetch(input$moldfracUSERYN1, moldfracNum1y, input$moldfracUSERNum1))
+  output$fiberfrac1z <-output$fiberfrac1e <-output$fiberfrac1d <-output$fiberfrac1b <- renderText(input$moldfracUSERNum1)
   
   # Fiber2 ----
   # Make List for Box
@@ -185,8 +184,7 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
   })
   output$fiberEnergyNum2z <-output$fiberEnergyNum2e <-output$fiberEnergyNum2d <-output$fiberEnergyNum2 <- renderText(fiberenergyfetch2())
   
-  output$fiberfrac2<- renderText(fiberfetch(input$moldfracUSERYN2, moldfracfetch2(), input$moldfracUSERNum2))
-  raw.f.f2 <-output$fiberfrac2e <- output$fiberfrac2d<- renderText(fiberfetch(input$moldfracUSERYN2, input$moldfracNum2y, input$moldfracUSERNum2))
+  output$fiberfrac2z <-output$fiberfrac2e <-output$fiberfrac2d <-output$fiberfrac2b <- renderText(input$moldfracUSERNum2)
   
   # Int1 ----
   
@@ -217,6 +215,7 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
     intprepreg[intnames %in% input$intInput1]
   })
   output$intprepregYN1z <-renderText(intenergyfetch1())
+  
   
   # Int2 ----
   
@@ -547,38 +546,63 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
   
   
   
-  # Yields & Scrap ----
-  output$moldyield1 <-output$actmoldyield1e <- output$actmoldyield1d<-output$actmoldyield1<- renderText(yield_mold(input$moldyieldUSERYN1, input$moldyieldNum1z , input$moldyieldUSERNum1, input$moldyieldrecycle1))
-  output$moldyield2 <-output$actmoldyield2e <- output$actmoldyield2d<-output$actmoldyield2<- renderText(yield_mold(input$moldyieldUSERYN2, input$moldyieldNum2z , input$moldyieldUSERNum2, input$moldyieldrecycle2))
-  
-  output$layupyield1 <- output$actlayupyield1d <- renderText(yield_layup(input$intscrapUSERYN1, input$intscrapNum1z, input$intscrapUSERNum1, input$intscraprecycle1))
-  output$layupyield2 <- output$actlayupyield2d <- renderText(yield_layup(input$intscrapUSERYN2, input$intscrapNum2z, input$intscrapUSERNum2, input$intscraprecycle2))
-  
-  
-  output$finishyield1 <-  output$actfinyield1d <- renderText(yield_finish(input$finishscrap1, input$finishscraprecycle1))
-  output$finishyield2 <-  output$actfinyield2d <- renderText(yield_finish(input$finishscrap2, input$finishscraprecycle2))
-  
+ 
   # User Input --> variables ----
-  raw.f.pm1 <- renderText(input$primatrixfrac1)
-  raw.f.ma1 <- renderText(input$othermatrixAfrac1)
-  raw.f.mb1 <- renderText(input$othermatrixBfrac1)
-  raw.f.mc1 <- renderText(input$othermatrixCfrac1)
+  #Scrap & yield
+  int_scrap_val1z <- reactive(input$intscrapUSERNum1)
+  int_scrap_val1z <- reactive(input$intscrapUSERNum1)
+  mold_yield_val1z <- reactive(input$moldyieldUSERNum1)
+  mold_yield_val1z <- reactive(input$moldyieldUSERNum2)
+  fin_scrap_val1z <- reactive(input$finishscrap1)
+  fin_scrap_val1z <- reactive(input$finishscrap2)
   
-  raw.f.pm2 <- renderText(input$primatrixfrac2)
-  raw.f.ma2 <- renderText(input$othermatrixAfrac2)
-  raw.f.mb2 <- renderText(input$othermatrixBfrac2)
-  raw.f.mc2 <- renderText(input$othermatrixCfrac2)
   
-  m.ia1 <- renderText(input$insertsAfrac1)
-  m.ib1 <- renderText(input$insertsBfrac1)
-  m.ia2 <- renderText(input$insertsAfrac2)
-  m.ib2 <- renderText(input$insertsBfrac2)
   
+  int_yield_val1 <- yfs(int_scrap_val1z)
+  
+  
+  #mass fracs
+  raw.f.f1 <- reactive({input$moldfracUSERNum1})
+  raw.f.pm1 <- reactive({input$primatrixfrac1})
+  raw.f.ma1 <- reactive({input$othermatrixAfrac1})
+  raw.f.mb1 <- reactive({input$othermatrixBfrac1})
+  raw.f.mc1 <- reactive({input$othermatrixCfrac1})
+  m.ia1 <- reactive({input$insertsAfrac1})
+  m.ib1 <- reactive({input$insertsBfrac1})
+  
+  raw.f.f1 <- reactive({input$moldfracUSERNum2})
+  raw.f.pm2 <- reactive({input$primatrixfrac2})
+  raw.f.ma2 <- reactive({input$othermatrixAfrac2})
+  raw.f.mb2 <- reactive({input$othermatrixBfrac2})
+  raw.f.mc2 <- reactive({input$othermatrixCfrac2})
+  m.ia2 <- reactive({input$insertsAfrac2})
+  m.ib2 <- reactive({input$insertsBfrac2})
+  
+  
+  # Change user values to default ----
+  observe({
+    ff1 <- moldfracfetch1()
+    ff2 <- moldfracfetch2()
+    ints1 <-  intscrapfetch1()
+    ints2 <-  intscrapfetch2()
+    moldy1 <-  moldyieldfetch1()
+    moldy2 <-  moldyieldfetch2()
+    
+    
+    updateNumericInput(session, "moldfracUSERNum1", value = ff1)
+    updateNumericInput(session, "moldfracUSERNum2", value = ff2)
+    updateNumericInput(session, "intscrapUSERNum1", value = ints1)
+    updateNumericInput(session, "intscrapUSERNum2", value = ints2)
+    updateNumericInput(session, "moldyieldUSERNum1", value = moldy1)
+    updateNumericInput(session, "moldyieldUSERNum2", value = moldy2)
+    
+  })
+ 
   
   #fraccheck1 <- sum(raw.f.f1,raw.f.pm1, raw.f.ma1, raw.f.mb1, raw.f.mc1)
   #fraccheck1 <- sum(raw.f.f2,raw.f.pm2, raw.f.ma2, raw.f.mb2, raw.f.mc2)
  
-  f.f1 <- newmassfrac_fxn(raw.f.f1, partweight1z, m.ia1, m.iab)
+  #f.f1 <- newmassfrac_fxn(raw.f.f1, partweight1z, m.ia1, m.iab)
   
   
   #f.f1 <- raw.f.f1*(partweight1z - m.ia1 - m.ib1) / partweight1z
