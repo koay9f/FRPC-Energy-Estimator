@@ -292,8 +292,8 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                                                      choices = NULL,  selected = "",  multiple = FALSE,
                                                      options = list(placeholder = 'Choose Fiber Intermediate     '))
                                     , fluidRow(column(4, h5("Embodied Energy:")), column(1,textOutput("intEnergyNum1"), align = "right"), column(1, "MJ/kg"))
-                                    , fluidRow(column(5, h5("Default Layup Scrap Rate: ")), column(1, textOutput("intscrapNum1")))
-                                    , numericInput("intscrapUSERNum1","User defined layup scrap", 0.0,  min = 0.0, max = 1.0,0.1)
+                                    , fluidRow(column(4, h5("Default Layup Scrap Rate: ")), column(2, textOutput("intscrapNum1")))
+                                    , numericInput("intscrapUSERNum1","Layup Scrap Rate", 0.0,  min = 0.0, max = 1.0,0.1)
                                     ,numericInput("intscraprecycle1",p("Layup Recycle Rate", span( h6("(% scrap that is recycled)"))), 0.0,  min = 0.0, max = 1.0,0.1)
                              )    
                              #TechSet2
@@ -305,8 +305,8 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                                                        choices = NULL,  selected = "",  multiple = FALSE,
                                                        options = list(placeholder = 'Choose Fiber Intermediate     '))
                                       , fluidRow(column(4, h5("Embodied Energy:")), column (1,textOutput("intEnergyNum2"), align = "right"), column(1, "MJ/kg") )
-                                      , fluidRow(column(4, h5("Default Layup Scrap Rate: ")), column(1, textOutput("intscrapNum2")))
-                                      , numericInput("intscrapUSERNum2","User defined layup scrap", 0.0,  min = 0.0, max = 1.0,0.1)
+                                      , fluidRow(column(4, h5("Default Layup Scrap Rate: ")), column(2, textOutput("intscrapNum2")))
+                                      , numericInput("intscrapUSERNum2","Layup Scrap Rate", 0.0,  min = 0.0, max = 1.0,0.1)
                                       ,  numericInput("intscraprecycle2",p("Layup Recycle Rate", span( h6("(% scrap that is recycled)"))), 0.0,  min = 0.0, max = 1.0,0.1)
                              ))
                            #END TAB
@@ -328,7 +328,7 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                                    #Molding Stuff
                                    #molding yield
                                    , fluidRow(column(5, h5("Default Molding Yield: ")), column(1, textOutput("moldyieldNum1")))
-                                   , numericInput("moldyieldUSERNum1","User defined molding yield", 0.0,  min = 0.0, max = 1.0,0.1)
+                                   , numericInput("moldyieldUSERNum1","Molding Yield", 0.0,  min = 0.0, max = 1.0,0.1)
                                    , numericInput("moldyieldrecycle1",p("Molding Recycle Rate", span( h6("(% scrap that is recycled)"))), 0.0,  min = 0.0, max = 1.0,0.1)
                                   
                                    #curing tech & energy
@@ -356,8 +356,8 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                                    #molding yield
                                    , fluidRow(
                                      column(5, h5("Default Molding Yield: ")), column(1, textOutput("moldyieldNum2")))
-                                   , numericInput("moldyieldUSERNum2","User defined molding yield", 0.0,  min = 0.0, max = 1.0,0.1)
-                                   , numericInput("moldyieldrecycle2",p("Finish Recycle Rate", span( h6("(% scrap that is recycled)"))), 0.0,  min = 0.0, max = 1.0,0.1)
+                                   , numericInput("moldyieldUSERNum2","Molding Yield", 0.0,  min = 0.0, max = 1.0,0.1)
+                                   , numericInput("moldyieldrecycle2",p("Molding Recycle Rate", span( h6("(% scrap that is recycled)"))), 0.0,  min = 0.0, max = 1.0,0.1)
                                   
                                     #curing tech & energy
                                    , selectizeInput("cureInput2", label = "Curing Technology Options",
@@ -381,11 +381,13 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                         # SummaryTab ----
                         tabPanel("Summary", h1("Summary"),
                                  p("This is where users will be able to review all of the previous choices")
-                                 , fluidRow(column(5, h5("check ")), column(1, textOutput("testff")))
+                                 , fluidRow(column(5, h5("check val")), column(1, textOutput("testff")))
                                  
+                                 , fluidRow(column(5, h5("check class")), column(1, textOutput("testclass")))
                                  
+                                 , fluidRow(column(5, h5("check ")), column(1, textOutput("testyield")))
                                  
-                                 #,tableOutput("table1")
+                                 ,tableOutput("table1")
                                  
                                  
                                  #End Tab
@@ -393,7 +395,10 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                   
                         # ResultsTab ---- 
                         tabPanel("Results", h1("Results"),
-                                 p("This is where users will be able to graphically compare the two technology pathways"))
+                                 p("This is where users will be able to graphically compare the two technology pathways")
+                                  ,tableOutput("table2")
+                        )
+                  
                         
                         # End ----
                         ))

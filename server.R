@@ -92,7 +92,7 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
   moldenergyfetch1 <- eventReactive(input$moldingInput1, {
     moldenergy[moldnames %in% input$moldingInput1]
   })
-  output$EnergyNum1z <-output$EnergyNum1 <- renderText(moldenergyfetch1())
+  output$EnergyNum1 <- renderText(moldenergyfetch1())
 
   # Associate Fiber Frac value with mold type name
   moldfracfetch1 <- eventReactive(input$moldingInput1,{
@@ -129,7 +129,7 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
   moldenergyfetch2 <- eventReactive(input$moldingInput2, {
     moldenergy[moldnames %in% input$moldingInput2]
   })
-  output$EnergyNum2z <- output$EnergyNum2 <- renderText(moldenergyfetch2())
+  output$EnergyNum2 <- renderText(moldenergyfetch2())
   # Associate Fiber Frac value with mold type name
   moldfracfetch2 <- eventReactive(input$moldingInput2,{
     moldfrac[moldnames %in% input$moldingInput2]
@@ -159,7 +159,7 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
   fiberenergyfetch1 <- eventReactive(input$fiberInput1, {
     fiberenergy[fibernames %in% input$fiberInput1]
   })
-  output$fiberEnergyNum1z <-output$fiberEnergyNum1e <-output$fiberEnergyNum1d <-output$fiberEnergyNum1 <- renderText(fiberenergyfetch1())
+  output$fiberEnergyNum1e <-output$fiberEnergyNum1d <-output$fiberEnergyNum1 <- renderText(fiberenergyfetch1())
   
 
   output$fiberfrac1z <-output$fiberfrac1e <-output$fiberfrac1d <-output$fiberfrac1b <- renderText(input$moldfracUSERNum1)
@@ -180,7 +180,7 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
   fiberenergyfetch2 <- eventReactive(input$fiberInput2, {
     fiberenergy[fibernames %in% input$fiberInput2]
   })
-  output$fiberEnergyNum2z <-output$fiberEnergyNum2e <-output$fiberEnergyNum2d <-output$fiberEnergyNum2 <- renderText(fiberenergyfetch2())
+  output$fiberEnergyNum2e <-output$fiberEnergyNum2d <-output$fiberEnergyNum2 <- renderText(fiberenergyfetch2())
   
   output$fiberfrac2z <-output$fiberfrac2e <-output$fiberfrac2d <-output$fiberfrac2b <- renderText(input$moldfracUSERNum2)
   
@@ -201,7 +201,7 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
   intenergyfetch1 <- eventReactive(input$intInput1, {
     intenergy[intnames %in% input$intInput1]
   })
-  output$intEnergyNum1z <-output$intEnergyNum1 <- renderText(intenergyfetch1())
+  output$intEnergyNum1 <- renderText(intenergyfetch1())
   
   # Associate layup scrap with int type name
   intscrapfetch1 <- eventReactive(input$intInput1,{
@@ -212,7 +212,7 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
   intprepregfetch1 <- eventReactive(input$intInput1, {
     intprepreg[intnames %in% input$intInput1]
   })
-  output$intprepregYN1z <-renderText(intenergyfetch1())
+  int.prepregYN1 <-renderText(intprepregfetch1())
   
   
   # Int2 ----
@@ -232,7 +232,7 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
   intenergyfetch2 <- eventReactive(input$intInput2, {
     intenergy[intnames %in% input$intInput2]
   })
-  output$intEnergyNum2z <-output$intEnergyNum2 <- renderText(intenergyfetch2())
+  output$intEnergyNum2 <- renderText(intenergyfetch2())
   
   # Associate layup scrap with int type name
   intscrapfetch2 <- eventReactive(input$intInput2,{
@@ -243,7 +243,7 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
   intprepregfetch2 <- eventReactive(input$intInput2, {
     intprepreg[intnames %in% input$intInput2]
   })
-  output$intprepregYN2z <-renderText(intenergyfetch2())
+  int.prepregYN2 <-renderText(intprepregfetch2())
   
   # Matrix1 ----
   
@@ -261,7 +261,7 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
   primatrixenergyfetch1 <- eventReactive(input$PriMatrixInput1, {
     matrixenergy[matrixnames %in% input$PriMatrixInput1]
   })
-  output$primatrixEnergyNum1z <-output$primatrixEnergyNum1 <- renderText(primatrixenergyfetch1())
+  output$primatrixEnergyNum1 <- renderText(primatrixenergyfetch1())
   
   # OtherMat1 ----
   
@@ -280,7 +280,7 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
   othermatrixAenergyfetch1 <- eventReactive(input$OtherMatrixAInput1, {
     matrixenergy[matrixnames %in% input$OtherMatrixAInput1]
   })
-  output$othermatrixAEnergyNum1z <-output$othermatrixAEnergyNum1 <- renderText(othermatrixAenergyfetch1())
+  output$othermatrixAEnergyNum1 <- renderText(othermatrixAenergyfetch1())
   
   ####B
   
@@ -298,7 +298,7 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
   othermatrixBenergyfetch1 <- eventReactive(input$OtherMatrixBInput1, {
     matrixenergy[matrixnames %in% input$OtherMatrixBInput1]
   })
-  output$othermatrixBEnergyNum1z <-output$othermatrixBEnergyNum1 <- renderText(othermatrixBenergyfetch1())
+  output$othermatrixBEnergyNum1 <- renderText(othermatrixBenergyfetch1())
   
   ####C
   
@@ -316,7 +316,7 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
   othermatrixCenergyfetch1 <- eventReactive(input$OtherMatrixCInput1, {
     matrixenergy[matrixnames %in% input$OtherMatrixCInput1]
   })
-  output$othermatrixCEnergyNum1z <-output$othermatrixCEnergyNum1 <- renderText(othermatrixCenergyfetch1())
+  output$othermatrixCEnergyNum1 <- renderText(othermatrixCenergyfetch1())
   
   ###InsertsA
   updateSelectizeInput(session, 'InsertsAInput1',
@@ -333,7 +333,7 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
   insertsAenergyfetch1 <- eventReactive(input$InsertsAInput1, {
     matrixenergy[matrixnames %in% input$InsertsAInput1]
   })
-  output$insertsAEnergyNum1z <-output$insertsAEnergyNum1 <- renderText(insertsAenergyfetch1())
+  output$insertsAEnergyNum1 <- renderText(insertsAenergyfetch1())
   
   ####InsertsB
   
@@ -351,7 +351,7 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
   insertsBenergyfetch1 <- eventReactive(input$InsertsBInput1, {
     matrixenergy[matrixnames %in% input$InsertsBInput1]
   })
-  output$othermatrixBEnergyNum1z <-output$insertsBEnergyNum1 <- renderText(insertsBenergyfetch1())
+  output$insertsBEnergyNum1 <- renderText(insertsBenergyfetch1())
   
   # Matrix2 ----
   
@@ -369,7 +369,7 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
   primatrixenergyfetch2 <- eventReactive(input$PriMatrixInput2, {
     matrixenergy[matrixnames %in% input$PriMatrixInput2]
   })
-  output$primatrixEnergyNum2z <-output$primatrixEnergyNum2 <- renderText(primatrixenergyfetch2())
+ output$primatrixEnergyNum2 <- renderText(primatrixenergyfetch2())
   
   # OtherMat2 ----
   
@@ -388,7 +388,7 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
   othermatrixAenergyfetch2 <- eventReactive(input$OtherMatrixAInput2, {
     matrixenergy[matrixnames %in% input$OtherMatrixAInput2]
   })
-  output$othermatrixAEnergyNum2z <-output$othermatrixAEnergyNum2 <- renderText(othermatrixAenergyfetch2())
+  output$othermatrixAEnergyNum2 <- renderText(othermatrixAenergyfetch2())
   
   ####B
   
@@ -406,7 +406,7 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
   othermatrixBenergyfetch2 <- eventReactive(input$OtherMatrixBInput2, {
     matrixenergy[matrixnames %in% input$OtherMatrixBInput2]
   })
-  output$othermatrixBEnergyNum2z <-output$othermatrixBEnergyNum2 <- renderText(othermatrixBenergyfetch2())
+  output$othermatrixBEnergyNum2 <- renderText(othermatrixBenergyfetch2())
   
   ####C
   
@@ -424,7 +424,7 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
   othermatrixCenergyfetch2 <- eventReactive(input$OtherMatrixCInput2, {
     matrixenergy[matrixnames %in% input$OtherMatrixCInput2]
   })
-  output$othermatrixCEnergyNum2z <-output$othermatrixCEnergyNum2 <- renderText(othermatrixCenergyfetch2())
+  output$othermatrixCEnergyNum2 <- renderText(othermatrixCenergyfetch2())
   
   ###InsertsA
   updateSelectizeInput(session, 'InsertsAInput2',
@@ -441,7 +441,7 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
   insertsAenergyfetch2 <- eventReactive(input$InsertsAInput2, {
     matrixenergy[matrixnames %in% input$InsertsAInput2]
   })
-  output$insertsAEnergyNum2z <-output$insertsAEnergyNum2 <- renderText(insertsAenergyfetch2())
+  output$insertsAEnergyNum2 <- renderText(insertsAenergyfetch2())
   
   ####InsertsB
   
@@ -459,7 +459,7 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
   insertsBenergyfetch2 <- eventReactive(input$InsertsBInput2, {
     matrixenergy[matrixnames %in% input$InsertsBInput2]
   })
-  output$othermatrixBEnergyNum2z <-output$insertsBEnergyNum2 <- renderText(insertsBenergyfetch2())
+  output$insertsBEnergyNum2 <- renderText(insertsBenergyfetch2())
   
   # Cure1 ----
   # Make List for Box
@@ -478,7 +478,7 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
   cureenergyfetch1 <- eventReactive(input$cureInput1, {
     cureenergy[curenames %in% input$cureInput1]
   })
-  output$cureEnergyNum1z <-output$cureEnergyNum1 <- renderText(cureenergyfetch1())
+  output$cureEnergyNum1 <- renderText(cureenergyfetch1())
   
   # Cure2 ----
   # Make List for Box
@@ -496,7 +496,7 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
   cureenergyfetch2 <- eventReactive(input$cureInput2, {
     cureenergy[curenames %in% input$cureInput2]
   })
-  output$cureEnergyNum2z <-output$cureEnergyNum2 <- renderText(cureenergyfetch2())  
+  output$cureEnergyNum2 <- renderText(cureenergyfetch2())  
   
   # Finish1 ----
   # Make List for Box
@@ -514,7 +514,7 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
   finishenergyfetch1 <- eventReactive(input$finishInput1, {
     finishenergy[finishnames %in% input$finishInput1]
   })
-  output$finishEnergyNum1z <-output$finishEnergyNum1 <- renderText(finishenergyfetch1())  
+  output$finishEnergyNum1 <- renderText(finishenergyfetch1())  
   
   
   
@@ -534,81 +534,7 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
   finishenergyfetch2 <- eventReactive(input$finishInput2, {
     finishenergy[finishnames %in% input$finishInput2]
   })
-  output$finishEnergyNum2z <-output$finishEnergyNum2 <- renderText(finishenergyfetch2())  
-  
-  
-  
-  
-  
-  
-  
-  
-  
- 
-  # User Input --> variables ----
-  #Yield
-  
-
-  layup_yield_val1 <- reactive(yield_layup(input$intscrapUSERNum1,input$intscraprecycle1))
-  layup_yield_val2 <- reactive(yield_layup(input$intscrapUSERNum2,input$intscraprecycle2))
-  mold_yield_val1 <- reactive(yield_mold(input$moldyieldUSERNum1, input$moldyieldrecycle1))
-  mold_yield_val2 <- reactive(yield_mold(input$moldyieldUSERNum2, input$moldyieldrecycle2))
-  finish_yield_val1 <- reactive(yield_finish(input$finishscrap1, input$finishscraprecycle1))
-  finish_yield_val2 <- reactive(yield_finish(input$finishscrap2, input$finishscraprecycle2))
-  
-  
-  
-  #mass fracs
-  finalweight1 <- reactive({input$finalweight1})
-  
-  raw.f.f1 <- reactive({input$moldfracUSERNum1})
-  raw.f.pm1 <- reactive({input$primatrixfrac1})
-  raw.f.ma1 <- reactive({input$othermatrixAfrac1})
-  raw.f.mb1 <- reactive({input$othermatrixBfrac1})
-  raw.f.mc1 <- reactive({input$othermatrixCfrac1})
-  m.ia1 <- reactive({input$insertsAfrac1})
-  m.ib1 <- reactive({input$insertsBfrac1})
-  
-  finalweight2 <- reactive({input$finalweight2})
-  raw.f.f2 <- reactive({input$moldfracUSERNum2})
-  raw.f.pm2 <- reactive({input$primatrixfrac2})
-  raw.f.ma2 <- reactive({input$othermatrixAfrac2})
-  raw.f.mb2 <- reactive({input$othermatrixBfrac2})
-  raw.f.mc2 <- reactive({input$othermatrixCfrac2})
-  m.ia2 <- reactive({input$insertsAfrac2})
-  m.ib2 <- reactive({input$insertsBfrac2})
-  
-  #fraccheck1 <- sum(raw.f.f1,raw.f.pm1, raw.f.ma1, raw.f.mb1, raw.f.mc1)
-  #fraccheck1 <- sum(raw.f.f2,raw.f.pm2, raw.f.ma2, raw.f.mb2, raw.f.mc2)
-  
-  f.f1 <- reactive(newmassfrac_fxn(raw.f.f1, finalweight1, m.ia1, m.iab))
-  output$testff <- renderText(m.ia1())
-  
-  
-  #f.f1 <- raw.f.f1*(partweight1z - m.ia1 - m.ib1) / partweight1z
-  #f.f2 <- raw.f.f2*(partweight2z - m.ia2 - m.ib2) / partweight2z
-  
-  #f.pm1 <- raw.f.pm1*(partweight1z - m.ia1 - m.ib1) / partweight1z
-  #f.ma1 <- raw.fma1*(partweight1z - m.ia1 - m.ib1) / partweight1z
-  #f.mb1 <- raw.fmb1*(partweight1z - m.ia1 - m.ib1) / partweight1z
-  #f.mc1 <- raw.fmc1*(partweight1z - m.ia1 - m.ib1) / partweight1z
-  
-  #f.pm1 <- raw.f.pm2*(partweight2z - m.ia2 - m.ib2) / partweight2z
-  #f.ma2 <- raw.fma2*(partweight2z - m.ia2 - m.ib2) / partweight2z
-  #f.mb2 <- raw.fmb2*(partweight2z - m.ia2 - m.ib2) / partweight2z
-  #f.mc2 <- raw.fmc2*(partweight2z - m.ia2 - m.ib2) / partweight2z
-  
-  #f.ia1 <- m.ia1 / partweight1z
-  #f.ib1 <- m.ib1 / partweight1z
-  #f.ia2 <- m.ia2 / partweight2z
-  #f.ib2 <- m.ib2 / partweight2z
-  
-  
-  
-  
-  
-  
-  
+ output$finishEnergyNum2 <- renderText(finishenergyfetch2())  
   
   
   # Change user values to default ----
@@ -627,9 +553,157 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
     updateNumericInput(session, "intscrapUSERNum2", value = ints2)
     updateNumericInput(session, "moldyieldUSERNum1", value = moldy1)
     updateNumericInput(session, "moldyieldUSERNum2", value = moldy2)
-    
+
   })
- 
+  # User Input --> variables ----
+    #Yield
+    
+    
+    layup.yield1 <- reactive(yield_layup(input$intscrapUSERNum1,input$intscraprecycle1))
+    layup.yield2 <- reactive(yield_layup(input$intscrapUSERNum2,input$intscraprecycle2))
+    mold.yield1 <- reactive(yield_mold(input$moldyieldUSERNum1, input$moldyieldrecycle1))
+    mold.yield2 <- reactive(yield_mold(input$moldyieldUSERNum2, input$moldyieldrecycle2))
+    finish.yield1 <- reactive(yield_finish(input$finishscrap1, input$finishscraprecycle1))
+    finish.yield2 <- reactive(yield_finish(input$finishscrap2, input$finishscraprecycle2))
+    
+   
+    
+    
+    #mass fracs
+    finalweight1 <- reactive({input$finalweight1})
+    
+    raw.f.f1 <- reactive({input$moldfracUSERNum1})
+    raw.f.pm1 <- reactive({input$primatrixfrac1})
+    raw.f.ma1 <- reactive({input$othermatrixAfrac1})
+    raw.f.ma1 <- reactive({input$othermatrixBfrac1})
+    raw.f.mc1 <- reactive({input$othermatrixCfrac1})
+    m.ia1 <- reactive({input$insertsAfrac1})
+    m.ib1 <- reactive({input$insertsBfrac1})
+    
+    finalweight2 <- reactive({input$finalweight2})
+    raw.f.f2 <- reactive({input$moldfracUSERNum2})
+    raw.f.pm2 <- reactive({input$primatrixfrac2})
+    raw.f.ma2 <- reactive({input$othermatrixAfrac2})
+    raw.f.mb2 <- reactive({input$othermatrixBfrac2})
+    raw.f.mc2 <- reactive({input$othermatrixCfrac2})
+    m.ia2 <- reactive({input$insertsAfrac2})
+    m.ib2 <- reactive({input$insertsBfrac2})
+    
+    observe({
+      rff1 <- input$moldfracUSERNum1
+      rff2 <- input$moldfracUSERNum2
+    updateNumericInput(session, "primatrixfrac1", value = 1-rff1)
+    updateNumericInput(session, "primatrixfrac2", value = 1-rff2)
+    })
+    
+# Start Math ----  
+    raw.to.actual.fracs1 <- reactive(Data_mass_fxn(finalweight1(), raw.f.f1(), raw.f.pm1(), raw.f.ma1(), raw.f.ma1(), raw.f.mc1(), m.ia1(), m.ib1()))
+    raw.to.actual.fracs2 <- reactive(Data_mass_fxn(finalweight2(), raw.f.f2(), raw.f.pm2(), raw.f.ma2(), raw.f.ma2(), raw.f.mc2(), m.ia2(), m.ib2()))
+    
+   
+    
+    f.f1  <- reactive(raw.to.actual.fracs1()$mass.frac[1])
+    f.pm1 <- reactive(raw.to.actual.fracs1()$mass.frac[2])
+    f.ma1 <- reactive(raw.to.actual.fracs1()$mass.frac[3])
+    f.mb1 <- reactive(raw.to.actual.fracs1()$mass.frac[4])
+    f.mc1 <- reactive(raw.to.actual.fracs1()$mass.frac[5])
+    f.ia1 <- reactive(raw.to.actual.fracs1()$mass.frac[6])
+    f.ib1 <- reactive(raw.to.actual.fracs1()$mass.frac[7])
+    f.f2  <- reactive(raw.to.actual.fracs2()$mass.frac[1])
+    f.pm2 <- reactive(raw.to.actual.fracs2()$mass.frac[2])
+    f.ma2 <- reactive(raw.to.actual.fracs2()$mass.frac[3])
+    f.mb2 <- reactive(raw.to.actual.fracs2()$mass.frac[4])
+    f.mc2 <- reactive(raw.to.actual.fracs2()$mass.frac[5])
+    f.ia2 <- reactive(raw.to.actual.fracs2()$mass.frac[6])
+    f.ib2 <- reactive(raw.to.actual.fracs2()$mass.frac[7])
+
+    #output$table1 <- renderTable(raw.to.actual.fracs1())
+    output$testff <- renderText(int.prepregYN1())
+    output$testclass <- renderText(class(int.prepregYN1()))
+    output$testyield <- renderText(layup.yield1())
+    
+  
+    
+
+    yield_data.df <- reactive(BIGFUNCTION1(
+      finish.yield1(), mold.yield1(), layup.yield1(),
+      finish.yield2(), mold.yield2(), layup.yield2(),
+      f.f1(), f.pm1(), f.ma1(), f.mb1(), f.mc1(), f.ia1(), f.ib1(),
+      f.f2(), f.pm2(), f.ma2(), f.mb2(), f.mc2(), f.ia2(), f.ib2(),
+      int.prepregYN1(), int.prepregYN2(), 
+      finalweight1(), finalweight2()
+      ))
+    
+    E.fib1 <- reactive(fiberenergyfetch1())
+    E.int1 <- reactive(intenergyfetch1())
+    E.pm1  <- reactive(primatrixenergyfetch1())
+    E.ma1  <- reactive(othermatrixAenergyfetch1())
+    E.mb1  <- reactive(othermatrixBenergyfetch1())
+    E.mc1  <- reactive(othermatrixCenergyfetch1())
+    E.ia1  <- reactive(insertsAenergyfetch1())
+    E.ib1  <- reactive(insertsBenergyfetch1())
+    E.mold1 <- reactive(moldenergyfetch1())
+    E.cure1 <- reactive(cureenergyfetch1())
+    E.fin1  <- reactive(finishenergyfetch1())  
+    
+    
+    E.fib2 <- reactive(fiberenergyfetch2())
+    E.int2 <- reactive(intenergyfetch2())
+    E.pm2  <- reactive(primatrixenergyfetch2())
+    E.ma2  <- reactive(othermatrixAenergyfetch2())
+    E.mb2  <- reactive(othermatrixBenergyfetch2())
+    E.mc2  <- reactive(othermatrixCenergyfetch2())
+    E.ia2  <- reactive(insertsAenergyfetch2())
+    E.ib2  <- reactive(insertsBenergyfetch2())
+    E.mold2 <- reactive(moldenergyfetch2())
+    E.cure2 <- reactive(cureenergyfetch2())  
+    E.fin2  <- reactive(finishenergyfetch2())  
+    
+    
+    
+    
+    
+    energy_data.df <- reactive(BIGFUNCTION2(yield_data.df(),
+             f.pm1(), f.ma1(), f.mb1(), f.mc1(), f.ia1(), f.ib1(),
+             f.pm2(), f.ma2(), f.mb2(), f.mc2(), f.ia2(), f.ib2(),
+             E.fib1(), E.int1(), E.pm1(), E.ma1(), E.mb1(), E.mc1(),
+             E.ia1(), E.ib1(), E.mold1(), E.cure1(), E.fin1(),
+             E.fib2(), E.int2(), E.pm2(), E.ma2(), E.mb2(), E.mc2(),
+             E.ia2(), E.ib2(), E.mold2(), E.cure2(), E.fin2()
+    )) 
+    
+    
+    
+      output$table1 <- renderTable(yield_data.df())
+    
+      output$table2 <- renderTable(energy_data.df())
+    
+     # output$table3 <- split.data.frame(energy_data.df, techset )
+    
+
+    E.f.fib1 <- reactive(energy_data.df()$finalenergy[1])
+    E.f.int1 <- reactive(energy_data.df()$finalenergy[2])
+    E.f.pm1  <- reactive(energy_data.df()$finalenergy[3])
+    E.f.ma1  <- reactive(energy_data.df()$finalenergy[4])
+    E.f.mb1  <- reactive(energy_data.df()$finalenergy[5])
+    E.f.mc1  <- reactive(energy_data.df()$finalenergy[6])
+    E.f.ia1  <- reactive(energy_data.df()$finalenergy[7])
+    E.f.ib1  <- reactive(energy_data.df()$finalenergy[8])
+    E.f.mold1 <- reactive(energy_data.df()$finalenergy[9])
+    E.f.cure1 <- reactive(energy_data.df()$finalenergy[10])
+    E.f.fin1  <- reactive(energy_data.df()$finalenergy[11])
+
+    E.f.fib2 <- reactive(energy_data.df()$finalenergy[12])
+    E.f.int2 <- reactive(energy_data.df()$finalenergy[13])
+    E.f.pm2  <- reactive(energy_data.df()$finalenergy[14])
+    E.f.ma2  <- reactive(energy_data.df()$finalenergy[15])
+    E.f.mb2  <- reactive(energy_data.df()$finalenergy[16])
+    E.f.mc2  <- reactive(energy_data.df()$finalenergy[17])
+    E.f.ia2  <- reactive(energy_data.df()$finalenergy[18])
+    E.f.ib2  <- reactive(energy_data.df()$finalenergy[19])
+    E.f.mold2 <- reactive(energy_data.df()$finalenergy[20])
+    E.f.cure2 <- reactive(energy_data.df()$finalenergy[21])
+    E.f.fin2 <- reactive(energy_data.df()$finalenergy[22])
   
   
   
