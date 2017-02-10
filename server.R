@@ -41,8 +41,12 @@ Data_primatrix <- subset(Data_MatrixM, Type_Matrix == "Matrix")
 primatrixnames = Data_primatrix$Name_Matrix
 Data_othermatrix <- subset(Data_MatrixM, Type_Matrix != "Insert")
 othermatrixnames = Data_othermatrix$Name_Matrix
-Data_inserts <- subset(Data_MatrixM, Type_Matrix == "Insert")
-insertsnames = Data_inserts$Name_Matrix
+
+#Name Data_Inserts columns
+Data_inserts =  read.csv("data/Data_Inserts.csv")
+insertsnames = Data_inserts$Name_Inserts
+insertsenergy = Data_inserts$Energy_Inserts
+
 
 #Name Data_Cure columns
 Data_Cure = read.csv("data/Data_Cure.csv")
@@ -61,11 +65,14 @@ shinyServer(function(input, output, session) {
   
   # General Definations ----
   # (none) = first use a = int b = matrix c = mold d= summary e = results z = calcs
-  output$partname1e <- output$partname1d <- output$partname1c <- output$partname1b <- output$partname1a <- output$partname1 <- renderText({paste("Part Name:",input$name1)})
+  output$partname1d <- output$partname1c <- output$partname1b <- output$partname1a <- output$partname1 <- renderText({paste("Part Name:",input$name1)})
+  partname1e<- reactive(input$name1)
+  
   output$partweight1e <- output$partweight1d <- output$partweight1c <- output$partweight1b <- output$partweight1a <- output$partweight1 <- renderText({paste("Part Weight:",input$finalweight1, "kg")})
   
   
-  output$partname2e <-output$partname2d <-output$partname2c <-output$partname2b <-output$partname2a <- output$partname2 <- renderText({paste("Part Name:",input$name2)})
+  output$partname2d <-output$partname2c <-output$partname2b <-output$partname2a <- output$partname2 <- renderText({paste("Part Name:",input$name2)})
+  partname2e<- reactive(input$name2)
   output$partweight2e <- output$partweight2d <- output$partweight2c <- output$partweight2b <- output$partweight2a <- output$partweight2 <- renderText({paste("Part Weight:",input$finalweight2, "kg")})
   
   
@@ -79,14 +86,13 @@ shinyServer(function(input, output, session) {
   moldnamefetch1 <- eventReactive(input$moldingInput1, {
     moldnames[moldnames %in% input$moldingInput1]
   })
-output$moldname1e <- output$moldname1d <- output$moldname1c <- output$moldname1b <- output$moldname1a <- output$moldname1 <- renderText(moldnamefetch1())
+output$moldname1d <- output$moldname1c <- output$moldname1b <- output$moldname1a <- output$moldname1 <- renderText(moldnamefetch1())
 
 
 moldshortfetch1 <- eventReactive(input$moldingInput1, {
   moldshort[moldnames %in% input$moldingInput1]
 })
-output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldshort1b <- output$moldshort1a <- output$moldshort1 <- renderText(moldshortfetch1())
-
+ output$moldshort1d <- output$moldshort1c <- output$moldshort1b <- output$moldshort1a <- output$moldshort1 <- renderText(moldshortfetch1())
 
    # Associate Energy value with mold type name
   moldenergyfetch1 <- eventReactive(input$moldingInput1, {
@@ -122,8 +128,7 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
   moldshortfetch2 <- eventReactive(input$moldingInput2, {
     moldshort[moldnames %in% input$moldingInput2]
   })
-  output$moldshort2e <- output$moldshort2d <- output$moldshort2c <- output$moldshort2b <- output$moldshort2a <- output$moldshort2 <- renderText(moldshortfetch2())
-  
+   output$moldshort2d <- output$moldshort2c <- output$moldshort2b <- output$moldshort2a <- output$moldshort2 <- renderText(moldshortfetch2())
   
   # Associate energy with mold type name
   moldenergyfetch2 <- eventReactive(input$moldingInput2, {
@@ -153,8 +158,7 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
   fibernamefetch1 <- eventReactive(input$fiberInput1, {
     fibernames[fibernames %in% input$fiberInput1]
   })
-  output$fibername1e <- output$fibername1d  <- output$fibername1 <- renderText(fibernamefetch1())
-  
+   output$fibername1d  <- output$fibername1 <- renderText(fibernamefetch1())
   # Associate Energy value with fiber type name
   fiberenergyfetch1 <- eventReactive(input$fiberInput1, {
     fiberenergy[fibernames %in% input$fiberInput1]
@@ -175,7 +179,6 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
     fibernames[fibernames %in% input$fiberInput2]
   })
   output$fibername2 <- renderText(fibernamefetch2())
-  
   # Associate Energy value with fiber type name
   fiberenergyfetch2 <- eventReactive(input$fiberInput2, {
     fiberenergy[fibernames %in% input$fiberInput2]
@@ -226,7 +229,7 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
   intnamefetch2 <- eventReactive(input$intInput2, {
     intnames[intnames %in% input$intInput2]
   })
-  output$intname2 <- renderText(intnamefetch2())
+   output$intname2 <- renderText(intnamefetch2())
   
   # Associate Energy value with int type name
   intenergyfetch2 <- eventReactive(input$intInput2, {
@@ -256,7 +259,6 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
     primatrixnames[primatrixnames %in% input$PriMatrixInput1]
   })
   output$primatrixname1 <- renderText(primatrixnamefetch1())
-  
   # Associate Energy value with Matrix type name
   primatrixenergyfetch1 <- eventReactive(input$PriMatrixInput1, {
     matrixenergy[matrixnames %in% input$PriMatrixInput1]
@@ -275,7 +277,6 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
     othermatrixnames[othermatrixnames %in% input$OtherMatrixAInput1]
   })
   output$othermatrixAname1 <- renderText(othermatrixAnamefetch1())
-  
   # Associate Energy value with int type name
   othermatrixAenergyfetch1 <- eventReactive(input$OtherMatrixAInput1, {
     matrixenergy[matrixnames %in% input$OtherMatrixAInput1]
@@ -293,7 +294,6 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
     othermatrixnames[othermatrixnames %in% input$OtherMatrixBInput1]
   })
   output$othermatrixBname1 <- renderText(othermatrixBnamefetch1())
-  
   # Associate Energy value with int type name
   othermatrixBenergyfetch1 <- eventReactive(input$OtherMatrixBInput1, {
     matrixenergy[matrixnames %in% input$OtherMatrixBInput1]
@@ -311,27 +311,26 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
     othermatrixnames[othermatrixnames %in% input$OtherMatrixCInput1]
   })
   output$othermatrixCname1 <- renderText(othermatrixCnamefetch1())
-  
   # Associate Energy value with int type name
   othermatrixCenergyfetch1 <- eventReactive(input$OtherMatrixCInput1, {
     matrixenergy[matrixnames %in% input$OtherMatrixCInput1]
   })
   output$othermatrixCEnergyNum1 <- renderText(othermatrixCenergyfetch1())
   
-  ###InsertsA
+  # Inserts1 ----
+  # Insert A 1
   updateSelectizeInput(session, 'InsertsAInput1',
                        choices = insertsnames,
-                       selected = "",
+                       selected = "Not Used",
                        server = TRUE)
   # Associate Name with Matrix type name
   insertsAnamefetch1 <- eventReactive(input$InsertsAInput1, {
     insertsnames[insertsnames %in% input$InsertsInput1]
   })
-  output$insertsAname1 <- renderText(insertsAnamefetch1())
-  
+   output$insertsAname1 <- renderText(insertsAnamefetch1())
   # Associate Energy value with int type name
   insertsAenergyfetch1 <- eventReactive(input$InsertsAInput1, {
-    matrixenergy[matrixnames %in% input$InsertsAInput1]
+    insertsenergy[insertsnames %in% input$InsertsAInput1]
   })
   output$insertsAEnergyNum1 <- renderText(insertsAenergyfetch1())
   
@@ -339,17 +338,16 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
   
   updateSelectizeInput(session, 'InsertsBInput1',
                        choices = insertsnames,
-                       selected = "",
+                       selected = "Not Used",
                        server = TRUE)
   # Associate Name with Matrix type name
   insertsBnamefetch1 <- eventReactive(input$InsertsBInput1, {
     insertsnames[insertsnames %in% input$InsertsBInput1]
   })
   output$insertsBname1 <- renderText(insertsBnamefetch1())
-  
   # Associate Energy value with int type name
   insertsBenergyfetch1 <- eventReactive(input$InsertsBInput1, {
-    matrixenergy[matrixnames %in% input$InsertsBInput1]
+    insertsenergy[insertsnames %in% input$InsertsBInput1]
   })
   output$insertsBEnergyNum1 <- renderText(insertsBenergyfetch1())
   
@@ -364,7 +362,6 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
     primatrixnames[primatrixnames %in% input$PriMatrixInput2]
   })
   output$primatrixname2 <- renderText(primatrixnamefetch2())
-  
   # Associate Energy value with Matrix type name
   primatrixenergyfetch2 <- eventReactive(input$PriMatrixInput2, {
     matrixenergy[matrixnames %in% input$PriMatrixInput2]
@@ -383,7 +380,6 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
     othermatrixnames[othermatrixnames %in% input$OtherMatrixAInput2]
   })
   output$othermatrixAname2 <- renderText(othermatrixAnamefetch2())
-  
   # Associate Energy value with int type name
   othermatrixAenergyfetch2 <- eventReactive(input$OtherMatrixAInput2, {
     matrixenergy[matrixnames %in% input$OtherMatrixAInput2]
@@ -401,7 +397,6 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
     othermatrixnames[othermatrixnames %in% input$OtherMatrixBInput2]
   })
   output$othermatrixBname2 <- renderText(othermatrixBnamefetch2())
-  
   # Associate Energy value with int type name
   othermatrixBenergyfetch2 <- eventReactive(input$OtherMatrixBInput2, {
     matrixenergy[matrixnames %in% input$OtherMatrixBInput2]
@@ -419,27 +414,27 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
     othermatrixnames[othermatrixnames %in% input$OtherMatrixCInput2]
   })
   output$othermatrixCname2 <- renderText(othermatrixCnamefetch2())
-  
   # Associate Energy value with int type name
   othermatrixCenergyfetch2 <- eventReactive(input$OtherMatrixCInput2, {
     matrixenergy[matrixnames %in% input$OtherMatrixCInput2]
   })
   output$othermatrixCEnergyNum2 <- renderText(othermatrixCenergyfetch2())
   
+  # Inserts 2 ---- 
+  
   ###InsertsA
   updateSelectizeInput(session, 'InsertsAInput2',
                        choices = insertsnames,
-                       selected = "",
+                       selected = "Not Used",
                        server = TRUE)
   # Associate Name with Matrix type name
   insertsAnamefetch2 <- eventReactive(input$InsertsAInput2, {
     insertsnames[insertsnames %in% input$InsertsInput2]
   })
   output$insertsAname2 <- renderText(insertsAnamefetch2())
-  
   # Associate Energy value with int type name
   insertsAenergyfetch2 <- eventReactive(input$InsertsAInput2, {
-    matrixenergy[matrixnames %in% input$InsertsAInput2]
+    insertsenergy[insertsnames %in% input$InsertsAInput2]
   })
   output$insertsAEnergyNum2 <- renderText(insertsAenergyfetch2())
   
@@ -447,17 +442,16 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
   
   updateSelectizeInput(session, 'InsertsBInput2',
                        choices = insertsnames,
-                       selected = "",
+                       selected = "Not Used",
                        server = TRUE)
   # Associate Name with Matrix type name
   insertsBnamefetch2 <- eventReactive(input$InsertsBInput2, {
     insertsnames[insertsnames %in% input$InsertsBInput2]
   })
   output$insertsBname2 <- renderText(insertsBnamefetch2())
-  
   # Associate Energy value with int type name
   insertsBenergyfetch2 <- eventReactive(input$InsertsBInput2, {
-    matrixenergy[matrixnames %in% input$InsertsBInput2]
+    insertsenergy[insertsnames %in% input$InsertsBInput2]
   })
   output$insertsBEnergyNum2 <- renderText(insertsBenergyfetch2())
   
@@ -472,8 +466,7 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
   curenamefetch1 <- eventReactive(input$cureInput1, {
     curenames[curenames %in% input$cureInput1]
   })
-  output$curename1e <- output$curename1 <- renderText(curenamefetch1())
-  
+   output$curename1 <- renderText(curenamefetch1())
   # Associate Energy value with cure type name
   cureenergyfetch1 <- eventReactive(input$cureInput1, {
     cureenergy[curenames %in% input$cureInput1]
@@ -490,8 +483,7 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
   curenamefetch2 <- eventReactive(input$cureInput2, {
     curenames[curenames %in% input$cureInput2]
   })
-  output$curename2e <- output$curename2 <- renderText(curenamefetch2())
-  
+  output$curename2 <- renderText(curenamefetch2())
   # Associate Energy value with cure type name
   cureenergyfetch2 <- eventReactive(input$cureInput2, {
     cureenergy[curenames %in% input$cureInput2]
@@ -502,14 +494,13 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
   # Make List for Box
   updateSelectizeInput(session, 'finishInput1',
                        choices = finishnames,
-                       selected = "",
+                       selected = "None",
                        server = TRUE)
   # Associate Name value with finish type name
   finishnamefetch1 <- eventReactive(input$finishInput1, {
     finishnames[finishnames %in% input$finishInput1]
   })
-  output$finishname1e <- output$finishname1 <- renderText(finishnamefetch1())
-  
+   output$finishname1 <- renderText(finishnamefetch1())
   # Associate Energy value with finish type name
   finishenergyfetch1 <- eventReactive(input$finishInput1, {
     finishenergy[finishnames %in% input$finishInput1]
@@ -522,14 +513,13 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
   # Make List for Box
   updateSelectizeInput(session, 'finishInput2',
                        choices = finishnames,
-                       selected = "",
+                       selected = "None",
                        server = TRUE)
   # Associate Name value with finish type name
   finishnamefetch2 <- eventReactive(input$finishInput2, {
     finishnames[finishnames %in% input$finishInput2]
   })
-  output$finishname2e <- output$finishname2 <- renderText(finishnamefetch2())
-  
+  output$finishname2 <- renderText(finishnamefetch2())
   # Associate Energy value with finish type name
   finishenergyfetch2 <- eventReactive(input$finishInput2, {
     finishenergy[finishnames %in% input$finishInput2]
@@ -596,7 +586,7 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
     updateNumericInput(session, "primatrixfrac2", value = 1-rff2)
     })
     
-# Start Math ----  
+  # Mass Fractions converion ----  
     raw.to.actual.fracs1 <- reactive(Data_mass_fxn(finalweight1(), raw.f.f1(), raw.f.pm1(), raw.f.ma1(), raw.f.ma1(), raw.f.mc1(), m.ia1(), m.ib1()))
     raw.to.actual.fracs2 <- reactive(Data_mass_fxn(finalweight2(), raw.f.f2(), raw.f.pm2(), raw.f.ma2(), raw.f.ma2(), raw.f.mc2(), m.ia2(), m.ib2()))
     
@@ -618,12 +608,12 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
     f.ib2 <- reactive(raw.to.actual.fracs2()$mass.frac[7])
 
     #output$table1 <- renderTable(raw.to.actual.fracs1())
-    output$testff <- renderText(int.prepregYN1())
-    output$testclass <- renderText(class(int.prepregYN1()))
-    output$testyield <- renderText(layup.yield1())
-    
+    # output$testff <- renderText(int.prepregYN1())
+    # output$testclass <- renderText(class(int.prepregYN1()))
+    # output$testyield <- renderText(layup.yield1())
+    # 
   
-    
+  # True Yield ----  
 
     yield_data.df <- reactive(BIGFUNCTION1(
       finish.yield1(), mold.yield1(), layup.yield1(),
@@ -633,6 +623,8 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
       int.prepregYN1(), int.prepregYN2(), 
       finalweight1(), finalweight2()
       ))
+    
+  # Energy Calcs ----
     
     E.fib1 <- reactive(fiberenergyfetch1())
     E.int1 <- reactive(intenergyfetch1())
@@ -659,9 +651,26 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
     E.cure2 <- reactive(cureenergyfetch2())  
     E.fin2  <- reactive(finishenergyfetch2())  
     
-    
-    
-    
+   output$fiber.m.i1 <- reactive(yield_data.df()$mass_initial[3])
+   output$fiber.m.i2 <- reactive(yield_data.df()$mass_initial[12])
+   output$pm.m.i1 <- reactive(yield_data.df()$mass_initial[6]* f.pm1()/sum(f.pm1(),f.ma1(),f.mb1(),f.mc1()))
+   output$pm.m.i2 <- reactive(yield_data.df()$mass_initial[15]* f.pm2()/sum(f.pm2(),f.ma1(),f.mb2(),f.mc2())) 
+ 
+   output$ma.m.i1 <- reactive(yield_data.df()$mass_initial[6]* f.ma1()/sum(f.pm1(),f.ma1(),f.mb1(),f.mc1()))
+   output$ma.m.i2 <- reactive(yield_data.df()$mass_initial[15]* f.ma2()/sum(f.pm2(),f.ma1(),f.mb2(),f.mc2())) 
+   output$mb.m.i1 <- reactive(yield_data.df()$mass_initial[6]* f.mb1()/sum(f.pm1(),f.ma1(),f.mb1(),f.mc1()))
+   output$mb.m.i2 <- reactive(yield_data.df()$mass_initial[15]* f.mb2()/sum(f.pm2(),f.ma1(),f.mb2(),f.mc2())) 
+   output$mc.m.i1 <- reactive(yield_data.df()$mass_initial[6]* f.mc1()/sum(f.pm1(),f.ma1(),f.mb1(),f.mc1()))
+   output$mc.m.i2 <- reactive(yield_data.df()$mass_initial[15]* f.mc2()/sum(f.pm2(),f.ma1(),f.mb2(),f.mc2())) 
+   
+   output$ia.m.i1 <- reactive(yield_data.df()$mass_initial[9]* f.ia1()/sum(f.ia1(),f.ib1()))
+   output$ia.m.i2 <- reactive(yield_data.df()$mass_initial[18]* f.ia2()/sum(f.ia1(),f.ib2())) 
+   output$ib.m.i1 <- reactive(yield_data.df()$mass_initial[9]* f.ib1()/sum(f.ia1(),f.ib1()))
+   output$ib.m.i2 <- reactive(yield_data.df()$mass_initial[18]* f.ib2()/sum(f.ia1(),f.ib2()))
+   
+   
+   
+   
     
     energy_data.df <- reactive(BIGFUNCTION2(yield_data.df(),
              f.pm1(), f.ma1(), f.mb1(), f.mc1(), f.ia1(), f.ib1(),
@@ -673,12 +682,42 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
     )) 
     
     
+      # 
+      # output$table1 <- renderTable(yield_data.df())
+      # 
+      # output$table2 <- renderTable(energy_data.df()[-3, -4])
+      # 
+# Prep final tables ----
     
-      output$table1 <- renderTable(yield_data.df())
+    n.mold1 <- reactive(moldshortfetch1())
+    n.mold2 <- reactive(moldshortfetch2())
+    n.int1 <- reactive(intnamefetch1())
+    n.int2 <- reactive(intnamefetch2())
+    n.cure1 <-reactive(curenamefetch1())
+    n.cure2 <- reactive(curenamefetch2())
+    n.fin1 <- reactive(finishnamefetch1())
+    n.fin2 <- renderText(finishnamefetch2())
     
-      output$table2 <- renderTable(energy_data.df())
     
-     # output$table3 <- split.data.frame(energy_data.df, techset )
+    
+    n.f1 <- reactive(fibernamefetch1())
+    n.pm1 <-reactive(primatrixnamefetch1())
+    n.ma1 <- reactive(othermatrixAnamefetch1())
+    n.mb1 <- reactive(othermatrixBnamefetch1())
+    n.mc1 <- reactive(othermatrixCnamefetch1())
+    n.ia1 <-reactive(insertsAnamefetch1())
+    n.ib1 <- reactive(insertsBnamefetch1())
+    
+    fibername2e <- reactive(fibernamefetch2())
+    primatrixname2e <- reactive(primatrixnamefetch2())
+    othermatrixAname2e <- reactive(othermatrixAnamefetch2())
+    othermatrixBname2e <- reactive(othermatrixBnamefetch2())
+    othermatrixCname2e <- reactive(othermatrixCnamefetch2())
+    insertsAname2e <- reactive(insertsAnamefetch2())
+    insertsBname2e <- reactive(insertsBnamefetch2())
+    
+    
+    
     
 
     E.f.fib1 <- reactive(energy_data.df()$finalenergy[1])
@@ -704,8 +743,64 @@ output$moldshort1e <- output$moldshort1d <- output$moldshort1c <- output$moldsho
     E.f.mold2 <- reactive(energy_data.df()$finalenergy[20])
     E.f.cure2 <- reactive(energy_data.df()$finalenergy[21])
     E.f.fin2 <- reactive(energy_data.df()$finalenergy[22])
+    
+    # Final Tables ----
+    Mat1.E.df <- reactive(data_frame(
+      Material = c("Fiber", "Primary Matrix", "Additional Matrix Material", "Additional Matrix Material","Additional Matrix Material", "Insert", "Insert"),
+      #Choice = c(n.f1(), n.pm1(), n.ma1(), n.mb1(), n.mc1(), n.ia1(), n.ib1()),
+      "Embodied Energy (MJ/part)" = c(E.f.fib1(), E.f.pm1(), E.f.ma1(), E.f.mb1(), E.f.mc1(), E.f.ia1(), E.f.ib1())
+    ))
+    
+    Process1.E.df <- reactive(data_frame(
+      Process = c("Intermediate", "Molding", "Curing", "Finishing"),
+      #Choice = list(n.int1(), n.mold1(), n.cure1(), n.fin1()),
+      "Embodied Energy (MJ/part)" = c(E.f.int1(), E.f.mold1(), E.f.cure1(), E.f.fin1())
+    ))
+    
+    Mat2.E.df <- reactive(data_frame(
+      Material = c("Fiber", "Primary Matrix", "Additional Matrix Material", "Additional Matrix Material","Additional Matrix Material", "Insert", "Insert"),
+      
+      "Embodied Energy (MJ/part)" = c(E.f.fib2(), E.f.pm2(), E.f.ma2(), E.f.mb2(), E.f.mc2(), E.f.ia2(), E.f.ib2())
+    ))
+    
+    Process2.E.df <- reactive(data_frame(
+      Process = c("Intermediate", "Molding", "Curing", "Finishing"),
+     # Choice = list(n.int2(), n.mold2(), n.cure2(), n.fin2()),
+      "Embodied Energy (MJ/part)" = c(E.f.int2(), E.f.mold2(), E.f.cure2(), E.f.fin2())
+    ))
+    
+    output$Table.mat.1 <- renderTable(Mat1.E.df())
+    output$Table.pro.1 <- renderTable(Process1.E.df())
+    output$Table.mat.2 <- renderTable(Mat2.E.df())
+    output$Table.pro.2 <- renderTable(Process2.E.df())
   
+    
+   # Final Graph ----
+
+   energy_plot.df <- reactive(data_frame(
+     techset = c(rep(partname1e(), 7), rep(partname2e(), 7)),
+     process_segment = c(rep(c("Fiber", "Primary Matrix Material", "Other Materials", "Intermediate", "Molding", "Curing", "Finishing"),2)),
+     process_energy = c(E.fib1(), E.f.pm1(), sum(E.f.ma1(), E.f.mb1(), E.f.mc1(), E.f.ia1(), E.f.ib1()), E.f.int1(), E.f.mold1(), E.f.cure1(), E.f.fin1(),
+                                 E.fib2(), E.f.pm2(), sum(E.f.ma2(), E.f.mb2(), E.f.mc2(), E.f.ia2(), E.f.ib2()), E.f.int2(), E.f.mold2(), E.f.cure2(), E.f.fin2())
+     , order = rep(c(1, 2, 3, 4, 5, 6, 7), 2)
+       ))
+   
   
+   fill <- c("Fiber" = "#2960A8", "Intermediate"  = "#74A138", "Primary Matrix Material" = "#C46827",
+             "Other Materials"= "#24A7C1", "Molding" = "#8D2A1E", "Curing" = "#E2B500", "Finishing" = "#8A9FCF")
+   
+   
+
+   output$plot1 <- renderPlotly({
+    ggplot(energy_plot.df(), aes(x = factor(techset), y = process_energy, fill = reorder(process_segment, order))) +
+       geom_bar(stat = "identity") +
+       theme_bw() + theme(legend.position = "bottom", legend.title = element_blank()) +
+       labs(y = "Embodied Energy (MJ/part)", x = "") +
+       scale_fill_manual(values = fill, name = "")+
+       coord_flip()
+      
+   })
+   
   
   # End ----
    })

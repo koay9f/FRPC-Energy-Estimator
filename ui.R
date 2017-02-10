@@ -380,23 +380,31 @@ shinyUI(navbarPage(theme = "bootstrap.css",
                                  ),
                         # SummaryTab ----
                         tabPanel("Summary", h1("Summary"),
-                                 p("This is where users will be able to review all of the previous choices")
-                                 , fluidRow(column(5, h5("check val")), column(1, textOutput("testff")))
-                                 
-                                 , fluidRow(column(5, h5("check class")), column(1, textOutput("testclass")))
-                                 
-                                 , fluidRow(column(5, h5("check ")), column(1, textOutput("testyield")))
-                                 
-                                 ,tableOutput("table1")
-                                 
-                                 
+                                 p("Summary of User Choices and Embodied Energy")
+                                 #Display Part Name & Weight & Molding Process & Fiber Fraction
+                                 , fluidRow(
+                                   #TechSet1
+                                   column(6,
+                                          h2("Technology Set 1")
+                                          , h5(textOutput("partname1d"), textOutput("partweight1d"))
+                                          , tableOutput("Table.mat.1")
+                                          , tableOutput("Table.pro.1")
+                                   )
+                                   #TechSet2
+                                   , column(6,
+                                            h2("Technology Set 2")
+                                            , h5(textOutput("partname2d"), textOutput("partweight2d"))
+                                            , tableOutput("Table.mat.2")
+                                            , tableOutput("Table.pro.2")
+                                   ))
+                                            
                                  #End Tab
                                  ),
                   
                         # ResultsTab ---- 
                         tabPanel("Results", h1("Results"),
                                  p("This is where users will be able to graphically compare the two technology pathways")
-                                  ,tableOutput("table2")
+                                  ,plotlyOutput("plot1")
                         )
                   
                         
