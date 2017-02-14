@@ -47,7 +47,7 @@ check <- function(check){
 # Define which yields are being used ----
 # Layup - convert scrap --> yield; deside if default or user, reduce by amt of recycling
 yield_layup <- function(int_scrap_user_val, int_scrap_recycle_val) {
-    yield_val <- yfs(int_scrap_user_val) + int_scrap_recycle_val * int_scrap_user_val
+    yield_val <- yfs(int_scrap_user_val/100) + (int_scrap_recycle_val/100) * (int_scrap_user_val/100)
     yield_val
 }
 
@@ -55,14 +55,14 @@ yield_layup <- function(int_scrap_user_val, int_scrap_recycle_val) {
 
 # Mold - deside if default or user, reduce by amt of recycling
 yield_mold <- function( mold_yield_user_val, mold_yield_recycle_val) {
-      yield_val <- mold_yield_user_val + mold_yield_recycle_val * yfs(mold_yield_user_val)
+      yield_val <- mold_yield_user_val/100 + (mold_yield_recycle_val/100) * (yfs(mold_yield_user_val/100))
     yield_val
 }
 
 
 # Finish - convert scrap --> yield; reduce by amt of recycling
 yield_finish <- function(fin_scrap_user_val, fin_scrap_recycle_val)  {
-  yield_val <- yfs(fin_scrap_user_val) + fin_scrap_recycle_val * fin_scrap_user_val
+  yield_val <- yfs(fin_scrap_user_val/100) + (fin_scrap_recycle_val/100) * (fin_scrap_user_val/100)
   yield_val
 }
 
@@ -208,7 +208,7 @@ BIGFUNCTION2 <- function(Data_yield,
   
   
   fib.mass.i1 <- int.fib.mass.i1 <- mass_fxn("fiber", "layup", "ts1")
-  fib.mass.i2 <- int.fib.mass.i2 <- mass_fxn("fiber", "layup", "ts1")
+  fib.mass.i2 <- int.fib.mass.i2 <- mass_fxn("fiber", "layup", "ts2")
   
   matrix.mass.i1 <- c(f_pm1, f_ma1, f_mb1, f_mc1) * mass_fxn("matrix", "layup", "ts1")/massfrac_fxn("matrix", "layup", "ts1")
   matrix.mass.i2 <- c(f_pm2, f_ma2, f_mb2, f_mc2) * mass_fxn("matrix", "layup", "ts2")/massfrac_fxn("matrix", "layup", "ts2")
@@ -236,7 +236,7 @@ BIGFUNCTION2 <- function(Data_yield,
   Data_energy <- Data_energy %>%
     rowwise() %>%
     mutate(finalenergy = mass_materials*energy_materials)
-  
+  Data_energy[is.na(Data_energy)]<- 0
   
   Data_energy
 }
