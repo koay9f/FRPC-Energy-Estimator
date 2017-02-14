@@ -536,7 +536,7 @@ moldshortfetch1 <- eventReactive(input$moldingInput1, {
     updateNumericInput(session, "moldyieldUSERNum2", value = (moldy2*100) )
 
   })
-  # User Input --> variables ----
+    # User Input --> variables ----
     #Yield
     
     
@@ -577,7 +577,7 @@ moldshortfetch1 <- eventReactive(input$moldingInput1, {
     updateNumericInput(session, "primatrixfrac2", value = 100-rff2)
     })
     
-  # Mass Fractions converion ----  
+    # Mass Fractions converion ----  
     raw.to.actual.fracs1 <- reactive(Data_mass_fxn(finalweight1(), raw.f.f1(), raw.f.pm1(), raw.f.ma1(), raw.f.ma1(), raw.f.mc1(), m.ia1(), m.ib1()))
     raw.to.actual.fracs2 <- reactive(Data_mass_fxn(finalweight2(), raw.f.f2(), raw.f.pm2(), raw.f.ma2(), raw.f.ma2(), raw.f.mc2(), m.ia2(), m.ib2()))
     
@@ -600,18 +600,24 @@ moldshortfetch1 <- eventReactive(input$moldingInput1, {
 
     #output$table4 <- renderTable(raw.to.actual.fracs1())
   
-  # True Yield ----  
+    # True Yield ----  
 
-    yield_data.df <- reactive(BIGFUNCTION1(
+    yield_data1.df <- reactive(BIGFUNCTION1(
       finish.yield1(), mold.yield1(), layup.yield1(),
-      finish.yield2(), mold.yield2(), layup.yield2(),
       f.f1(), f.pm1(), f.ma1(), f.mb1(), f.mc1(), f.ia1(), f.ib1(),
-      f.f2(), f.pm2(), f.ma2(), f.mb2(), f.mc2(), f.ia2(), f.ib2(),
-      int.prepregYN1(), int.prepregYN2(), 
-      finalweight1(), finalweight2()
+      int.prepregYN1(), finalweight1()
       ))
+    
+    yield_data2.df <- reactive(BIGFUNCTION1(
+      finish.yield2(), mold.yield2(), layup.yield2(),
+      f.f2(), f.pm2(), f.ma2(), f.mb2(), f.mc2(), f.ia2(), f.ib2(),
+      int.prepregYN2(), finalweight2()
+    ))   
+    
+    
+    
 
-  # Energy Calcs ----
+    # Energy Calcs ----
     
     E.fib1 <- reactive(fiberenergyfetch1())
     E.int1 <- reactive(intenergyfetch1())
@@ -638,40 +644,27 @@ moldshortfetch1 <- eventReactive(input$moldingInput1, {
     E.cure2 <- reactive(cureenergyfetch2())  
     E.fin2  <- reactive(finishenergyfetch2())  
     
-   # output$fiber.m.i1 <- reactive(yield_data.df()$mass_initial[3])
-   # output$fiber.m.i2 <- reactive(yield_data.df()$mass_initial[12])
-   # output$pm.m.i1 <- reactive(yield_data.df()$mass_initial[6]* f.pm1()/sum(f.pm1(),f.ma1(),f.mb1(),f.mc1()))
-   # output$pm.m.i2 <- reactive(yield_data.df()$mass_initial[15]* f.pm2()/sum(f.pm2(),f.ma1(),f.mb2(),f.mc2())) 
-   # 
-   # output$ma.m.i1 <- reactive(yield_data.df()$mass_initial[6]* f.ma1()/sum(f.pm1(),f.ma1(),f.mb1(),f.mc1()))
-   # output$ma.m.i2 <- reactive(yield_data.df()$mass_initial[15]* f.ma2()/sum(f.pm2(),f.ma1(),f.mb2(),f.mc2())) 
-   # output$mb.m.i1 <- reactive(yield_data.df()$mass_initial[6]* f.mb1()/sum(f.pm1(),f.ma1(),f.mb1(),f.mc1()))
-   # output$mb.m.i2 <- reactive(yield_data.df()$mass_initial[15]* f.mb2()/sum(f.pm2(),f.ma1(),f.mb2(),f.mc2())) 
-   # output$mc.m.i1 <- reactive(yield_data.df()$mass_initial[6]* f.mc1()/sum(f.pm1(),f.ma1(),f.mb1(),f.mc1()))
-   # output$mc.m.i2 <- reactive(yield_data.df()$mass_initial[15]* f.mc2()/sum(f.pm2(),f.ma1(),f.mb2(),f.mc2())) 
-   # 
-   # output$ia.m.i1 <- reactive(yield_data.df()$mass_initial[9]* f.ia1()/sum(f.ia1(),f.ib1()))
-   # output$ia.m.i2 <- reactive(yield_data.df()$mass_initial[18]* f.ia2()/sum(f.ia1(),f.ib2())) 
-   # output$ib.m.i1 <- reactive(yield_data.df()$mass_initial[9]* f.ib1()/sum(f.ia1(),f.ib1()))
-   # output$ib.m.i2 <- reactive(yield_data.df()$mass_initial[18]* f.ib2()/sum(f.ia1(),f.ib2()))
-   # 
-   
-   
-   
-    
-    energy_data.df <- reactive(BIGFUNCTION2(yield_data.df(),
+  
+    energy_data1.df <- reactive(BIGFUNCTION2(yield_data1.df(),
              f.pm1(), f.ma1(), f.mb1(), f.mc1(), f.ia1(), f.ib1(),
-             f.pm2(), f.ma2(), f.mb2(), f.mc2(), f.ia2(), f.ib2(),
              E.fib1(), E.int1(), E.pm1(), E.ma1(), E.mb1(), E.mc1(),
-             E.ia1(), E.ib1(), E.mold1(), E.cure1(), E.fin1(),
-             E.fib2(), E.int2(), E.pm2(), E.ma2(), E.mb2(), E.mc2(),
-             E.ia2(), E.ib2(), E.mold2(), E.cure2(), E.fin2()
+             E.ia1(), E.ib1(), E.mold1(), E.cure1(), E.fin1()
+    )) 
+    
+    energy_data2.df <- reactive(BIGFUNCTION2(yield_data2.df(),
+                                            f.pm2(), f.ma2(), f.mb2(), f.mc2(), f.ia2(), f.ib2(),
+                                            E.fib2(), E.int2(), E.pm2(), E.ma2(), E.mb2(), E.mc2(),
+                                            E.ia2(), E.ib2(), E.mold2(), E.cure2(), E.fin2()
     )) 
     
     
+       output$table1a <- renderTable(yield_data1.df(), signif = 3)
+       output$table1b <- renderTable(yield_data2.df(), signif = 3)
        
-       output$table1 <- renderTable(yield_data.df(), signif = 3)
-       output$table2 <- renderTable(energy_data.df(), signif = 3)
+       
+       output$table2a <- renderTable(energy_data1.df(), signif = 3)
+       output$table2b <- renderTable(energy_data2.df(), signif = 3)
+       
        
     # Reactive Names ----
     n.mold1 <- reactive(as.character(moldshortfetch1()))
@@ -699,35 +692,32 @@ moldshortfetch1 <- eventReactive(input$moldingInput1, {
     n.ia2 <-reactive(as.character(insertsAnamefetch2()))
     n.ib2 <- reactive(as.character(insertsBnamefetch2()))
     
-
-    
-    
     
     # Reactive Energies ---- 
 
-    E.f.fib1 <- reactive(energy_data.df()$finalenergy[1])
-    E.f.int1 <- reactive(energy_data.df()$finalenergy[2])
-    E.f.pm1  <- reactive(energy_data.df()$finalenergy[3])
-    E.f.ma1  <- reactive(energy_data.df()$finalenergy[4])
-    E.f.mb1  <- reactive(energy_data.df()$finalenergy[5])
-    E.f.mc1  <- reactive(energy_data.df()$finalenergy[6])
-    E.f.ia1  <- reactive(energy_data.df()$finalenergy[7])
-    E.f.ib1  <- reactive(energy_data.df()$finalenergy[8])
-    E.f.mold1 <- reactive(energy_data.df()$finalenergy[9])
-    E.f.cure1 <- reactive(energy_data.df()$finalenergy[10])
-    E.f.fin1  <- reactive(energy_data.df()$finalenergy[11])
+    E.f.fib1 <- reactive(energy_data1.df()$finalenergy[1])
+    E.f.int1 <- reactive(energy_data1.df()$finalenergy[2])
+    E.f.pm1  <- reactive(energy_data1.df()$finalenergy[3])
+    E.f.ma1  <- reactive(energy_data1.df()$finalenergy[4])
+    E.f.mb1  <- reactive(energy_data1.df()$finalenergy[5])
+    E.f.mc1  <- reactive(energy_data1.df()$finalenergy[6])
+    E.f.ia1  <- reactive(energy_data1.df()$finalenergy[7])
+    E.f.ib1  <- reactive(energy_data1.df()$finalenergy[8])
+    E.f.mold1 <- reactive(energy_data1.df()$finalenergy[9])
+    E.f.cure1 <- reactive(energy_data1.df()$finalenergy[10])
+    E.f.fin1  <- reactive(energy_data1.df()$finalenergy[11])
 
-    E.f.fib2 <- reactive(energy_data.df()$finalenergy[12])
-    E.f.int2 <- reactive(energy_data.df()$finalenergy[13])
-    E.f.pm2  <- reactive(energy_data.df()$finalenergy[14])
-    E.f.ma2  <- reactive(energy_data.df()$finalenergy[15])
-    E.f.mb2  <- reactive(energy_data.df()$finalenergy[16])
-    E.f.mc2  <- reactive(energy_data.df()$finalenergy[17])
-    E.f.ia2  <- reactive(energy_data.df()$finalenergy[18])
-    E.f.ib2  <- reactive(energy_data.df()$finalenergy[19])
-    E.f.mold2 <- reactive(energy_data.df()$finalenergy[20])
-    E.f.cure2 <- reactive(energy_data.df()$finalenergy[21])
-    E.f.fin2 <- reactive(energy_data.df()$finalenergy[22])
+    E.f.fib2 <- reactive(energy_data2.df()$finalenergy[1])
+    E.f.int2 <- reactive(energy_data2.df()$finalenergy[2])
+    E.f.pm2  <- reactive(energy_data2.df()$finalenergy[3])
+    E.f.ma2  <- reactive(energy_data2.df()$finalenergy[4])
+    E.f.mb2  <- reactive(energy_data2.df()$finalenergy[5])
+    E.f.mc2  <- reactive(energy_data2.df()$finalenergy[6])
+    E.f.ia2  <- reactive(energy_data2.df()$finalenergy[7])
+    E.f.ib2  <- reactive(energy_data2.df()$finalenergy[8])
+    E.f.mold2 <- reactive(energy_data2.df()$finalenergy[9])
+    E.f.cure2 <- reactive(energy_data2.df()$finalenergy[10])
+    E.f.fin2 <- reactive(energy_data2.df()$finalenergy[11])
     
     # Final Tables ----
     Mat1.E.df <- reactive(data_frame(
