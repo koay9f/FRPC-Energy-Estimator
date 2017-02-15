@@ -786,5 +786,47 @@ moldshortfetch1 <- eventReactive(input$moldingInput1, {
    })
    
   
+   
+   # Download Tables
+   
+  RESULTSTABLE1 <-  reactive(data_frame(
+    Stage = c("Fiber", "Primary Matrix", "Additional Matrix Material", "Additional Matrix Material","Additional Matrix Material", "Insert", "Insert", "Materials Total",
+                         "Intermediate", "Molding", "Curing", "Finishing", "Processes Total"),
+    Choice = c(n.f1(), n.pm1(), n.ma1(), n.mb1(), n.mc1(), n.ia1(), n.ib1(), " ",
+               n.int1(), n.mold1(), n.cure1(), n.fin1(), " "),
+    "Frac/Yield" = c(f.f1(), f.pm1(), f.ma1(), f.mb1() , f.mc1(), f.ia1(), f.ib1() , sum(f.f1()  , f.pm1() , f.ma1() , f.mb1() , f.mc1() , f.ia1() , f.ib1() ),
+                   layup.yield1(), mold.yield1(), " -- " , finish.yield1(), (layup.yield1()* mold.yield1()* finish.yield1())),
+    "Embodied Energy (MJ/part)" = c(E.f.fib1(), E.f.pm1(), E.f.ma1(), E.f.mb1(), E.f.mc1(), E.f.ia1(), E.f.ib1(), sum(E.f.fib1(), E.f.pm1(), E.f.ma1(), E.f.mb1(), E.f.mc1(), E.f.ia1(), E.f.ib1()),
+                                    E.f.int1(), E.f.mold1(), E.f.cure1(), E.f.fin1(), sum(E.f.int1(), E.f.mold1(), E.f.cure1(), E.f.fin1()))
+
+  ))
+  
+  RESULTSTABLE2 <-  reactive(data_frame(
+    Stage = c("Fiber", "Primary Matrix", "Additional Matrix Material", "Additional Matrix Material","Additional Matrix Material", "Insert", "Insert", "Materials Total",
+                         "Intermediate", "Molding", "Curing", "Finishing", "Processes Total"),
+    Choice = c(n.f2(), n.pm2(), n.ma2(), n.mb2(), n.mc2(), n.ia2(), n.ib2(), " ",
+               n.int2(), n.mold2(), n.cure2(), n.fin2(), " "),
+    "Frac/Yield" = c(f.f2(), f.pm2(), f.ma2(), f.mb2() , f.mc2(), f.ia2(), f.ib2() , sum(f.f2()  , f.pm2() , f.ma2() , f.mb2() , f.mc2() , f.ia2() , f.ib2() ),
+                   layup.yield2(), mold.yield2(), " -- " , finish.yield2(), (layup.yield2()* mold.yield2()* finish.yield2())),
+    "Embodied Energy (MJ/part)" = c(E.f.fib2(), E.f.pm2(), E.f.ma2(), E.f.mb2(), E.f.mc2(), E.f.ia2(), E.f.ib2(), sum(E.f.fib2(), E.f.pm2(), E.f.ma2(), E.f.mb2(), E.f.mc2(), E.f.ia2(), E.f.ib2()),
+                                    E.f.int2(), E.f.mold2(), E.f.cure2(), E.f.fin2(), sum(E.f.int2(), E.f.mold2(), E.f.cure2(), E.f.fin2()))
+    
+  ))
+  
+  # output$View1 <- renderTable(RESULTSTABLE1())
+  # output$View2 <- renderTable(RESULTSTABLE2())
+  
+  
+  
+     output$DL_results1 <- downloadHandler(
+     filename = function() {paste(input$results1, ".csv") },
+     content = function(file) {
+       write.csv(RESULTSTABLE1(), file)
+     }   )
+     output$DL_results2 <- downloadHandler(
+       filename = function() {paste(input$results2, ".csv") },
+       content = function(file) {
+         write.csv(RESULTSTABLE2(), file)
+       }   )
   # End ----
    })

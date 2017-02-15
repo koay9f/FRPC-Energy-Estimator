@@ -9,7 +9,7 @@ library(shiny)
 library(readr)
 library(plotly)
 
-shinyUI(navbarPage("CFRP Energy Use Estimation Tool", position = "static-top", fluid = FALSE, theme = "bootstrap.css",  
+shinyUI(navbarPage("CFRP Energy Use Estimation Tool", position = "static-top", fluid = TRUE, theme = "bootstrap.css",  
                    
                   
                         # GuideTab ----
@@ -457,5 +457,33 @@ shinyUI(navbarPage("CFRP Energy Use Estimation Tool", position = "static-top", f
                         )
                   
                         
+                        # DownloadTab ----
+                    ,  tabPanel("Download", h1("Download Results")
+                              , p('Can download Results and Calculation Data.  Choose a file name then click "Download"')
+                              , fluidRow(                                  
+
+                               column(6 
+                              , h2("Technology Set 1")
+                              , textInput("results1", "Part 1 Results File Name","CFRP_Tool_Results_1")
+                              , downloadButton('DL_results1', "Download Results")
+                               )
+                              , column(6 
+                              , h2("Technology Set 2")
+                              , textInput("results2", "Part 2 Results File Name","CFRP_Tool_Results_2")
+                              , downloadButton('DL_results2', "Download Results")
+                              )
+                              )
+                              
+                              
+                              # , br()
+                              # , textInput("bkgrd", "Calculations File Name","CFRP_Tool_Calcs") 
+                              # , downloadButton('DL_calcs', "Download Calculations")
+                              #  
+                              #  , tableOutput("View1")
+                              # , tableOutput("View2")
+                               
+                               )
+                  
+                  
                         # End ----
                         ))
