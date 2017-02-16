@@ -9,9 +9,18 @@ library(shiny)
 library(readr)
 library(plotly)
 
-shinyUI(navbarPage("CFRP Energy Use Estimation Tool", position = "static-top", fluid = TRUE, theme = "bootstrap.css",  
-                   
-                  
+shinyUI(fluidPage(theme = "bootstrap.css",
+                  tags$head(
+                    tags$style(HTML("
+                                    .shiny-output-error-validation {
+                                    color: red;
+                                    }
+                                    "))
+                    #, tags$style(type="text/css", "body {padding-top: 120px;}")
+                    ),
+  titlePanel(h1("CFRP Energy Use Estimation Tool", style = "color:#007833")),
+  navlistPanel( 
+                                    
                         # GuideTab ----
                         tabPanel("Guide",h1("Tool Guide"),img(src = "CFRPScope.png", height = 300)
                               ,p("This tool is being developed by ORNL to provide CFRP researchers and manufacturers the ability 
@@ -148,12 +157,17 @@ shinyUI(navbarPage("CFRP Energy Use Estimation Tool", position = "static-top", f
                            , numericInput("primatrixfrac1","Primary Matrix Mass Fraction", 0.0,  min = 0.0, max = 100.0,5.0)
                            )
                            , fluidRow(column(8, h5("Embodied Energy:")), column(4,textOutput("primatrixEnergyNum1"), align = "right"))
-                             # Additional Material A 
+                            
+                           
+                           
+                            # Additional Material A 
                           , wellPanel( style = "background-color: #FFCD00;"
                           , checkboxInput("othermatrixAUSERYN1", "Use Additional Matrix Materials?",FALSE)
                           # WOULD LIKE TO ADD BOX TO choose additive/fiber/matrix AND LIMIT OTHERMATRIXA TO THAT TYPE
                           , conditionalPanel(
                              condition = "input.othermatrixAUSERYN1 == true"
+                             , selectizeInput("types1", label = "Choose Type of Additional Matrix Material",
+                                              choices = c("Matrix", "Additive", "Filler", "Not Used"), selected = "Not Used", multiple = FALSE)
                              , selectizeInput("OtherMatrixAInput1", label = "Choose Other Matrix Material",
                                            choices = NULL,  selected = "Not Used",  multiple = FALSE)
                               , numericInput("othermatrixAfrac1","Other Material A Mass Fraction", 0.0,  min = 0.0, max = 100.0,5.0)
@@ -161,9 +175,10 @@ shinyUI(navbarPage("CFRP Energy Use Estimation Tool", position = "static-top", f
                           
                           , conditionalPanel(
                             condition = "input.othermatrixAUSERYN1 == true"
-                          , fluidRow(column(8, h5("Embodied Energy:")), column(4,textOutput("othermatrixAEnergyNum1"), align = "right")))
+                          , fluidRow(column(8, h5("Embodied Energy:")), column(4,textOutput("othermatrixAEnergyNum1"), align = "right"))
                           
-                              # Additional Material B 
+                              # Additional Material B
+                          
                              , wellPanel(style = "background-color: #FFCD00;"
                           , checkboxInput("othermatrixBUSERYN1", "Use Additional Matrix Materials?",FALSE)
                           # WOULD LIKE TO ADD BOX TO choose additive/fiber/matrix AND LIMIT OTHERMATRIXB TO THAT TYPE
@@ -173,11 +188,11 @@ shinyUI(navbarPage("CFRP Energy Use Estimation Tool", position = "static-top", f
                                              choices = NULL,  selected = "Not Used",  multiple = FALSE)
                             # mass frac 
                                 , numericInput("othermatrixBfrac1","Other Material B Mass Fraction", 0.0,  min = 0.0, max = 100.0,5.0)
-                              ))
+                              )))
                           
                           , conditionalPanel(
                             condition = "input.othermatrixBUSERYN1 == true"
-                            , fluidRow(column(8, h5("Embodied Energy:")), column(4,textOutput("othermatrixBEnergyNum1"), align = "right")))
+                            , fluidRow(column(8, h5("Embodied Energy:")), column(4,textOutput("othermatrixBEnergyNum1"), align = "right"))
                             
                               # Additional Material C 
                              ,  wellPanel(style = "background-color: #FFCD00;"
@@ -189,12 +204,13 @@ shinyUI(navbarPage("CFRP Energy Use Estimation Tool", position = "static-top", f
                                              choices = NULL,  selected = "Not Used",  multiple = FALSE)
                             # mass frac 
                                  , numericInput("othermatrixCfrac1","Other Material C Mass Fraction", 0.0,  min = 0.0, max = 100.0,5.0)
-                              ))
+                              )))
                           
                           , conditionalPanel(
                             condition = "input.othermatrixCUSERYN1 == true"
                             , fluidRow(column(8, h5("Embodied Energy:")), column(4,textOutput("othermatrixCEnergyNum1"), align = "right")))
-                                # Insert 
+                              
+                            # Insert 
                           ,  conditionalPanel(
                             condition = "input.insertsAUSERYN1 == true"
                             , wellPanel(style = "background-color: #FFCD00;"
@@ -245,7 +261,7 @@ shinyUI(navbarPage("CFRP Energy Use Estimation Tool", position = "static-top", f
                                # mass frac 
                                    , numericInput("othermatrixAfrac2","Other Material A Mass Fraction", 0.0,  min = 0.0, max = 100.0,5.0)))
                                , conditionalPanel(condition = "input.othermatrixAUSERYN2"
-                                 ,fluidRow(column(8, h5("Embodied Energy:")), column(4,textOutput("othermatrixAEnergyNum2"), align = "right")))
+                                 ,fluidRow(column(8, h5("Embodied Energy:")), column(4,textOutput("othermatrixAEnergyNum2"), align = "right"))
                                
                                # Additional Mateiral B  
                                     , wellPanel(style = "background-color: #FFCD00;"
@@ -256,10 +272,10 @@ shinyUI(navbarPage("CFRP Energy Use Estimation Tool", position = "static-top", f
                                          , selectizeInput("OtherMatrixBInput2", label = "Choose Other Matrix Material",
                                                   choices = NULL,  selected = "Not Used",  multiple = FALSE)
                                  # mass frac 
-                                        , numericInput("othermatrixBfrac2","Other Material B Mass Fraction", 0.0,  min = 0.0, max = 100.0,5.0)))
+                                        , numericInput("othermatrixBfrac2","Other Material B Mass Fraction", 0.0,  min = 0.0, max = 100.0,5.0))))
                              , conditionalPanel(
                                condition = "input.othermatrixBUSERYN2 == true"    
-                             , fluidRow(column(8, h5("Embodied Energy:")), column(4,textOutput("othermatrixBEnergyNum2"), align = "right")))
+                             , fluidRow(column(8, h5("Embodied Energy:")), column(4,textOutput("othermatrixBEnergyNum2"), align = "right"))
                                  
                                  # Additional Material C 
                                        , wellPanel(style = "background-color: #FFCD00;"
@@ -269,7 +285,7 @@ shinyUI(navbarPage("CFRP Energy Use Estimation Tool", position = "static-top", f
                                                condition = "input.othermatrixCUSERYN2 == true"
                                                , selectizeInput("OtherMatrixCInput2", label = "Choose Other Matrix Material",
                                                     choices = NULL,  selected = "Not Used",  multiple = FALSE)
-                                               , numericInput("othermatrixCfrac2","Other Material C Mass Fraction", 0.0,  min = 0.0, max = 100.0,5.0)))
+                                               , numericInput("othermatrixCfrac2","Other Material C Mass Fraction", 0.0,  min = 0.0, max = 100.0,5.0))))
                              , conditionalPanel(
                                condition = "input.othermatrixCUSERYN2 == true"
                                , fluidRow(column(8, h5("Embodied Energy:")), column(4,textOutput("othermatrixCEnergyNum2"), align = "right")))
@@ -304,7 +320,7 @@ shinyUI(navbarPage("CFRP Energy Use Estimation Tool", position = "static-top", f
                             #END TAB 
                     ),
                   
-                        # IntTab ----
+                  # IntTab ----
                       tabPanel("Intermediate", h1("Fiber Intermediate Manufacturing & Layup") 
                            , p("Enter information on modeled part: intermediate type layup scrap rate")
                            
@@ -425,7 +441,7 @@ shinyUI(navbarPage("CFRP Energy Use Estimation Tool", position = "static-top", f
                   #           tableOutput("table1a"), tableOutput("table2a"), tableOutput("table1b"), tableOutput("table2b"),tableOutput("table3"), tableOutput("table4")
                   #         
                   #  ),
-                        # SummaryTab ----
+                 # SummaryTab ----
                         tabPanel("Summary", h1("Summary"),
                                  p("Summary of User Choices and Embodied Energy")
                                  #Display Part Name & Weight & Molding Process & Fiber Fraction
@@ -436,6 +452,7 @@ shinyUI(navbarPage("CFRP Energy Use Estimation Tool", position = "static-top", f
                                           , fluidRow(column(4, h5("Part Name: ")), column(8, textOutput("partname1d"), align = "right"))
                                           , fluidRow(column(8, h5("Part Weight:")), column(4, textOutput("partweight1d"), align = "right"))
                                           , tableOutput("Table.mat.1")
+                                          , br()
                                           , tableOutput("Table.pro.1")
                                    )
                                    #TechSet2
@@ -444,6 +461,7 @@ shinyUI(navbarPage("CFRP Energy Use Estimation Tool", position = "static-top", f
                                             , fluidRow(column(4, h5("Part Name: ")), column(8, textOutput("partname2d"), align = "right"))
                                             , fluidRow(column(8, h5("Part Weight:")), column(4, textOutput("partweight2d"), align = "right"))
                                             , tableOutput("Table.mat.2")
+                                            , br()
                                             , tableOutput("Table.pro.2")
                                    ))
                                             
@@ -486,4 +504,4 @@ shinyUI(navbarPage("CFRP Energy Use Estimation Tool", position = "static-top", f
                   
                   
                         # End ----
-                        ))
+                        , widths = c(2,10))))

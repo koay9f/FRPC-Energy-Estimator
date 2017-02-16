@@ -1106,7 +1106,7 @@ a {
 }
 a:hover,
 a:focus {
-  color: #134fb8;
+  color: #84b641;
   text-decoration: underline;
 }
 a:focus {
@@ -1345,35 +1345,35 @@ mark,
 }
 a.text-primary:hover,
 a.text-primary:focus {
-  color: #1863e6;
+  color: #FFCD00;
 }
 .text-success {
   color: #3fad46;
 }
 a.text-success:hover,
 a.text-success:focus {
-  color: #318837;
+  color: #FFCD00;
 }
 .text-info {
   color: #5bc0de;
 }
 a.text-info:hover,
 a.text-info:focus {
-  color: #31b0d5;
+  color: #2ABDDA;
 }
 .text-warning {
   color: #f0ad4e;
 }
 a.text-warning:hover,
 a.text-warning:focus {
-  color: #ec971f;
+  color: #A03123;
 }
 .text-danger {
   color: #d9534f;
 }
 a.text-danger:hover,
 a.text-danger:focus {
-  color: #c9302c;
+  color: #A03123;
 }
 .bg-primary {
   color: #fff;
@@ -1381,7 +1381,7 @@ a.text-danger:focus {
 }
 a.bg-primary:hover,
 a.bg-primary:focus {
-  background-color: #1863e6;
+  background-color: #84b641;
 }
 .bg-success {
   background-color: #dff0d8;
@@ -3424,7 +3424,7 @@ fieldset[disabled] .btn-link {
 }
 .btn-link:hover,
 .btn-link:focus {
-  color: #134fb8;
+  color: #007833;
   text-decoration: underline;
   background-color: transparent;
 }
@@ -3992,7 +3992,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .nav > li > a:hover,
 .nav > li > a:focus {
   text-decoration: none;
-  background-color: #eeeeee;
+  background-color: #FFCD00;
 }
 .nav > li.disabled > a {
   color: #b3b3b3;

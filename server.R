@@ -58,6 +58,10 @@ Data_Finish = read.csv("data/Data_Finishing.csv")
 finishnames = Data_Finish$Name_Finish
 finishenergy = Data_Finish$Energy_Finish
 
+# Additional Material Data
+Data_Mat_Type = read.csv("data/Data_Mat_Type.csv")
+
+
 
 
 #Talk to server ----
@@ -263,6 +267,8 @@ moldshortfetch1 <- eventReactive(input$moldingInput1, {
   # OtherMat1 ----
   
   ###A
+  # othermatlist1a <- reactive(otherlistfxn(input$types1))
+
   updateSelectizeInput(session, 'OtherMatrixAInput1',
                        choices = othermatrixnames,
                        selected = "Not Used",
@@ -556,7 +562,7 @@ moldshortfetch1 <- eventReactive(input$moldingInput1, {
     raw.f.f1 <- reactive({input$moldfracUSERNum1/100})
     raw.f.pm1 <- reactive({input$primatrixfrac1/100})
     raw.f.ma1 <- reactive({input$othermatrixAfrac1/100})
-    raw.f.ma1 <- reactive({input$othermatrixBfrac1/100})
+    raw.f.mb1 <- reactive({input$othermatrixBfrac1/100})
     raw.f.mc1 <- reactive({input$othermatrixCfrac1/100})
     m.ia1 <- reactive({input$insertsAfrac1})
     m.ib1 <- reactive({input$insertsBfrac1})
@@ -578,10 +584,13 @@ moldshortfetch1 <- eventReactive(input$moldingInput1, {
     })
     
     # Mass Fractions converion ----  
-    raw.to.actual.fracs1 <- reactive(Data_mass_fxn(finalweight1(), raw.f.f1(), raw.f.pm1(), raw.f.ma1(), raw.f.ma1(), raw.f.mc1(), m.ia1(), m.ib1()))
-    raw.to.actual.fracs2 <- reactive(Data_mass_fxn(finalweight2(), raw.f.f2(), raw.f.pm2(), raw.f.ma2(), raw.f.ma2(), raw.f.mc2(), m.ia2(), m.ib2()))
+    raw.to.actual.fracs1 <- reactive(Data_mass_fxn(finalweight1(), raw.f.f1(), raw.f.pm1(), raw.f.ma1(), raw.f.mb1(), raw.f.mc1(), m.ia1(), m.ib1()))
+    raw.to.actual.fracs2 <- reactive(Data_mass_fxn(finalweight2(), raw.f.f2(), raw.f.pm2(), raw.f.ma2(), raw.f.mb2(), raw.f.mc2(), m.ia2(), m.ib2()))
     
-   
+   f.raw.sum1 <- reactive(sum(raw.f.f1(), raw.f.pm1(), raw.f.ma1(), raw.f.mb1(), raw.f.mc1()))
+   f.raw.sum2 <- reactive(sum(raw.f.f2(), raw.f.pm2(), raw.f.ma2(), raw.f.mb2(), raw.f.mc2()))
+   m.inserts1 <- reactive(sum(m.ia1(), m.ib1()))
+   m.inserts2 <- reactive(sum(m.ia2(), m.ib2()))
     
     f.f1  <- reactive(raw.to.actual.fracs1()$mass.frac[1])
     f.pm1 <- reactive(raw.to.actual.fracs1()$mass.frac[2])
@@ -720,49 +729,147 @@ moldshortfetch1 <- eventReactive(input$moldingInput1, {
     E.f.fin2 <- reactive(energy_data2.df()$finalenergy[11])
     
     # Final Tables ----
-    Mat1.E.df <- reactive(data_frame(
+    Mat1.E.df <- reactive({  
+      
+      validate(
+          need(f.raw.sum1() == 1, "Sum of Mass Fractions should add to 100%")
+        , need(m.inserts1() < finalweight1(), "Inserts should not weigh more than the final part")
+        , need(raw.f.f1() >= 0, "Mass Fractions must not be negative")
+        , need(raw.f.pm1() >= 0, "Mass Fractions must not be negative")
+        , need(raw.f.ma1() >= 0, "Mass Fractions must not be negative")
+        , need(raw.f.mb1() >= 0, "Mass Fractions must not be negative")
+        , need(raw.f.mc1() >= 0, "Mass Fractions must not be negative")
+        , need(E.fib1(), "Please chose a fiber type")  
+        , need(E.pm1(), "Please chose a primary matrix material")   
+        , need(E.int1(), 'Please chose a fiber intermediate ("Not Used" is an option)')    
+        , need(E.mold1(), "Please chose a molding option") 
+        , need(E.cure1(), 'Please chose a curing option ("Cures in mold" is an option)')
+     
+        
+      )
+      data_frame(
       Material = c("Fiber", "Primary Matrix", "Additional Matrix Material", "Additional Matrix Material","Additional Matrix Material", "Insert", "Insert", "Materials Total"),
       Choice = c(n.f1(), n.pm1(), n.ma1(), n.mb1(), n.mc1(), n.ia1(), n.ib1(), " "),
       "Effecive Mass Fraction" = c(f.f1()*100  , f.pm1()*100 , f.ma1()*100 , f.mb1()*100 , f.mc1()*100 , f.ia1()*100 , f.ib1()*100 , sum(f.f1()*100  , f.pm1()*100 , f.ma1()*100 , f.mb1()*100 , f.mc1()*100 , f.ia1()*100 , f.ib1()*100 )),
       "Embodied Energy (MJ/part)" = c(E.f.fib1(), E.f.pm1(), E.f.ma1(), E.f.mb1(), E.f.mc1(), E.f.ia1(), E.f.ib1(), sum(E.f.fib1(), E.f.pm1(), E.f.ma1(), E.f.mb1(), E.f.mc1(), E.f.ia1(), E.f.ib1()))
-    ))
+    )})
     
-    Process1.E.df <- reactive(data_frame(
+    Process1.E.df <- reactive({
+      
+      validate(
+          need(f.raw.sum1() == 1, "")
+        , need(m.inserts1() < finalweight1(), "")
+        , need(raw.f.f1() >= 0, "")
+        , need(raw.f.pm1() >= 0, "")
+        , need(raw.f.ma1() >= 0, "")
+        , need(raw.f.mb1() >= 0, "")
+        , need(raw.f.mc1() >= 0, "")
+        , need(E.fib1(), "")  
+        , need(E.pm1(), "")   
+        , need(E.int1(), '')    
+        , need(E.mold1(), "") 
+        , need(E.cure1(), '')
+        
+      )
+      data_frame(
       Process = c("Intermediate", "Molding", "Curing", "Finishing", "Processes Total"),
       Choice =c(n.int1(), n.mold1(), n.cure1(), n.fin1(), " "),
       Yield = c(layup.yield1()*100, mold.yield1()*100, " -- " , finish.yield1()*100, (layup.yield1()* mold.yield1()* finish.yield1()*100)),
       "Embodied Energy (MJ/part)" = c(E.f.int1(), E.f.mold1(), E.f.cure1(), E.f.fin1(), sum(E.f.int1(), E.f.mold1(), E.f.cure1(), E.f.fin1()))
-    ))
+    )})
     
-    Mat2.E.df <- reactive(data_frame(
+    Mat2.E.df <- reactive({
+      
+      validate(
+        
+        need(f.raw.sum2() == 1, "Sum of Mass Fractions should add to 100%")
+        , need(m.inserts2() < finalweight2(), "Inserts should not weigh more than the final part")
+        , need(raw.f.f2() >= 0, "Mass Fractions must not be negative")
+        , need(raw.f.pm2() >= 0, "Mass Fractions must not be negative")
+        , need(raw.f.ma2() >= 0, "Mass Fractions must not be negative")
+        , need(raw.f.mb2() >= 0, "Mass Fractions must not be negative")
+        , need(raw.f.mc2() >= 0, "Mass Fractions must not be negative")
+        , need(E.fib2(), "Please chose a fiber type")  
+        , need(E.pm2(), "Please chose a primary matrix material")   
+        , need(E.int2(), 'Please chose a fiber intermediate ("Not Used" is an option)')    
+        , need(E.mold2(), "Please chose a molding option") 
+        , need(E.cure2(), 'Please chose a curing option ("Cures in mold" is an option)')
+        
+      )
+      
+      data_frame(
       Material = c("Fiber", "Primary Matrix", "Additional Matrix Material", "Additional Matrix Material","Additional Matrix Material", "Insert", "Insert", "Materials Total"),
       Choice = c(n.f2(), n.pm2(), n.ma2(), n.mb2(), n.mc2(), n.ia2(), n.ib2(), " "),
       "Effective Mass Fraction" = c(f.f2()*100  , f.pm2()*100 , f.ma2()*100 , f.mb2()*100 , f.mc2()*100 , f.ia2()*100 , f.ib2()*100 , sum(f.f2()*100  , f.pm2()*100 , f.ma2()*100 , f.mb2()*100 , f.mc2()*100 , f.ia2()*100 , f.ib2()*100)),
       "Embodied Energy (MJ/part)" = c(E.f.fib2(), E.f.pm2(), E.f.ma2(), E.f.mb2(), E.f.mc2(), E.f.ia2(), E.f.ib2(), sum(E.f.fib2(), E.f.pm2(), E.f.ma2(), E.f.mb2(), E.f.mc2(), E.f.ia2(), E.f.ib2()))
-    ))
+    )})
     
-    Process2.E.df <- reactive(data_frame(
+    Process2.E.df <- reactive({
+      
+      validate(
+        need(f.raw.sum2() == 1, "")
+        , need(m.inserts2() < finalweight2(), "")
+        , need(raw.f.f2() >= 0, "")
+        , need(raw.f.pm2() >= 0, "")
+        , need(raw.f.ma2() >= 0, "")
+        , need(raw.f.mb2() >= 0, "")
+        , need(raw.f.mc2() >= 0, "")
+        , need(E.fib2(), "")  
+        , need(E.pm2(), "")   
+        , need(E.int2(), '')    
+        , need(E.mold2(), "") 
+        , need(E.cure2(), '')
+      )
+      data_frame(
       Process = c("Intermediate", "Molding", "Curing", "Finishing", "Processes Total"),
       Choice = list(n.int2(), n.mold2(), n.cure2(), n.fin2(), " "),
       Yield = c(layup.yield2()*100, mold.yield2()*100, " -- " , finish.yield2()*100, (layup.yield2()*mold.yield2()* finish.yield2()*100)),
       "Embodied Energy (MJ/part)" = c(E.f.int2(), E.f.mold2(), E.f.cure2(), E.f.fin2(), sum(E.f.int2(), E.f.mold2(), E.f.cure2(), E.f.fin2()))
-    ))
+    )})
     
-    output$Table.mat.1 <- renderTable(Mat1.E.df(), signif = 2)
-    output$Table.pro.1 <- renderTable(Process1.E.df(), signif = 2)
+    output$Table.mat.1 <- renderTable (Mat1.E.df(), signif = 2)
+        output$Table.pro.1 <- renderTable(Process1.E.df(), signif = 2)
     output$Table.mat.2 <- renderTable(Mat2.E.df(), signif = 2)
     output$Table.pro.2 <- renderTable(Process2.E.df(), signif = 2)
   
     
     # Final Graph ----
 
-   energy_plot.df <- reactive(data_frame(
+   energy_plot.df <- reactive({
+     validate(
+       need(f.raw.sum1() == 1, "Sum of Mass Fractions (1) should add to 100%")
+       , need(m.inserts1() < finalweight1(), "Inserts (1) should not weigh more than the final part")
+       , need(raw.f.f1() >= 0, "Mass Fractions (Fiber-1) must not be negative")
+       , need(raw.f.pm1() >= 0, "Mass Fractions (Primary Matrix -1) must not be negative")
+       , need(raw.f.ma1() >= 0, "Mass Fractions (Matrix 1A) must not be negative")
+       , need(raw.f.mb1() >= 0, "Mass Fractions (Matrix 1B) must not be negative")
+       , need(raw.f.mc1() >= 0, "Mass Fractions (Matrix 1C) must not be negative")
+       , need(E.fib1(), "Please chose a fiber type (1)")  
+       , need(E.pm1(), "Please chose a primary matrix material(1)")   
+       , need(E.int1(), 'Please chose a fiber intermediate (1) ("Not Used" is an option)')    
+       , need(E.mold1(), "Please chose a molding option (1)") 
+       , need(E.cure1(), 'Please chose a curing option (1) ("Cures in mold" is an option)')
+       , need(f.raw.sum2() == 1, "Sum of Mass Fractions (2) should add to 100%")
+       , need(m.inserts2() < finalweight2(), "Inserts (2) should not weigh more than the final part")
+       , need(raw.f.f2() >= 0, "Mass Fractions (Fiber-2) must not be negative")
+       , need(raw.f.pm2() >= 0, "Mass Fractions (Primary Matrix -2) must not be negative")
+       , need(raw.f.ma2() >= 0, "Mass Fractions (Matrix 2A) must not be negative")
+       , need(raw.f.mb2() >= 0, "Mass Fractions (Matrix 2B) must not be negative")
+       , need(raw.f.mc2() >= 0, "Mass Fractions (Matrix 2C) must not be negative")
+       , need(E.fib2(), "Please chose a fiber type(2)")  
+       , need(E.pm2(), "Please chose a primary matrix material(2)")   
+       , need(E.int2(), 'Please chose a fiber intermediate (2) ("Not Used" is an option)')    
+       , need(E.mold2(), "Please chose a molding option (2)") 
+       , need(E.cure2(), 'Please chose a curing option (2) ("Cures in mold" is an option)')
+       
+     )
+     data_frame(
      techset = c(rep(partname1e(), 7), rep(partname2e(), 7)),
      process_segment = c(rep(c("Fiber", "Primary Matrix Material", "Other Materials", "Intermediate", "Molding", "Curing", "Finishing"),2)),
      process_energy = c(E.f.fib1(), E.f.pm1(), sum(E.f.ma1(), E.f.mb1(), E.f.mc1(), E.f.ia1(), E.f.ib1()), E.f.int1(), E.f.mold1(), E.f.cure1(), E.f.fin1(),
                         E.f.fib2(), E.f.pm2(), sum(E.f.ma2(), E.f.mb2(), E.f.mc2(), E.f.ia2(), E.f.ib2()), E.f.int2(), E.f.mold2(), E.f.cure2(), E.f.fin2())
      , order = rep(c(1, 2, 3, 4, 5, 6, 7), 2)
-       ))
+       )})
    
     output$table3 <- renderTable(energy_plot.df(), signif = 3)
     
@@ -828,5 +935,9 @@ moldshortfetch1 <- eventReactive(input$moldingInput1, {
        content = function(file) {
          write.csv(RESULTSTABLE2(), file)
        }   )
+     
+
+     
+     
   # End ----
    })

@@ -2,7 +2,23 @@ library(tidyverse)
 
 # ADDITIONAL BACKGROUND FUNCTIONS
 
+othermatfxn <- function(typeother){
+  if (typeother == "Not Used" ) {
+    "Not Used"
+  } else {
+    if (typeother == "Matrix"){
+      c(primatrixnames)
+    } else{
+      if (typeother == "Additive") {
+        c("Magnesium Oxide", "Polyvinyl acetate")
+      } else{
+        c("Calcium Carbonate", "Kaolin Clay")
+        }
+      }
+    }
+      }
 
+  
 
 
 yfs <- function(scrap){(1-scrap)}
@@ -11,8 +27,6 @@ newmassfrac_fxn <- function(oldfrac, weight, inserta, insertb){
   newfrac <- oldfrac*(weight - inserta - insertb)/weight
   newfrac
 }
-
-
 
 Data_mass_fxn <- function(mass, r.f.f, r.f.pm, r.f.ma, r.f.mb, r.f.mc, r.m.ia, r.m.ib){
   massfrac.df <- data_frame(
@@ -38,6 +52,7 @@ Data_mass_fxn <- function(mass, r.f.f, r.f.pm, r.f.ma, r.f.mb, r.f.mc, r.m.ia, r
   calc.mass.frac.df
   
   }
+
 check <- function(check){
   if (check == 1 ) {
   ""
