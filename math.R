@@ -1,26 +1,47 @@
 library(tidyverse)
 
 # ADDITIONAL BACKGROUND FUNCTIONS
-
-othermatfxn <- function(typeother){
+# make lists for additional materials----
+othermatfxn <- function(typeother, matrix, additive, filler){
   if (typeother == "Not Used" ) {
     "Not Used"
   } else {
     if (typeother == "Matrix"){
-      c(primatrixnames)
+      matrix
     } else{
       if (typeother == "Additive") {
-        c("Magnesium Oxide", "Polyvinyl acetate")
+        additive
       } else{
-        c("Calcium Carbonate", "Kaolin Clay")
+        filler
         }
       }
     }
       }
-
-  
-
-
+# cure list dependent on molding----
+curelistfxn <- function(moldtype, all, only, wlup, autoclave){
+ if (moldtype == "Wet (Hand) Lay up") {
+   wlup
+ } else{
+   if (moldtype == "Vacuum Bag (Autoclave)"){
+     autoclave
+     
+   }else{
+     if (moldtype == "Automatic Fiber Placement"){
+       all
+     } else{
+       if (moldtype == "Automatic Tape Placement"){
+         all
+       }else{
+         if (moldtype == "Compression Molding"){
+           all
+         }else{
+           if (moldtype == "Resin Transfer Molding"){
+             all
+             
+           }  else{
+       only
+     }   } }  }}}}
+# Additional ----
 yfs <- function(scrap){(1-scrap)}
 
 newmassfrac_fxn <- function(oldfrac, weight, inserta, insertb){

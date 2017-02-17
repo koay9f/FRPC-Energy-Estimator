@@ -1106,7 +1106,7 @@ a {
 }
 a:hover,
 a:focus {
-  color: #84b641;
+  color: #000000;
   text-decoration: underline;
 }
 a:focus {
@@ -1345,7 +1345,7 @@ mark,
 }
 a.text-primary:hover,
 a.text-primary:focus {
-  color: #FFCD00;
+  color: #ffcd00;
 }
 .text-success {
   color: #3fad46;
@@ -3992,7 +3992,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .nav > li > a:hover,
 .nav > li > a:focus {
   text-decoration: none;
-  background-color: #FFCD00;
+  background-color: #2abdda;
 }
 .nav > li.disabled > a {
   color: #b3b3b3;
@@ -4033,7 +4033,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   border-radius: 4px 4px 0 0;
 }
 .nav-tabs > li > a:hover {
-  border-color: #eeeeee #eeeeee #dddddd;
+  border-color: #ffffff #ffffff #ffffff;
 }
 .nav-tabs > li.active > a,
 .nav-tabs > li.active > a:hover,

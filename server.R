@@ -38,7 +38,11 @@ matrixnames = Data_MatrixM$Name_Matrix
 matrixenergy = Data_MatrixM$Energy_Matrix
 matrixtype = Data_MatrixM$Type_Matrix
 Data_primatrix <- subset(Data_MatrixM, Type_Matrix == "Matrix")
+Data_Additive <- subset(Data_MatrixM, Type_Matrix == "Additive")
+Data_Filler <- subset(Data_MatrixM, Type_Matrix == "Filler")
 primatrixnames = Data_primatrix$Name_Matrix
+additivenames = Data_Additive$Name_Matrix
+fillernames = Data_Filler$Name_Matrix
 Data_othermatrix <- subset(Data_MatrixM, Type_Matrix != "Insert")
 othermatrixnames = Data_othermatrix$Name_Matrix
 
@@ -52,6 +56,11 @@ insertsenergy = Data_inserts$Energy_Inserts
 Data_Cure = read.csv("data/Data_Cure.csv")
 curenames = Data_Cure$Name_Cure
 cureenergy = Data_Cure$Energy_Cure
+allcure <- c("Cures in Mold","Autoclave Curing","Oven Curing","Oven Curing with Vacuum","QuickStep",
+             "Microwave Curing","Microwave Curing with Vacuum","Infrared Curing", "Direct Induction Curing","E Beam Curing")
+onlymoldcure <- c("Cures in Mold")
+wetcure <- c("Cures in Mold","Oven Curing","QuickStep","Microwave Curing","Infrared Curing","Direct Induction Curing","E Beam Curing")
+vbcure <- c("Autoclave Curing","QuickStep","Microwave Curing with Vacuum","Infrared Curing","Direct Induction Curing","E Beam Curing")
 
 #Name Data_Finishing columns
 Data_Finish = read.csv("data/Data_Finishing.csv")
@@ -59,9 +68,9 @@ finishnames = Data_Finish$Name_Finish
 finishenergy = Data_Finish$Energy_Finish
 
 # Additional Material Data
-Data_Mat_Type = read.csv("data/Data_Mat_Type.csv")
-
-
+# Data_Mat_Type = read_csv("data/Data_Mat_Type.csv")
+# 
+# Data_Cure_Mold = read_csv("data/Data_Cure_Mold.csv")
 
 
 #Talk to server ----
@@ -266,13 +275,19 @@ moldshortfetch1 <- eventReactive(input$moldingInput1, {
   output$primatrixEnergyNum1 <- renderText({paste(primatrixenergyfetch1(), "MJ/kg")})
   # OtherMat1 ----
   
+  
   ###A
-  # othermatlist1a <- reactive(otherlistfxn(input$types1))
-
+  observeEvent(input$types1a, {
+  list1a <- othermatfxn(input$types1a, primatrixnames, additivenames, fillernames)
+    # data1a <- input$types1 
+    # list1a <- Data_Mat_Type %>%  select(contains(data1a))
+    
   updateSelectizeInput(session, 'OtherMatrixAInput1',
-                       choices = othermatrixnames,
+                       choices = list1a,
                        selected = "Not Used",
                        server = TRUE)
+    
+  })
   # Associate Name with Matrix type name
   othermatrixAnamefetch1 <- eventReactive(input$OtherMatrixAInput1, {
     othermatrixnames[othermatrixnames %in% input$OtherMatrixAInput1]
@@ -285,11 +300,13 @@ moldshortfetch1 <- eventReactive(input$moldingInput1, {
   output$othermatrixAEnergyNum1 <- renderText({paste(othermatrixAenergyfetch1(), "MJ/kg")})
 
   ####B
-  
+  observeEvent(input$types1b, {
+    list1b <- othermatfxn(input$types1b, primatrixnames, additivenames, fillernames)
   updateSelectizeInput(session, 'OtherMatrixBInput1',
-                       choices = othermatrixnames,
+                       choices = list1b,
                        selected = "Not Used",
                        server = TRUE)
+  })
   # Associate Name with Matrix type name
   othermatrixBnamefetch1 <- eventReactive(input$OtherMatrixBInput1, {
     othermatrixnames[othermatrixnames %in% input$OtherMatrixBInput1]
@@ -302,11 +319,13 @@ moldshortfetch1 <- eventReactive(input$moldingInput1, {
   output$othermatrixBEnergyNum1 <- renderText({paste(othermatrixBenergyfetch1(), "MJ/kg")})
   
   ####C
-  
+  observeEvent(input$types1c, {
+    list1c <- othermatfxn(input$types1c, primatrixnames, additivenames, fillernames)
   updateSelectizeInput(session, 'OtherMatrixCInput1',
-                       choices = othermatrixnames,
+                       choices = list1c,
                        selected = "Not Used",
                        server = TRUE)
+  })
   # Associate Name with Matrix type name
   othermatrixCnamefetch1 <- eventReactive(input$OtherMatrixCInput1, {
     othermatrixnames[othermatrixnames %in% input$OtherMatrixCInput1]
@@ -371,10 +390,13 @@ moldshortfetch1 <- eventReactive(input$moldingInput1, {
   # OtherMat2 ----
   
   ###A
+ observeEvent(input$types2a, {
+   list2a <- othermatfxn(input$types2a, primatrixnames, additivenames, fillernames)
   updateSelectizeInput(session, 'OtherMatrixAInput2',
-                       choices = othermatrixnames,
+                       choices = list2a,
                        selected = "Not Used",
                        server = TRUE)
+ })
   # Associate Name with Matrix type name
   othermatrixAnamefetch2 <- eventReactive(input$OtherMatrixAInput2, {
     othermatrixnames[othermatrixnames %in% input$OtherMatrixAInput2]
@@ -388,11 +410,13 @@ moldshortfetch1 <- eventReactive(input$moldingInput1, {
 
   
   ####B
-  
+  observeEvent(input$types2b, {
+    list2b <- othermatfxn(input$types2b, primatrixnames, additivenames, fillernames)
   updateSelectizeInput(session, 'OtherMatrixBInput2',
-                       choices = othermatrixnames,
+                       choices = list2b,
                        selected = "Not Used",
                        server = TRUE)
+  })
   # Associate Name with Matrix type name
   othermatrixBnamefetch2 <- eventReactive(input$OtherMatrixBInput2, {
     othermatrixnames[othermatrixnames %in% input$OtherMatrixBInput2]
@@ -405,11 +429,13 @@ moldshortfetch1 <- eventReactive(input$moldingInput1, {
   output$othermatrixBEnergyNum2 <- renderText({paste(othermatrixBenergyfetch2(), "MJ/kg")})
   
   ####C
-  
+  observeEvent(input$types2c, {
+    list2c <- othermatfxn(input$types2c, primatrixnames, additivenames, fillernames)
   updateSelectizeInput(session, 'OtherMatrixCInput2',
-                       choices = othermatrixnames,
+                       choices = list2c,
                        selected = "Not Used",
                        server = TRUE)
+  })
   # Associate Name with Matrix type name
   othermatrixCnamefetch2 <- eventReactive(input$OtherMatrixCInput2, {
     othermatrixnames[othermatrixnames %in% input$OtherMatrixCInput2]
@@ -457,10 +483,15 @@ moldshortfetch1 <- eventReactive(input$moldingInput1, {
   output$insertsBEnergyNum2 <- renderText({paste(insertsBenergyfetch2(), "MJ/kg")})
   # Cure1 ----
   # Make List for Box
-  updateSelectizeInput(session, 'cureInput1',
-                       choices = curenames,
+  
+   observeEvent(input$moldingInput1,{
+     curelist1 <- curelistfxn(input$moldingInput1, allcure, onlymoldcure, wetcure, vbcure)
+      updateSelectizeInput(session, 'cureInput1',
+                       choices = curelist1,
                        selected = "",
                        server = TRUE)
+  })
+    
   
   # Associate Name value with cure type name
   curenamefetch1 <- eventReactive(input$cureInput1, {
@@ -475,10 +506,13 @@ moldshortfetch1 <- eventReactive(input$moldingInput1, {
   
   # Cure2 ----
   # Make List for Box
-  updateSelectizeInput(session, 'cureInput2',
-                       choices = curenames,
-                       selected = "",
-                       server = TRUE)
+  observeEvent(input$moldingInput2,{
+    curelist2 <- curelistfxn(input$moldingInput2, allcure, onlymoldcure, wetcure, vbcure)
+    updateSelectizeInput(session, 'cureInput2',
+                         choices = curelist2,
+                         selected = "",
+                         server = TRUE)
+  })
   # Associate Name value with cure type name
   curenamefetch2 <- eventReactive(input$cureInput2, {
     curenames[curenames %in% input$cureInput2]

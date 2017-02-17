@@ -166,7 +166,7 @@ shinyUI(fluidPage(theme = "bootstrap.css",
                           # WOULD LIKE TO ADD BOX TO choose additive/fiber/matrix AND LIMIT OTHERMATRIXA TO THAT TYPE
                           , conditionalPanel(
                              condition = "input.othermatrixAUSERYN1 == true"
-                             , selectizeInput("types1", label = "Choose Type of Additional Matrix Material",
+                             , selectizeInput("types1a", label = "Choose Type of Additional Matrix Material",
                                               choices = c("Matrix", "Additive", "Filler", "Not Used"), selected = "Not Used", multiple = FALSE)
                              , selectizeInput("OtherMatrixAInput1", label = "Choose Other Matrix Material",
                                            choices = NULL,  selected = "Not Used",  multiple = FALSE)
@@ -184,7 +184,9 @@ shinyUI(fluidPage(theme = "bootstrap.css",
                           # WOULD LIKE TO ADD BOX TO choose additive/fiber/matrix AND LIMIT OTHERMATRIXB TO THAT TYPE
                               , conditionalPanel(
                                    condition = "input.othermatrixBUSERYN1 == true"
-                                 , selectizeInput("OtherMatrixBInput1", label = "Choose Other Matrix Material",
+                                   , selectizeInput("types1b", label = "Choose Type of Additional Matrix Material",
+                                                    choices = c("Matrix", "Additive", "Filler", "Not Used"), selected = "Not Used", multiple = FALSE)
+                                   , selectizeInput("OtherMatrixBInput1", label = "Choose Other Matrix Material",
                                              choices = NULL,  selected = "Not Used",  multiple = FALSE)
                             # mass frac 
                                 , numericInput("othermatrixBfrac1","Other Material B Mass Fraction", 0.0,  min = 0.0, max = 100.0,5.0)
@@ -200,7 +202,9 @@ shinyUI(fluidPage(theme = "bootstrap.css",
                           # WOULD LIKE TO ADD BOX TO choose additive/fiber/matrix AND LIMIT OTHERMATRIXC TO THAT TYPE
                               , conditionalPanel(
                             condition = "input.othermatrixCUSERYN1 == true"
-                                  , selectizeInput("OtherMatrixCInput1", label = "Choose Other Matrix Material",
+                            , selectizeInput("types1c", label = "Choose Type of Additional Matrix Material",
+                                             choices = c("Matrix", "Additive", "Filler", "Not Used"), selected = "Not Used", multiple = FALSE)      
+                            , selectizeInput("OtherMatrixCInput1", label = "Choose Other Matrix Material",
                                              choices = NULL,  selected = "Not Used",  multiple = FALSE)
                             # mass frac 
                                  , numericInput("othermatrixCfrac1","Other Material C Mass Fraction", 0.0,  min = 0.0, max = 100.0,5.0)
@@ -256,7 +260,9 @@ shinyUI(fluidPage(theme = "bootstrap.css",
                              # WOULD LIKE TO ADD BOX TO choose additive/fiber/matrix AND LIMIT OTHERMATRIXA TO THAT TYPE
                                  , conditionalPanel(
                                      condition = "input.othermatrixAUSERYN2"
-                                    , selectizeInput("OtherMatrixAInput2", label = "Choose Other Matrix Material",
+                                     , selectizeInput("types2a", label = "Choose Type of Additional Matrix Material",
+                                                      choices = c("Matrix", "Additive", "Filler", "Not Used"), selected = "Not Used", multiple = FALSE)
+                                     , selectizeInput("OtherMatrixAInput2", label = "Choose Other Matrix Material",
                                                 choices = NULL,  selected = "Not Used",  multiple = FALSE)
                                # mass frac 
                                    , numericInput("othermatrixAfrac2","Other Material A Mass Fraction", 0.0,  min = 0.0, max = 100.0,5.0)))
@@ -269,6 +275,8 @@ shinyUI(fluidPage(theme = "bootstrap.css",
                                # WOULD LIKE TO ADD BOX TO choose additive/fiber/matrix AND LIMIT OTHERMATRIXB TO THAT TYPE
                                     , conditionalPanel(
                                          condition = "input.othermatrixBUSERYN2 == true"
+                                         , selectizeInput("types2b", label = "Choose Type of Additional Matrix Material",
+                                                          choices = c("Matrix", "Additive", "Filler", "Not Used"), selected = "Not Used", multiple = FALSE)
                                          , selectizeInput("OtherMatrixBInput2", label = "Choose Other Matrix Material",
                                                   choices = NULL,  selected = "Not Used",  multiple = FALSE)
                                  # mass frac 
@@ -283,6 +291,8 @@ shinyUI(fluidPage(theme = "bootstrap.css",
                                  # WOULD LIKE TO ADD BOX TO choose additive/fiber/matrix AND LIMIT OTHERMATRIXC TO THAT TYPE
                                           , conditionalPanel(
                                                condition = "input.othermatrixCUSERYN2 == true"
+                                               , selectizeInput("types2c", label = "Choose Type of Additional Matrix Material",
+                                                                choices = c("Matrix", "Additive", "Filler", "Not Used"), selected = "Not Used", multiple = FALSE)
                                                , selectizeInput("OtherMatrixCInput2", label = "Choose Other Matrix Material",
                                                     choices = NULL,  selected = "Not Used",  multiple = FALSE)
                                                , numericInput("othermatrixCfrac2","Other Material C Mass Fraction", 0.0,  min = 0.0, max = 100.0,5.0))))
@@ -436,10 +446,11 @@ shinyUI(fluidPage(theme = "bootstrap.css",
                                  )
                                  #EndTab
                                  ),
-                  # # TEST TAB ----
-                  #  tabPanel("TEST", h1("TEST"),
+                  #TEST TAB ----
+                  # tabPanel("TEST", h1("TEST"),
                   #           tableOutput("table1a"), tableOutput("table2a"), tableOutput("table1b"), tableOutput("table2b"),tableOutput("table3"), tableOutput("table4")
-                  #         
+                  #          fluidRow(textOutput("testrow")),
+                  #          fluidRow(tableOutput("testcure"))
                   #  ),
                  # SummaryTab ----
                         tabPanel("Summary", h1("Summary"),
