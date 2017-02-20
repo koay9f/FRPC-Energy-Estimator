@@ -40,8 +40,43 @@ curelistfxn <- function(moldtype, all, only, wlup, autoclave){
              
            }  else{
        only
-     }   } }  }}}}
-# Additional ----
+           }   } }  }}}}
+
+# int list dependent on molding----
+intlistfxn <- function(moldtype) {
+  if (moldtype == "Wet (Hand) Lay up") {
+    c("Prepregs, Hand (TS)", "Prepregs, Hand (TP)", "Dry Weave", "Dry Braid", "Dry Knit", "Not Used")
+  } else {
+    if (moldtype == "Vacuum Bag (Autoclave)"){
+      c("Prepregs, Hand (TS)", "Prepregs, Hand (TP)")
+    }else {
+      if (moldtype == "Automatic Fiber Placement"){
+        c("Prepregs, Auto, Fiber (TS)", "Prepregs, Auto, Fiber (TP)")
+      } else{
+        if (moldtype == "Automatic Tape Placement"){
+          c("Prepregs, Auto, Tape (TS)", "Prepregs, Auto, Tape (TP)")
+        }else{
+          if (moldtype == "Spray Up"){
+            c("Chopped")
+          }else{
+            if (moldtype == "Pultrusion"){
+              c("Dry Weave", "Not Used")
+            }else{
+              if (moldtype == "Filament Winding"){
+                c("Prepregs, Auto, Fiber (TS)", "Prepregs, Auto, Fiber (TP)", "Dry Braid", "Not Used")
+              }else{
+                if (moldtype == "Sheet Molding Compound"){
+                  c("SMC")
+                }else{
+                  if (moldtype == "Structural Reaction Injection Molding"){
+                    c("Chopped", "Dry Weave", "Dry Knit", "Powdered P4")
+              
+            }  else{
+              c("Prepregs, Hand (TS)", "Prepregs, Auto, Tape (TS)", "Prepregs, Auto, Fiber (TS)", "Prepregs, Hand (TP)", "Prepregs, Auto, Tape (TP)", "Prepregs, Auto, Fiber (TP)", "Powdered P4", "Dry Weave", "Dry Braid", "Dry Knit", "Not Used")
+            }}}}}}}}}}
+
+
+# Additional Fxns ----
 yfs <- function(scrap){(1-scrap)}
 
 newmassfrac_fxn <- function(oldfrac, weight, inserta, insertb){
@@ -211,7 +246,7 @@ BIGFUNCTION1 <- function(
 }
 
 
-# # BEGINING OF BIGFUNCTION2 ----
+# BIGFUNCTION2 ----
 
 BIGFUNCTION2 <- function(Data_yield,
                          f_pm, f_ma, f_mb, f_mc, f_ia, f_ib,

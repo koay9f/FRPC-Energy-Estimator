@@ -1,12 +1,12 @@
 Name_Cure,Energy_Cure
-Cures in Mold,0.0
+Cures in Mold,0
 Autoclave Curing,63.84
 Oven Curing,8.97
 Oven Curing with Vacuum,14.7
-Quickstep,27.0
+QuickStep,27
 Microwave Curing,12.8
 Microwave Curing with Vacuum,18.7
 Infrared Curing,1.2
 Direct Induction Curing,0.7
 E Beam Curing,0.15
-NA,0.0
+NA,0

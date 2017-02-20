@@ -22,7 +22,7 @@ shinyUI(fluidPage(theme = "bootstrap.css",
   navlistPanel( 
                                     
                         # GuideTab ----
-                        tabPanel("Guide",h1("Tool Guide"),img(src = "CFRPScope.png", height = 300)
+                        tabPanel("Guide",h1("Tool Guide"),img(src = "Scope.xml", height = 300)
                               ,p("This tool is being developed by ORNL to provide CFRP researchers and manufacturers the ability 
                               to quickly estimate the embodied energy use of their CFRP manufactuing process 
                               and compare it to other processes")
@@ -342,6 +342,9 @@ shinyUI(fluidPage(theme = "bootstrap.css",
                                     , fluidRow(column(4, h5("Part Name: ")), column(8, textOutput("partname1a"), align = "right"))
                                     , fluidRow(column(8, h5("Part Weight:")), column(4, textOutput("partweight1a"), align = "right"))
                                     , fluidRow(column(8, h5("Molding Techology: ")), column(4, textOutput("moldshort1a"), align = "right"))
+                                    , wellPanel(style = "background-color: #FFCD00;"
+                                                , checkboxInput("intYN1", "View all intermediate options?",FALSE)
+                                    )
                                     , wellPanel(selectizeInput("intInput1", label = "Choose Fiber Intermediate",
                                                      choices = NULL,  selected = "",  multiple = FALSE,
                                                      options = list(placeholder = 'Choose Fiber Intermediate     ')))
@@ -357,6 +360,9 @@ shinyUI(fluidPage(theme = "bootstrap.css",
                                       , fluidRow(column(4, h5("Part Name: ")), column(8, textOutput("partname2a"), align = "right"))
                                       , fluidRow(column(8, h5("Part Weight:")), column(4, textOutput("partweight2a"), align = "right"))
                                       , fluidRow(column(8, h5("Molding Techology: ")), column(4, textOutput("moldshort2a"), align = "right"))
+                                      , wellPanel(style = "background-color: #FFCD00;"
+                                                  , checkboxInput("intYN2", "View all fiber intermediate options?",FALSE)
+                                      )
                                       , wellPanel(selectizeInput("intInput2", label = "Choose Fiber Intermediate",
                                                        choices = NULL,  selected = "",  multiple = FALSE,
                                                        options = list(placeholder = 'Choose Fiber Intermediate     ')))
@@ -392,6 +398,9 @@ shinyUI(fluidPage(theme = "bootstrap.css",
                                                   , 0.0,  min = 0.0, max = 100.0,5.0))
                                   , br()
                                    #curing tech & energy
+                                  , wellPanel(style = "background-color: #FFCD00;"
+                                              , checkboxInput("cureYN1", "View all curing options?",FALSE)
+                                  )
                                    , wellPanel(selectizeInput("cureInput1", label = "Curing Technology Options",
                                                     choices = NULL, selected = "", multiple = FALSE,
                                                     options = list(placeholder = 'Choose Curing Technology    ')))
@@ -425,6 +434,9 @@ shinyUI(fluidPage(theme = "bootstrap.css",
                                                   0.0,  min = 0.0, max = 100.0,5.0))
                                   , br()
                                     #curing tech & energy
+                                  , wellPanel(style = "background-color: #FFCD00;"
+                                              , checkboxInput("cureYN2", "View all curing options?",FALSE)
+                                  )
                                    , wellPanel(selectizeInput("cureInput2", label = "Curing Technology Options",
                                                     choices = NULL, selected = "", multiple = FALSE,
                                                     options = list(placeholder = 'Choose Curing Technology    ')))
@@ -447,11 +459,12 @@ shinyUI(fluidPage(theme = "bootstrap.css",
                                  #EndTab
                                  ),
                   #TEST TAB ----
-                  # tabPanel("TEST", h1("TEST"),
-                  #           tableOutput("table1a"), tableOutput("table2a"), tableOutput("table1b"), tableOutput("table2b"),tableOutput("table3"), tableOutput("table4")
-                  #          fluidRow(textOutput("testrow")),
-                  #          fluidRow(tableOutput("testcure"))
-                  #  ),
+                  tabPanel("TEST", h1("TEST"),
+                            tableOutput("table1a"), tableOutput("table2a"), tableOutput("table1b"), tableOutput("table2b"),tableOutput("table3"), tableOutput("table4")
+                           # fluidRow(textOutput("testrow")),
+
+                           # fluidRow(tableOutput("testcure"))
+                   ),
                  # SummaryTab ----
                         tabPanel("Summary", h1("Summary"),
                                  p("Summary of User Choices and Embodied Energy")

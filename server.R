@@ -47,9 +47,9 @@ Data_othermatrix <- subset(Data_MatrixM, Type_Matrix != "Insert")
 othermatrixnames = Data_othermatrix$Name_Matrix
 
 #Name Data_Inserts columns
-Data_inserts =  read.csv("data/Data_Inserts.csv")
-insertsnames = Data_inserts$Name_Inserts
-insertsenergy = Data_inserts$Energy_Inserts
+Data_Inserts =  read.csv("data/Data_Inserts.csv")
+insertsnames = Data_Inserts$Name_Inserts
+insertsenergy = Data_Inserts$Energy_Inserts
 
 
 #Name Data_Cure columns
@@ -66,11 +66,6 @@ vbcure <- c("Autoclave Curing","QuickStep","Microwave Curing with Vacuum","Infra
 Data_Finish = read.csv("data/Data_Finishing.csv")
 finishnames = Data_Finish$Name_Finish
 finishenergy = Data_Finish$Energy_Finish
-
-# Additional Material Data
-# Data_Mat_Type = read_csv("data/Data_Mat_Type.csv")
-# 
-# Data_Cure_Mold = read_csv("data/Data_Cure_Mold.csv")
 
 
 #Talk to server ----
@@ -200,10 +195,25 @@ moldshortfetch1 <- eventReactive(input$moldingInput1, {
   # Int1 ----
   
   #Make List for box
-  updateSelectizeInput(session, 'intInput1',
-                       choices = intnames,
-                       selected = "",
-                       server = TRUE)
+  
+  observeEvent({
+    input$intYN1
+    input$moldingInput1} ,{
+      intlist1 <- intlistfxn(input$moldingInput1)
+      if (input$intYN1 == TRUE) {
+        updateSelectizeInput(session, 'intInput1',
+                             choices = intnames,
+                             selected = "",
+                             server = TRUE)
+      }
+      else 
+        updateSelectizeInput(session, 'intInput1',
+                             choices = intlist1,
+                             selected = "",
+                             server = TRUE)
+    })
+  
+
   # Associate Name with Int type name
   intnamefetch1 <- eventReactive(input$intInput1, {
     intnames[intnames %in% input$intInput1]
@@ -227,13 +237,29 @@ moldshortfetch1 <- eventReactive(input$moldingInput1, {
   int.prepregYN1 <-renderText(intprepregfetch1())
   
   
+  
+  
+  
+  
   # Int2 ----
   
   #Make List for box
-  updateSelectizeInput(session, 'intInput2',
-                       choices = intnames,
-                       selected = "",
-                       server = TRUE)
+  observeEvent({
+    input$intYN2
+    input$moldingInput2} ,{
+      intlist2 <- intlistfxn(input$moldingInput2)
+      if (input$intYN2 == TRUE) {
+        updateSelectizeInput(session, 'intInput2',
+                             choices = intnames,
+                             selected = "",
+                             server = TRUE)
+      }
+      else 
+        updateSelectizeInput(session, 'intInput2',
+                             choices = intlist2,
+                             selected = "",
+                             server = TRUE)
+    })
   # Associate Name with Int type name
   intnamefetch2 <- eventReactive(input$intInput2, {
     intnames[intnames %in% input$intInput2]
@@ -279,8 +305,7 @@ moldshortfetch1 <- eventReactive(input$moldingInput1, {
   ###A
   observeEvent(input$types1a, {
   list1a <- othermatfxn(input$types1a, primatrixnames, additivenames, fillernames)
-    # data1a <- input$types1 
-    # list1a <- Data_Mat_Type %>%  select(contains(data1a))
+ 
     
   updateSelectizeInput(session, 'OtherMatrixAInput1',
                        choices = list1a,
@@ -484,12 +509,21 @@ moldshortfetch1 <- eventReactive(input$moldingInput1, {
   # Cure1 ----
   # Make List for Box
   
-   observeEvent(input$moldingInput1,{
+   observeEvent({
+     input$cureYN1
+     input$moldingInput1} ,{
      curelist1 <- curelistfxn(input$moldingInput1, allcure, onlymoldcure, wetcure, vbcure)
-      updateSelectizeInput(session, 'cureInput1',
-                       choices = curelist1,
-                       selected = "",
-                       server = TRUE)
+     if (input$cureYN1 == TRUE) {
+     updateSelectizeInput(session, 'cureInput1',
+                          choices = allcure,
+                          selected = "",
+                          server = TRUE)
+   }
+   else 
+     updateSelectizeInput(session, 'cureInput1',
+                          choices = curelist1,
+                          selected = "",
+                          server = TRUE)
   })
     
   
@@ -506,13 +540,22 @@ moldshortfetch1 <- eventReactive(input$moldingInput1, {
   
   # Cure2 ----
   # Make List for Box
-  observeEvent(input$moldingInput2,{
-    curelist2 <- curelistfxn(input$moldingInput2, allcure, onlymoldcure, wetcure, vbcure)
-    updateSelectizeInput(session, 'cureInput2',
-                         choices = curelist2,
-                         selected = "",
-                         server = TRUE)
-  })
+  observeEvent({
+    input$cureYN2
+    input$moldingInput2} ,{
+      curelist2 <- curelistfxn(input$moldingInput2, allcure, onlymoldcure, wetcure, vbcure)
+      if (input$cureYN2 == TRUE) {
+        updateSelectizeInput(session, 'cureInput2',
+                             choices = allcure,
+                             selected = "",
+                             server = TRUE)
+      }
+      else 
+        updateSelectizeInput(session, 'cureInput2',
+                             choices = curelist2,
+                             selected = "",
+                             server = TRUE)
+    })
   # Associate Name value with cure type name
   curenamefetch2 <- eventReactive(input$cureInput2, {
     curenames[curenames %in% input$cureInput2]
@@ -559,23 +602,153 @@ moldshortfetch1 <- eventReactive(input$moldingInput1, {
  output$finishEnergyNum2 <- renderText({paste(finishenergyfetch2(), "MJ/kg")})  
 
   # Change user values to default ----
-  observe({
+  observeEvent(input$moldingInput1,{
     ff1 <- moldfracfetch1()
-    ff2 <- moldfracfetch2()
-    ints1 <-  intscrapfetch1()
-    ints2 <-  intscrapfetch2()
     moldy1 <-  moldyieldfetch1()
-    moldy2 <-  moldyieldfetch2()
-    
+
     
     updateNumericInput(session, "moldfracUSERNum1", value = (ff1*100)) 
-    updateNumericInput(session, "moldfracUSERNum2", value = (ff2*100)) 
-    updateNumericInput(session, "intscrapUSERNum1", value = (ints1*100)) 
-    updateNumericInput(session, "intscrapUSERNum2", value = (ints2*100)) 
     updateNumericInput(session, "moldyieldUSERNum1", value = (moldy1*100)) 
-    updateNumericInput(session, "moldyieldUSERNum2", value = (moldy2*100) )
 
   })
+ 
+ observeEvent(input$intInput1,{
+   ints1 <-  intscrapfetch1()
+       updateNumericInput(session, "intscrapUSERNum1", value = (ints1*100)) 
+
+ })
+ 
+ observeEvent(input$moldingInput2,{
+   ff2 <- moldfracfetch2()
+   moldy2 <-  moldyieldfetch2()
+   
+   
+   updateNumericInput(session, "moldfracUSERNum2", value = (ff2*100)) 
+   updateNumericInput(session, "moldyieldUSERNum2", value = (moldy2*100) )
+   
+ })
+ observeEvent(input$intInput2,{
+   ints2 <-  intscrapfetch2()
+        updateNumericInput(session, "intscrapUSERNum2", value = (ints2*100)) 
+
+ })
+ 
+ # RETURN MASS/FRACS TO ZERO IF USE ADDITIONAL CHECK BOXES ARE FALSE ----
+ observeEvent(input$insertsAUSERYN1, {
+   if (!input$insertsAUSERYN1){
+     updateNumericInput(session, "insertsAfrac1", value = (0)) 
+   updateNumericInput(session, "insertsBfrac1", value = (0)) }
+   
+              })
+ 
+ observeEvent(input$insertsBUSERYN1, {
+   if (!input$insertsBUSERYN1){
+     updateNumericInput(session, "insertsBfrac1", value = (0)) }
+   
+ })
+ observeEvent(input$othermatrixAUSERYN1, {
+   if (!input$othermatrixAUSERYN1){
+     updateNumericInput(session, "othermatrixAfrac1", value = (0)) 
+   updateSelectizeInput(session, 'types1a',
+                        choices = c("Matrix", "Additive", "Filler", "Not Used"),
+                        selected = "Not Used",
+                        server = TRUE)
+     updateSelectizeInput(session, 'OtherMatrixAInput1',
+                        choices = "Not Used",
+                        selected = "Not Used",
+                        server = TRUE)
+
+     updateCheckboxInput(session, "othermatrixBUSERYN1", value = FALSE)
+     updateCheckboxInput(session, "othermatrixCUSERYN1", value = FALSE)
+ }})
+ 
+ observeEvent(input$othermatrixBUSERYN1, {
+   if (!input$othermatrixBUSERYN1){
+     updateNumericInput(session, "othermatrixBfrac1", value = (0)) 
+   updateSelectizeInput(session, 'types1b',
+                        choices = c("Matrix", "Additive", "Filler", "Not Used"),
+                        selected = "Not Used",
+                        server = TRUE)
+   updateSelectizeInput(session, 'OtherMatrixbInput1',
+                        choices = "Not Used",
+                        selected = "Not Used",
+                        server = TRUE)
+   updateCheckboxInput(session, "othermatrixCUSERYN1", value = FALSE)
+   
+   
+ }})
+ 
+ observeEvent(input$othermatrixCUSERYN1, {
+   if (!input$othermatrixCUSERYN1){
+     updateNumericInput(session, "othermatrixCfrac1", value = (0)) 
+   updateSelectizeInput(session, 'types1c',
+                        choices = c("Matrix", "Additive", "Filler", "Not Used"),
+                        selected = "Not Used",
+                        server = TRUE)
+   updateSelectizeInput(session, 'OtherMatrixcInput1',
+                        choices = "Not Used",
+                        selected = "Not Used",
+                        server = TRUE)
+ }})
+ 
+ observeEvent(input$insertsAUSERYN2, {
+   if (!input$insertsAUSERYN2){
+     updateNumericInput(session, "insertsAfrac2", value = (0)) 
+     updateNumericInput(session, "insertsBfrac2", value = (0)) }
+
+ })
+ 
+ 
+ observeEvent(input$insertsBUSERYN2, {
+   if (!input$insertsBUSERYN2){
+     updateNumericInput(session, "insertsBfrac2", value = (0)) }
+
+ })
+ 
+ 
+ observeEvent(input$othermatrixAUSERYN2, {
+   if (!input$othermatrixAUSERYN2){
+     updateNumericInput(session, "othermatrixAfrac2", value = (0)) 
+   updateSelectizeInput(session, 'types2a',
+                        choices = c("Matrix", "Additive", "Filler", "Not Used"),
+                        selected = "Not Used",
+                        server = TRUE)
+   updateSelectizeInput(session, 'OtherMatrixAInput2',
+                        choices = "Not Used",
+                        selected = "Not Used",
+                        server = TRUE)
+   updateCheckboxInput(session, "othermatrixBUSERYN2", value = FALSE)
+   updateCheckboxInput(session, "othermatrixCUSERYN2", value = FALSE)
+   }})
+ 
+ observeEvent(input$othermatrixBUSERYN2, {
+   if (!input$othermatrixBUSERYN2){
+     updateNumericInput(session, "othermatrixBfrac2", value = (0)) 
+   updateSelectizeInput(session, 'types2b',
+                        choices = c("Matrix", "Additive", "Filler", "Not Used"),
+                        selected = "Not Used",
+                        server = TRUE)
+   updateSelectizeInput(session, 'OtherMatrixBInput2',
+                        choices = "Not Used",
+                        selected = "Not Used",
+                        server = TRUE)
+   updateCheckboxInput(session, "othermatrixCUSERYN2", value = FALSE)
+ }})
+ 
+ observeEvent(input$othermatrixCUSERYN2, {
+   if (!input$othermatrixCUSERYN2){
+     updateNumericInput(session, "othermatrixCfrac2", value = (0)) 
+   updateSelectizeInput(session, 'types2c',
+                        choices = c("Matrix", "Additive", "Filler", "Not Used"),
+                        selected = "Not Used",
+                        server = TRUE)
+   updateSelectizeInput(session, 'OtherMatrixCInput2',
+                        choices = "Not Used",
+                        selected = "Not Used",
+                        server = TRUE)
+   }})
+ 
+ 
     # User Input --> variables ----
     #Yield
     
