@@ -22,10 +22,95 @@ shinyUI(fluidPage(theme = "bootstrap.css",
   navlistPanel( 
                                     
                         # GuideTab ----
-                        tabPanel("Guide",h1("Tool Guide"),img(src = "Scope.xml", height = 300)
+                        tabPanel("Guide",h1("Tool Guide"),img(src = "ToolScope.svg", height = 300)
                               ,p("This tool is being developed by ORNL to provide CFRP researchers and manufacturers the ability 
                               to quickly estimate the embodied energy use of their CFRP manufactuing process 
                               and compare it to other processes")
+                        ),
+                        tabPanel("Custom Data",h1("Custom Data")
+                              , p("This tool can also incorporate custom data using the form below.")
+                              , selectizeInput("add_data_which", label = "What type of custom data would you like to add?",
+                                               choices = c("Fiber Type", "Matrix Material", "Insert/Core Material", "Intermediate", "Molding Technology", "Curing Technology", "Finish")
+                                               , selected = "", multiple = FALSE
+                                               , options = list(placeholder = 'Choose Data Set to add to     '))
+                              , conditionalPanel(
+                                  condition = 'input.add_data_which == "Fiber Type"'
+                                  , fluidRow(
+                                    h4("Custom Fiber Type")
+                                    ,column(6, textInput("fiber_add", "Name", "Custom Fiber Type"))
+                                    , column (6, numericInput("fiber_add_E", "Specific Energy (MJ/kg)", 0, min = 0, NA, NA))
+                                   ))
+                              , conditionalPanel(
+                                condition = 'input.add_data_which == "Insert/Core Material"'
+                                , fluidRow(
+                                  h4("Custom Insert or Core")
+                                  ,column(6, textInput("insert_add", "Name", "Custom Insert/Core"))
+                                  , column (6, numericInput("insert_add_E", "Specific Energy (MJ/kg)", 0, min = 0, NA, NA))
+                                ))
+                              , conditionalPanel(
+                                condition = 'input.add_data_which == "Matrix Material"'
+                                , fluidRow(
+                                  h4("Custom Matrix Material")
+                                  ,column(4, textInput("matrix_add", "Name", "Custom Matrix"))
+                                  , column (4, numericInput("matrix_add_E", "Specific Energy (MJ/kg)", 0, min = 0, NA, NA))
+                                  , column (4, selectizeInput("matrix_add_type", label = "Material Type",
+                                                              choices = c("Matrix", "Filler", "Additive")
+                                                              , selected = "", multiple = FALSE
+                                                              , options = list(placeholder = 'Select Matrix Material Type     ')))
+                                ))
+                              , conditionalPanel(
+                                condition = 'input.add_data_which == "Intermediate"'
+                                , fluidRow(
+                                  h4("Custom Intermediate")
+                                  ,column(4, textInput("int_add", "Name", "Custom Intermediate"))
+                                  , column (4, numericInput("int_add_E", "Specific Energy (MJ/kg)", 0, min = 0, NA, NA))
+                                  , column (4,  checkboxInput("int_add_PP", "Does the intermediate material include matrix material?",FALSE))
+                                ))
+                              , conditionalPanel(
+                                condition = 'input.add_data_which == "Molding Technology"'
+                                , fluidRow(
+                                  h4("Custom Molding Process")
+                                  ,textInput("mold_add", "Name", "Custom Mold Tech")
+                                  , checkboxInput("mold_add_EYN", "Do you know the specific energy of the molding process?",FALSE)
+                                  , conditionalPanel( 
+                                    condition = "input.mold_add_EYN == true"
+                                  , numericInput("mold_add_E_Y", "Specific Energy (MJ/kg)", 0, min = 0, NA, NA))
+                                  
+                                  , fluidRow(conditionalPanel( 
+                                    condition = "input.mold_add_EYN == false"
+                                    , column(4, numericInput("mold_add_E_P", "Equipment Power (MW)", 0, min = 0, NA, NA))
+                                    , column(4, numericInput("mold_add_E_t", "Time spent in mold (s)", 0, min = 0, NA, NA))
+                                    , column(4, numericInput("mold_add_E_m", "Mass of object molded (kg)", 0, min = 0, NA, NA))))
+                                  
+                                ))
+                                  
+                                  , conditionalPanel(
+                                    condition = 'input.add_data_which == "Curing Technology"'
+                                    , fluidRow(
+                                      h4("Custom Curing Process")
+                                      ,textInput("cure_add", "Name", "Custom Cure Tech")
+                                      , checkboxInput("cure_add_EYN", "Do you know the specific energy of the curing process?",FALSE)
+                                      , conditionalPanel( 
+                                        condition = "input.cure_add_EYN == true"
+                                        , numericInput("cure_add_E_Y", "Specific Energy (MJ/kg)", 0, min = 0, NA, NA))
+                                      , fluidRow(conditionalPanel( 
+                                        condition = "input.cure_add_EYN == false"
+                                        , column(4, numericInput("cure_add_E_P", "Equipment Power (MW)", 0, min = 0, NA, NA))
+                                        , column(4, numericInput("cure_add_E_t", "Time spent curing (s)", 0, min = 0, NA, NA))
+                                        , column(4, numericInput("cure_add_E_m", "Mass of object cured (kg)", 0, min = 0, NA, NA))))
+                                    ))
+                                      
+                                  , conditionalPanel(
+                                    condition = 'input.add_data_which == "Finish"'
+                                    , fluidRow(
+                                      h4("Custom Finishing Process")
+                                      ,column(6, textInput("fin_add", "Name", "Custom Finish"))
+                                      , column (6, numericInput("fin_add_E", "Specific Energy (MJ/kg)", 0, min = 0, NA, NA))
+                                    ))
+                              
+                              
+                              
+                              
                               ),
                         
                         # InitialTab ----   
@@ -459,12 +544,12 @@ shinyUI(fluidPage(theme = "bootstrap.css",
                                  #EndTab
                                  ),
                   #TEST TAB ----
-                  tabPanel("TEST", h1("TEST"),
-                            tableOutput("table1a"), tableOutput("table2a"), tableOutput("table1b"), tableOutput("table2b"),tableOutput("table3"), tableOutput("table4")
-                           # fluidRow(textOutput("testrow")),
-
-                           # fluidRow(tableOutput("testcure"))
-                   ),
+                  # tabPanel("TEST", h1("TEST"),
+                  #           tableOutput("table1a"), tableOutput("table2a"), tableOutput("table1b"), tableOutput("table2b"),tableOutput("table3"), tableOutput("table4")
+                  #          fluidRow(textOutput("testrow")),
+                  # 
+                  #          fluidRow(tableOutput("testcure"))
+                  #  ),
                  # SummaryTab ----
                         tabPanel("Summary", h1("Summary"),
                                  p("Summary of User Choices and Embodied Energy")
