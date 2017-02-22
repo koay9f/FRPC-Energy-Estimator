@@ -1,6 +1,18 @@
 library(tidyverse)
 
 # ADDITIONAL BACKGROUND FUNCTIONS
+# determine if need to use appended dataframes ----
+which <- function(go, new, old){
+  if (go > 1) {
+    new
+    }  else {
+      old
+  }
+}
+
+
+
+
 # make lists for additional materials----
 othermatfxn <- function(typeother, matrix, additive, filler){
   if (typeother == "Not Used" ) {

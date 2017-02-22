@@ -84,7 +84,11 @@ shinyServer(function(input, output, session) {
   output$partweight2e <- output$partweight2d <- output$partweight2c <- output$partweight2b <- output$partweight2a <- output$partweight2 <- renderText({paste(input$finalweight2, "kg")})
   
   
-  # Mold1 ----
+ 
+ 
+  
+  
+   # Mold1 ----
   # Make List for Box
   updateSelectizeInput(session, 'moldingInput1',
                     choices = moldnames,
@@ -155,21 +159,26 @@ moldshortfetch1 <- eventReactive(input$moldingInput1, {
 
   # Fiber1 ----
   # Make List for Box
+  
+  
+  
   updateSelectizeInput(session, 'fiberInput1',
                        choices = fibernames,
                        selected = "",
                        server = TRUE)
-  # Associate Name value with fiber type name
-  fibernamefetch1 <- eventReactive(input$fiberInput1, {
-    fibernames[fibernames %in% input$fiberInput1]
-  })
-   output$fibername1d  <- output$fibername1 <- renderText(fibernamefetch1())
-  # Associate Energy value with fiber type name
-  fiberenergyfetch1 <- eventReactive(input$fiberInput1, {
-    fiberenergy[fibernames %in% input$fiberInput1]
-  })
-  output$fiberEnergyNum1 <- renderText({paste(fiberenergyfetch1(), "MJ/kg")})
-  output$fiberfrac1b <- renderText({paste(input$moldfracUSERNum1, "%")})
+  # # Associate Name value with fiber type name
+  # fibernamefetch1 <- eventReactive(input$fiberInput1, {
+  #   fibernames[fibernames %in% input$fiberInput1]
+  # })
+  #  output$fibername1d  <- output$fibername1 <- renderText(fibernamefetch1())
+  # # Associate Energy value with fiber type name
+  # fiberenergyfetch1 <- eventReactive(input$fiberInput1, {
+  #   fiberenergy[fibernames %in% input$fiberInput1]
+  # })
+  # output$fiberEnergyNum1 <- renderText({paste(fiberenergyfetch1(), "MJ/kg")})
+ 
+  
+   output$fiberfrac1b <- renderText({paste(input$moldfracUSERNum1, "%")})
 
   output$fiberfrac1z <-output$fiberfrac1e <-output$fiberfrac1d <- renderText(input$moldfracUSERNum1)
   
@@ -180,14 +189,14 @@ moldshortfetch1 <- eventReactive(input$moldingInput1, {
                        selected = "",
                        server = TRUE)
   # Associate Name value with fiber type name
-  fibernamefetch2 <- eventReactive(input$fiberInput2, {
-    fibernames[fibernames %in% input$fiberInput2]
-  })
-  output$fibername2 <- renderText(fibernamefetch2())
-  # Associate Energy value with fiber type name
-  fiberenergyfetch2 <- eventReactive(input$fiberInput2, {
-    fiberenergy[fibernames %in% input$fiberInput2]
-  })
+  # fibernamefetch2 <- eventReactive(input$fiberInput2, {
+  #   fibernames[fibernames %in% input$fiberInput2]
+  # })
+  # output$fibername2 <- renderText(fibernamefetch2())
+  # # Associate Energy value with fiber type name
+  # fiberenergyfetch2 <- eventReactive(input$fiberInput2, {
+  #   fiberenergy[fibernames %in% input$fiberInput2]
+  # })
   output$fiberEnergyNum2 <- renderText({paste(fiberenergyfetch2(), "MJ/kg")})
   output$fiberfrac2b <- renderText({paste(input$moldfracUSERNum2, "%")})
   output$fiberfrac2z <-output$fiberfrac2e <-output$fiberfrac2d  <- renderText(input$moldfracUSERNum2)
@@ -632,6 +641,195 @@ moldshortfetch1 <- eventReactive(input$moldingInput1, {
         updateNumericInput(session, "intscrapUSERNum2", value = (ints2*100)) 
 
  })
+ 
+ # Add Data ----
+ # Fiber Add ----
+ 
+ Data_Fiber_new  <- eventReactive(input$gofiber, {
+   fiber.name <- input$fiber_add
+   fiber.Ener <- as.double(input$fiber_add_E)
+   
+   df <- isolate(Data_Fiber) %>%
+     add_row(Name_Fiber = fiber.name,
+             Energy_Fiber = fiber.Ener)
+ })
+ 
+ 
+ 
+ observeEvent(input$gofiber, { 
+   fibernames_new <- Data_Fiber_new()$Name_Fiber
+   updateSelectizeInput(session, 'fiberInput1',
+                      choices = fibernames_new,
+                      selected = "",
+                      server = TRUE)
+   updateSelectizeInput(session, 'fiberInput2',
+                        choices = fibernames_new,
+                        selected = "",
+                        server = TRUE)
+   })
+   
+  fibernamefetch1 <- eventReactive(
+     {input$fiberInput1
+     },{
+     fibernames_new <- Data_Fiber_new()$Name_Fiber
+     f_name <- which(input$gofiber, fibernames_new, fibernames)
+       f_name[f_name %in% input$fiberInput1]
+     })
+   output$fibername1d  <- output$fibername1 <- renderText(fibernamefetch1())
+ 
+     fibernamefetch2 <- eventReactive(
+     {input$fiberInput2
+       input$gofiber},{
+         fibernames_new <- Data_Fiber_new()$Name_Fiber
+         f_name <- which(input$gofiber, fibernames_new, fibernames)
+         f_name[f_name %in% input$fiberInput2]
+       })
+   output$fibername2d  <- output$fibername2 <- renderText(fibernamefetch2())
+   
+   fiberenergyfetch1 <- eventReactive({
+     input$fiberInput1
+     },{
+       fibernames_new <- Data_Fiber_new()$Name_Fiber
+       fiberenergy_new <- Data_Fiber_new()$Energy_Fiber
+       f_name <- which(input$gofiber, fibernames_new, fibernames)
+       f_energy <- which(input$gofiber, fiberenergy_new, fiberenergy)
+       f_energy[f_name %in% input$fiberInput1]
+    })
+    output$fiberEnergyNum1 <- renderText({paste(fiberenergyfetch1(), "MJ/kg")})
+
+    fiberenergyfetch2 <- eventReactive({
+     input$fiberInput2
+     input$gofiber},{
+       fibernames_new <- Data_Fiber_new()$Name_Fiber
+       fiberenergy_new <- Data_Fiber_new()$Energy_Fiber
+       f_name <- which(input$gofiber, fibernames_new, fibernames)
+       f_energy <- which(input$gofiber, fiberenergy_new, fiberenergy)
+       f_energy[f_name %in% input$fiberInput2]
+     })
+   output$fiberEnergyNum2 <- renderText({paste(fiberenergyfetch2(), "MJ/kg")})
+ 
+ output$test <- renderText(input$gofiber)
+ 
+ # output$Data_Fiber_test <- renderTable(Data_Fiber_new()$Name_Fiber)
+ 
+ # Insert Add ----
+
+ Data_Insert_new  <- eventReactive(input$goinsert, {
+   insert.name <- input$insert_add
+   insert.Ener <- as.double(input$insert_add_E)
+
+   df <- isolate(Data_Inserts) %>%
+     add_row(Name_Inserts = insert.name,
+             Energy_Inserts = insert.Ener)
+ })
+ observeEvent(input$goinsert, {
+   insertnames_new <- Data_Insert_new()$Name_Inserts
+   updateSelectizeInput(session, 'InsertsAInput1',
+                        choices = insertnames_new,
+                        selected = "Not Used",
+                        server = TRUE)
+   updateSelectizeInput(session, 'InsertsBInput1',
+                        choices = insertnames_new,
+                        selected = "Not Used",
+                        server = TRUE)
+   updateSelectizeInput(session, 'InsertsAInput2',
+                        choices = insertnames_new,
+                        selected = "Not Used",
+                        server = TRUE)
+   updateSelectizeInput(session, 'InsertsBInput2',
+                        choices = insertnames_new,
+                        selected = "Not Used",
+                        server = TRUE)
+ })
+
+ insertsAnamefetch1  <- eventReactive(
+   {input$InsertsAInput1
+     input$goinsert},{
+       insertnames_new <- Data_Insert_new()$Name_Inserts
+       insertnames_new[insertnames_new %in% input$InsertsAInput1]
+     })
+ output$insertsAname1 <- renderText(insertsAnamefetch1())
+
+ insertsBnamefetch1  <- eventReactive(
+   {input$InsertsBInput1
+     input$goinsert},{
+       insertnames_new <- Data_Insert_new()$Name_Inserts
+       insertnames_new[insertnames_new %in% input$InsertsBInput1]
+     })
+ output$insertsBname1 <- renderText(insertsBnamefetch1())
+
+ insertsAnamefetch2  <- eventReactive(
+   {input$InsertsAInput2
+     input$goinsert},{
+       insertnames_new <- Data_Insert_new()$Name_Inserts
+       insertnames_new[insertnames_new %in% input$InsertsAInput2]
+     })
+ output$insertsAname2 <- renderText(insertsAnamefetch2())
+
+ insertsBnamefetch2  <- eventReactive(
+   {input$InsertsBInput2
+     input$goinsert},{
+       insertnames_new <- Data_Insert_new()$Name_Inserts
+       insertnames_new[insertnames_new %in% input$InsertsBInput2]
+     })
+ output$insertsBname2 <- renderText(insertsBnamefetch2())
+
+
+
+ insertsAenergyfetch1 <- eventReactive({
+   input$InsertsAInput1
+   input$goinsert},{
+     insertnames_new <- Data_Insert_new()$Name_Inserts
+     insertenergy_new <- Data_Insert_new()$Energy_Inserts
+     insertenergy_new[insertnames_new %in% input$InsertsAInput1]
+   })
+ output$insertsAEnergyNum1 <- renderText({paste(insertsAenergyfetch1(), "MJ/kg")})
+
+ insertsBenergyfetch1 <- eventReactive({
+   input$InsertsBInput1
+   input$goinsert},{
+     insertnames_new <- Data_Insert_new()$Name_Inserts
+     insertenergy_new <- Data_Insert_new()$Energy_Inserts
+     insertenergy_new[insertnames_new %in% input$InsertsBInput1]
+   })
+  output$insertsBEnergyNum1 <- renderText({paste(insertsBenergyfetch1(), "MJ/kg")})
+
+
+  insertsAenergyfetch2 <- eventReactive({
+    input$InsertsAInput2
+    input$goinsert},{
+      insertnames_new <- Data_Insert_new()$Name_Inserts
+      insertenergy_new <- Data_Insert_new()$Energy_Inserts
+      insertenergy_new[insertnames_new %in% input$InsertsAInput2]
+    })
+  output$insertsAEnergyNum2 <- renderText({paste(insertsAenergyfetch2(), "MJ/kg")})
+
+  insertsBenergyfetch2 <- eventReactive({
+    input$InsertsBInput2
+    input$goinsert},{
+      insertnames_new <- Data_Insert_new()$Name_Inserts
+      insertenergy_new <- Data_Insert_new()$Energy_Inserts
+      insertenergy_new[insertnames_new %in% input$InsertsBInput2]
+    })
+  output$insertsBEnergyNum2 <- renderText({paste(insertsBenergyfetch2(), "MJ/kg")})
+
+
+
+
+
+
+
+
+
+
+
+
+
+ output$Data_Fiber_test <- renderTable(Data_Insert_new()$Name_Inserts)
+ 
+ 
+ 
+ 
  
  # RETURN MASS/FRACS TO ZERO IF USE ADDITIONAL CHECK BOXES ARE FALSE ----
  observeEvent(input$insertsAUSERYN1, {

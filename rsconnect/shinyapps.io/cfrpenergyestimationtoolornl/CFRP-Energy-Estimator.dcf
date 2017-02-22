@@ -3,9 +3,9 @@ title: CFRP-Energy-Estimator
 account: cfrpenergyestimationtoolornl
 server: shinyapps.io
 appId: 154190
-bundleId: 715735
+bundleId: 720709
 url: https://cfrpenergyestimationtoolornl.shinyapps.io/CFRP-Energy-Estimator/
-when: 1487367809.12556
+when: 1487780428.75699
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: data/Data_Cure_Mold.csv|data/Data_Cure_Mold2.csv|data/Data_Mat_Type.csv
+ignoredFiles: what-will-be-math.R
