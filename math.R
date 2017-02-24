@@ -2,11 +2,11 @@ library(tidyverse)
 
 # ADDITIONAL BACKGROUND FUNCTIONS
 # determine if need to use appended dataframes ----
-which <- function(go, new, old){
+whichone <- function(go, new, old){
   if (go > 1) {
     new
-    }  else {
-      old
+  }  else {
+    old
   }
 }
 
@@ -25,34 +25,72 @@ othermatfxn <- function(typeother, matrix, additive, filler){
         additive
       } else{
         filler
-        }
       }
     }
+  }
+}
+
+
+BuildnewMatrix.df <- function(gom, goa, gof, newmat, oldmat, newadd, oldadd, newfil, oldfil, other){
+  mat<- if (gom > 0) {
+      newmat
+      } else {
+        oldmat
       }
+  additive<-   if (goa > 0) {
+      newadd
+    } else {
+      oldadd
+    }
+     
+ filler <-   if (gof > 0) {
+      newfil
+    } else {
+      oldfil
+    }
+
+  df <- rbind(mat, additive, filler, other)
+  df
+  
+  }
+
+# othermatfxn2 <- function(typeother, df){
+#   matdf <- switch(typeother,
+#                   Matrix = subset(df, Type_Matrix == "Matrix"),
+#                   Additive = subset(df, Type_Matrix == "Additive"),
+#                   Filler = subset(df, Type_Matrix == "Filler"),
+#                   "Not Used" = subset(df, Type_Matrix == "Other")
+#                   ) 
+#     matlistx<- select(matdf, Name_Matrix)
+#   matlist <- unname(unlist(matlistx))
+# }
+# 
+
+
 # cure list dependent on molding----
 curelistfxn <- function(moldtype, all, only, wlup, autoclave){
- if (moldtype == "Wet (Hand) Lay up") {
-   wlup
- } else{
-   if (moldtype == "Vacuum Bag (Autoclave)"){
-     autoclave
-     
-   }else{
-     if (moldtype == "Automatic Fiber Placement"){
-       all
-     } else{
-       if (moldtype == "Automatic Tape Placement"){
-         all
-       }else{
-         if (moldtype == "Compression Molding"){
-           all
-         }else{
-           if (moldtype == "Resin Transfer Molding"){
-             all
-             
-           }  else{
-       only
-           }   } }  }}}}
+  if (moldtype == "Wet (Hand) Lay up") {
+    wlup
+  } else{
+    if (moldtype == "Vacuum Bag (Autoclave)"){
+      autoclave
+      
+    }else{
+      if (moldtype == "Automatic Fiber Placement"){
+        all
+      } else{
+        if (moldtype == "Automatic Tape Placement"){
+          all
+        }else{
+          if (moldtype == "Compression Molding"){
+            all
+          }else{
+            if (moldtype == "Resin Transfer Molding"){
+              all
+              
+            }  else{
+              only
+            }   } }  }}}}
 
 # int list dependent on molding----
 intlistfxn <- function(moldtype) {
@@ -82,10 +120,10 @@ intlistfxn <- function(moldtype) {
                 }else{
                   if (moldtype == "Structural Reaction Injection Molding"){
                     c("Chopped", "Dry Weave", "Dry Knit", "Powdered P4")
-              
-            }  else{
-              c("Prepregs, Hand (TS)", "Prepregs, Auto, Tape (TS)", "Prepregs, Auto, Fiber (TS)", "Prepregs, Hand (TP)", "Prepregs, Auto, Tape (TP)", "Prepregs, Auto, Fiber (TP)", "Powdered P4", "Dry Weave", "Dry Braid", "Dry Knit", "Not Used")
-            }}}}}}}}}}
+                    
+                  }  else{
+                    c("Prepregs, Hand (TS)", "Prepregs, Auto, Tape (TS)", "Prepregs, Auto, Fiber (TS)", "Prepregs, Hand (TP)", "Prepregs, Auto, Tape (TP)", "Prepregs, Auto, Fiber (TP)", "Powdered P4", "Dry Weave", "Dry Braid", "Dry Knit", "Not Used")
+                  }}}}}}}}}}
 
 
 # Additional Fxns ----
@@ -110,36 +148,36 @@ Data_mass_fxn <- function(mass, r.f.f, r.f.pm, r.f.ma, r.f.mb, r.f.mc, r.m.ia, r
   insertmass.df <- data_frame(
     vari.name = c("ia","ib"),
     raw.value = c(r.m.ia, r.m.ib)
-    )  
+  )  
   insertmass.df <- insertmass.df %>%
     rowwise() %>%
-  mutate(mass.frac = (raw.value/mass))
-
- 
- calc.mass.frac.df <- bind_rows(massfrac.df, insertmass.df)
+    mutate(mass.frac = (raw.value/mass))
+  
+  
+  calc.mass.frac.df <- bind_rows(massfrac.df, insertmass.df)
   calc.mass.frac.df
   
-  }
+}
 
 check <- function(check){
   if (check == 1 ) {
-  ""
+    ""
   } else {"Error: Mass fractions for technology set 1 do not equal 1"}
-  }
+}
 
 # Define which yields are being used ----
 # Layup - convert scrap --> yield; deside if default or user, reduce by amt of recycling
 yield_layup <- function(int_scrap_user_val, int_scrap_recycle_val) {
-    yield_val <- yfs(int_scrap_user_val/100) + (int_scrap_recycle_val/100) * (int_scrap_user_val/100)
-    yield_val
+  yield_val <- yfs(int_scrap_user_val/100) + (int_scrap_recycle_val/100) * (int_scrap_user_val/100)
+  yield_val
 }
 
 
 
 # Mold - deside if default or user, reduce by amt of recycling
 yield_mold <- function( mold_yield_user_val, mold_yield_recycle_val) {
-      yield_val <- mold_yield_user_val/100 + (mold_yield_recycle_val/100) * (yfs(mold_yield_user_val/100))
-    yield_val
+  yield_val <- mold_yield_user_val/100 + (mold_yield_recycle_val/100) * (yfs(mold_yield_user_val/100))
+  yield_val
 }
 
 
@@ -167,7 +205,7 @@ BIGFUNCTION1 <- function(
     massfracs_list
   }
   massfracs <- massfracs_fxn(f_f, f_pm, f_ma, f_mb, f_mc, f_ia, f_ib)  
-
+  
   # prepreg yn ----
   prepregYN <- function(prepreg){
     pYN <- if(prepreg == "TRUE") {
@@ -175,7 +213,7 @@ BIGFUNCTION1 <- function(
     } else 0
     pYN}
   YN <- prepregYN(int_prepreg_YN)
-
+  
   
   # BUILD DATAFRAME YIELD ----
   
@@ -196,13 +234,13 @@ BIGFUNCTION1 <- function(
   #     final_part_mass1
   #   } else {final_part_mass2}
   
-
-    
-    massfrac_fxn <- function(mat,stg){
-      massfraction.df <- dplyr::filter(Data_yield, material == mat, stage == stg) %>%
-        select(3)
-      frac <- unname(unlist(massfraction.df))
-      frac
+  
+  
+  massfrac_fxn <- function(mat,stg){
+    massfraction.df <- dplyr::filter(Data_yield, material == mat, stage == stg) %>%
+      select(3)
+    frac <- unname(unlist(massfraction.df))
+    frac
     
     
     final_mass_material <- finalmass*massfrac_fxn(mat,stg)
@@ -265,8 +303,8 @@ BIGFUNCTION2 <- function(Data_yield,
                          E_1, E_2, E_3, E_4,E_5, E_6, E_7, E_8, E_9, E_10, E_11){
   
   # BUILD DATA FRAME
-
- 
+  
+  
   mass_fxn <- function(mat,stg){
     layupmass.df <- dplyr::filter(Data_yield, material == mat, stage == stg) %>%
       select(mass_initial)
@@ -283,15 +321,15 @@ BIGFUNCTION2 <- function(Data_yield,
   
   
   fib.mass.i <- int.fib.mass.i <- mass_fxn("fiber", "layup")
-
+  
   matrix.mass.i <- c(f_pm, f_ma, f_mb, f_mc) * mass_fxn("matrix", "layup")/massfrac_fxn("matrix", "layup")
-
+  
   insert.mass.i <- c(f_ia, f_ib)* mass_fxn("insert", "layup")/massfrac_fxn("insert", "layup")
-
+  
   mold.mass <- sum(mass_fxn("fiber", "mold"), mass_fxn("matrix", "mold"), mass_fxn("insert", "mold"))
-
+  
   finish.mass <- cure.mass <- sum(mass_fxn("fiber", "finish"), mass_fxn("matrix", "finish"), mass_fxn("insert", "finish"))
-
+  
   # Build Data Frame
   Data_energy <- data_frame(
     techset = c(rep("ts1", 11)),
@@ -309,7 +347,3 @@ BIGFUNCTION2 <- function(Data_yield,
   
   Data_energy
 }
-
-  
-
-
