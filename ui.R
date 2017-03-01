@@ -48,7 +48,7 @@ shinyUI(fluidPage(theme = "bootstrap.css",
                                ,  fluidRow(
                                  column(4, textInput("fiber_add", "Name", "Custom Fiber Type"))
                                  , column (4, numericInput("fiber_add_E", "Specific Energy (MJ/kg)", 0, min = 0, NA, NA))
-                                 , column(4,actionButton("gofiber", strong("Add Fiber Data"), style="color: #ffffff; background-color: #84b641; border-color: #007833"), style = "padding:25px;")
+                                 , column(4,actionButton("gofiber", strong("Add Fiber Data") ), style = "padding:25px;")
                                  ))
                              
                              , conditionalPanel(
@@ -56,7 +56,7 @@ shinyUI(fluidPage(theme = "bootstrap.css",
                                , fluidRow(column(5,h4("Custom Insert or Core")))
                                , fluidRow(column(4, textInput("insert_add", "Name", "Custom Insert/Core"))
                                           , column (4, numericInput("insert_add_E", "Specific Energy (MJ/kg)", 0, min = 0, NA, NA))
-                                          , column(4,actionButton("goinsert", strong("Add Insert/Core Data"), style="color: #ffffff; background-color: #84b641; border-color: #007833"), style = "padding:25px;")
+                                          , column(4,actionButton("goinsert", strong("Add Insert/Core Data")), style = "padding:25px;")
                                           ))
                              
                              , conditionalPanel(
@@ -64,7 +64,7 @@ shinyUI(fluidPage(theme = "bootstrap.css",
                                , fluidRow(column(5, h4("Custom Matrix Polymer") ))
                                , fluidRow(column(4, textInput("matrix_add", "Name", "Custom Matrix"))
                                           , column (4, numericInput("matrix_add_E", "Specific Energy (MJ/kg)", 0, min = 0, NA, NA))
-                                          , column(4,actionButton("gomatrix", strong("Add Matrix Data"), style="color: #ffffff; background-color: #84b641; border-color: #007833"), style = "padding:25px;")
+                                          , column(4,actionButton("gomatrix", strong("Add Matrix Data")), style = "padding:25px;")
                                           ))
                              
                              , conditionalPanel(
@@ -72,7 +72,7 @@ shinyUI(fluidPage(theme = "bootstrap.css",
                                , fluidRow(column(5, h4("Custom Matrix Filler") ))
                                , fluidRow(column(4, textInput("filler_add", "Name", "Custom Filler"))
                                           , column (4, numericInput("filler_add_E", "Specific Energy (MJ/kg)", 0, min = 0, NA, NA))
-                                          , column(4,actionButton("gofiller", strong("Add Filler Data"), style="color: #ffffff; background-color: #84b641; border-color: #007833"), style = "padding:25px;")
+                                          , column(4,actionButton("gofiller", strong("Add Filler Data")), style = "padding:25px;")
                                           ))
                              
                              , conditionalPanel(
@@ -80,7 +80,7 @@ shinyUI(fluidPage(theme = "bootstrap.css",
                                , fluidRow(column(5, h4("Custom Matrix Additive") ))
                                , fluidRow(column(4, textInput("additive_add", "Name", "Custom Additive"))
                                           , column (4, numericInput("additive_add_E", "Specific Energy (MJ/kg)", 0, min = 0, NA, NA))
-                                          , column(4,actionButton("goadditive", strong("Add Additive Data"), style="color: #ffffff; background-color: #84b641; border-color: #007833"), style = "padding:25px;")
+                                          , column(4,actionButton("goadditive", strong("Add Additive Data")), style = "padding:25px;")
                                           ))
                              
                              , conditionalPanel(
@@ -89,7 +89,7 @@ shinyUI(fluidPage(theme = "bootstrap.css",
                                , fluidRow(column(3, textInput("int_add", "Name", "Custom Intermediate"))
                                           , column (3, numericInput("int_add_E", "Specific Energy (MJ/kg)", 0, min = 0, NA, NA))
                                           , column (4,  checkboxInput("int_add_PP", "Does the intermediate material include matrix material (i.e. prepregs)?",FALSE))
-                                          , column(2,actionButton("goint", strong("Add Intermediate Data"), style="color: #ffffff; background-color: #84b641; border-color: #007833"), style = "padding:25px;")
+                                          , column(2,actionButton("goint", strong("Add Intermediate Data")), style = "padding:25px;")
                                )
                                , fluidRow(column(1,""), column(10, p("Normally the options available for curing process are dependent on the user's choice for molding technology.  
                                                                      If a custom curing process has been added, this is overridden and all options for 
@@ -105,7 +105,7 @@ shinyUI(fluidPage(theme = "bootstrap.css",
                                , fluidRow(
                                  column(4, textInput("mold_add", "Name", "Custom Mold Tech"))
                                  , column(4, checkboxInput("mold_add_EYN", "Is the specific energy of the molding process known?",FALSE), style = "padding:15px;")
-                                 , column(2,actionButton("gomold", strong("Add Molding Data"), style="color: #ffffff; background-color: #84b641; border-color: #007833"), style = "padding:25px;"))
+                                 , column(2,actionButton("gomold", strong("Add Molding Data")), style = "padding:25px;"))
                                , br()
                                , conditionalPanel( 
                                  condition = "input.mold_add_EYN == true"
@@ -160,7 +160,7 @@ shinyUI(fluidPage(theme = "bootstrap.css",
                                , fluidRow(
                                   column(4, textInput("cure_add", "Name", "Custom Cure Tech"))
                                  , column(4, checkboxInput("cure_add_EYN", "Is the specific energy of the curing process known?",FALSE), style = "padding:15px;")
-                                 , column(2,actionButton("gocure", strong("Add Curing Data"), style="color: #ffffff; background-color: #84b641; border-color: #007833"), style = "padding:25px;"))
+                                 , column(2,actionButton("gocure", strong("Add Curing Data")), style = "padding:25px;"))
                                , br()
                                , conditionalPanel( 
                                  condition = "input.cure_add_EYN == true"
@@ -212,7 +212,7 @@ shinyUI(fluidPage(theme = "bootstrap.css",
                                , fluidRow(column(5,h4("Custom Finishing Process")))
                                , fluidRow(column(5, textInput("finish_add", "Name", "Custom Finish"))
                                           , column (5, numericInput("finish_add_E", "Specific Energy (MJ/kg)", 0, min = 0, NA, NA))
-                                          , column(2,actionButton("gofinish", strong("Add Finishing Data"), style="color: #ffffff; background-color: #84b641; border-color: #007833"), style = "padding:25px;")
+                                          , column(2,actionButton("gofinish", strong("Add Finishing Data")), style = "padding:25px;")
                                ))
                                ),
                     # InitialTab ----   
@@ -587,16 +587,6 @@ shinyUI(fluidPage(theme = "bootstrap.css",
                                ))
                              #EndTab
                              ),
-                    #TEST TAB ----
-                   # tabPanel("TEST", h1("TEST"),
-                             #  tableOutput("table1a"), tableOutput("table2a"), tableOutput("table1b"), tableOutput("table2b"),tableOutput("table3"), tableOutput("table4")
-                             # fluidRow(textOutput("test")),
-                             # 
-                             # fluidRow(tableOutput("testcure"))
-                             # tableOutput("testtable")
-                             # br(),
-                             #tableOutput("testlist")
-                   # ),
                     # SummaryTab ----
                     tabPanel("Summary", h1("Summary"),
                              p("Summary of User Choices and Embodied Energy")
@@ -630,6 +620,20 @@ shinyUI(fluidPage(theme = "bootstrap.css",
                     ),
                     
                     
+                    # Molding Properties Tab ----
+                    tabPanel("Molding Properties", h1("Molding Properties"),
+                             selectizeInput('show_vars', 
+                                               label =  'Columns Visible:', 
+                                               choices = NULL,
+                                                selected = NULL,
+                                               multiple = TRUE),
+                             
+                             
+                              dataTableOutput("props")
+                    ),
+                    
+                    
+                    
                     # DownloadTab ----
                     tabPanel("Download", h1("Download Results")
                                 , p('Can download Results and Calculation Data.  Choose a file name then click "Download"')
@@ -646,12 +650,15 @@ shinyUI(fluidPage(theme = "bootstrap.css",
                                   ) )
                                 , fluidRow(
                                   h2("Calculation Data")
-                                , textInput("zipname", "Calculation Data Zip File Name", "CalcZip")
-                                , downloadButton('zipcalcs', "Download Zip File")
+                                , downloadButton('zipcalcs', "Download Calculation Zip File")
                                 )
+                             , fluidRow(
+                               h2("Background Infromation")
+                              , p("Download raw energy data, data source information and infromation explaining calculations")
+                               , downloadButton('info', "Download Background Zip File")
+                             )
                              #THINGS TO ADD
                              # DOWNLOAD RAW DATA & SOURCES
-                             # DOWNLOAD CALCULATION FILES (YIELD DATA & ENERGY DATA)
                              # DOWNLOAD .PDF EXPLAINING CALCULATIONS
                                 
                              
@@ -668,6 +675,8 @@ shinyUI(fluidPage(theme = "bootstrap.css",
                    #TEST TAB ----
                    # Tab to display tests
                   # , tabPanel("TEST", h1("TEST"),
+                  # To use, remove "#' from the lines with code here and the output generators in server.R.  
+                  # Currently testing yield & energy calculation data
                   #             tableOutput("table1a")
                   #            , tableOutput("table2a")
                   #            , tableOutput("table1b")

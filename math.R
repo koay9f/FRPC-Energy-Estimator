@@ -227,6 +227,7 @@ BIGFUNCTION1 <- function(partname,
       yield
     }
     
+    # Determines if should apply the stage yield for a given material 
     applyyield_fxn <- function(mat,stg, ts){
       ayield.df <- dplyr::filter(Data_yield, material == mat, stage == stg) %>%
         select(5)
@@ -234,6 +235,7 @@ BIGFUNCTION1 <- function(partname,
       apply_yield
     }
     
+    #Builds new datapoint for cumulative yield at given stage for a given material
     yield_overall <- switch(stg,
                             finish =  yield(mat, "finish") ^ applyyield_fxn(mat, "finish"),
                             mold   = (yield(mat, "finish") ^ applyyield_fxn(mat, "finish")) * (yield(mat, "mold")  ^ applyyield_fxn(mat, "mold")),
@@ -246,22 +248,22 @@ BIGFUNCTION1 <- function(partname,
   mass_initial_gen <- function(finalpartmass, yield){finalpartmass/yield}
   
   # APPEND DATAFRAME ----
-    # create col with "actual yield
+    # create col: cumulative yield for a given material & stage
   Data_yield <- Data_yield %>%
     rowwise() %>%
     mutate(yield_actual = yield_overall_fxn(material, stage))
   
-  # creates col: the final part mass of each material
+  # creates col: the final part mass (same for each material & stage)
   Data_yield <- Data_yield %>%
     rowwise() %>%
     mutate(material_final_mass = finalmass)
   
-  # creates col: divides the final mass by the  yield     
+  # creates col: divides the final mass by the  cumulative yield     
   Data_yield <- Data_yield %>%   
     rowwise() %>%
     mutate(mass_initial = mass_initial_gen(material_final_mass, yield_actual)) 
   
-  #END FUNCTION - IT WORKS, BUT IT DOES NOT ADD A NEW TABLE TO THE GLOBAL ENVIRONMENT
+  #END FUNCTION - builds dataframe for cumulative yield and initial mass for each stage and material
   Data_yield
 }
 

@@ -50,6 +50,9 @@ vbcure <- c("Autoclave Curing","QuickStep","Microwave Curing with Vacuum","Infra
 Data_Finish = read.csv("data/Data_Finishing.csv")
 finishnames = Data_Finish$Name_Finishing
 
+#Name Molding Properties Tables
+Props = read.csv("data/Properties_Mold.csv")
+
 
 #Talk to server ----
 shinyServer(function(input, output, session) {
@@ -65,6 +68,18 @@ shinyServer(function(input, output, session) {
   output$partname2d <-output$partname2c <-output$partname2b <-output$partname2a <- output$partname2 <- renderText(input$name2)
   partname2e<- reactive(input$name2)
   output$partweight2d <- output$partweight2c <- output$partweight2b <- output$partweight2a <- output$partweight2 <- renderText({paste(input$finalweight2, "kg")})
+  
+  
+  propnames <- names(Props)
+  updateSelectizeInput(session, 'show_vars',
+                           choices = propnames,
+                           selected = c("Process"))
+  
+  
+  output$props <- renderDataTable({
+    Props[,input$show_vars]
+    }, options = list(lengthMenu = c(4, 8, 12, 16), pageLength = 16))
+  
   
   # Molding ----
   # Make List for Select Box
@@ -1019,6 +1034,9 @@ Data_Primatrix_new  <- reactiveValues()
     f.ib2 <- reactive(raw.to.actual.fracs2()$mass.frac[7])
 
     # Build Cumulative Yield dataframe ----  
+    # yield_data1.df <- reactiveValues()
+    # yield_data2.df <- reactiveValues()
+    
     yield_data1.df <- reactive(BIGFUNCTION1(partname1e(),
       finish.yield1(), mold.yield1(), layup.yield1(),
       f.f1(), f.pm1(), f.ma1(), f.mb1(), f.mc1(), f.ia1(), f.ib1(),
@@ -1058,6 +1076,9 @@ Data_Primatrix_new  <- reactiveValues()
     E.fin2  <- reactive(finishenergyfetch2())  
     
     # Build Energy use dataframe ----
+    # energy_data1.df <- reactiveValues()
+    # energy_data2.df <- reactiveValues()
+    
     energy_data1.df <- reactive(BIGFUNCTION2(yield_data1.df(),partname1e(),
              f.pm1(), f.ma1(), f.mb1(), f.mc1(), f.ia1(), f.ib1(),
              E.fib1(), E.int1(), E.pm1(), E.ma1(), E.mb1(), E.mc1(),
@@ -1328,37 +1349,64 @@ Data_Primatrix_new  <- reactiveValues()
          write.csv(RESULTSTABLE2(), file)
        }   )
      
+
      
+     #maybe write the .csv out here then just call it like above
+   
+blank.df <- c("No Data")
+     
+
      output$zipcalcs <- downloadHandler(
-       filename = function() {paste(input$results2, ".csv") },
-       content = function(file) {
-        write.csv(yield_data1.df(), file)
-       }   )
+         filename = 'CFRP_Tool_Calcualtion_Data.zip',
+         content = function(fname){
+           Sys.setenv(R_CMDZIP = 'C:/Rtools/bin/zip')
+    tmpdir <- tempdir()
+    setwd(tempdir())
+    print(tempdir())
+
+   filestosave <- c("yield_table1.csv","energy_table1.csv","yield_table2.csv","energy_table2.csv")
+    
+   if(exists("yield_data1.df()")){
+      write.csv(yield_data1.df(), file = "yield_table1.csv")
+    } else{
+          write.csv(blank.df, file = "yield_table1.csv")
+        }        
+   
+   if(exists("yield_data2.df()")){
+     write.csv(yield_data2.df(), file = "yield_table2.csv")
+   } else{
+     write.csv(blank.df, file = "yield_table2.csv")
+   }
+   
+   if(exists("energy_data1.df()")){
+        write.csv(energy_data1.df(), file = "energy_table1.csv")
+   } else{
+     write.csv(blank.df, file = "energy_table1.csv")
+    }
+   
+   if(exists("energy_data2.df()")){
+       write.csv(energy_data2.df(), file = "energy_table2.csv")   
+     } else{
+     write.csv(blank.df, file = "energy_table2.csv")
+   }
+   
+    zip(zipfile = fname, files = filestosave)
+    if(file.exists(paste0(fname, ".zip"))) {file.rename(paste0(fname, ".zip"), fname)}      },
+    
+contentType = "application/zip"
+
+         )
      
      
+     output$info <- downloadHandler(
+       filename = 'CFRP_Tool_Background_Info.zip',
+       content = function(file){
+         file.copy("data/CFRP_Tool_Background_Info.zip", file)     },
+       
+       contentType = "application/zip"
+       
+     )
      
      
-     
-     
-#      output$zipcalcs <- downloadHandler(
-#          filename = function() {paste(input$zipname, ".zip")},
-#          content = function(fname){
-#     tmpdir <- tempdir()
-#     setwd(tempdir())
-#     print(tempdir())
-#     
-#     fs <- c("yield_table1.csv","energy_table1.csv","yield_table2.csv","energy_table2.csv")
-#             write.csv(yield_data1.df(), file = "yield_table1.csv")
-#             write.csv(energy_data1.df(), file = "energy_table1.csv")
-#             write.csv(yield_data2.df(), file = "yield_table2.csv")
-#             write.csv(energy_data2.df(), file = "energy_table2.csv")
-#     print(fs)
-#     
-#     
-#     zip(zipfile = fname, files = fs, zip = Sys.setenv(R_CMDZIP = 'C:/Rtools/bin/zip'))        
-#               },
-# contentType = "application/zip"
-#     
-#          )
-  # End ----
+#  End ----
    })
