@@ -8,24 +8,28 @@
 library(shiny)
 library(readr)
 library(plotly)
+library(DT)
 
-shinyUI(fluidPage(theme = "bootstrap.css",
+shinyUI(fluidPage(title = "CFRP Tool",
+  theme = "bootstrap.css",
                   tags$head(
                     tags$style(HTML("
                                     .shiny-output-error-validation {
                                     color: red;
                                     }
                                     "))
-                    #, tags$style(type="text/css", "body {padding-top: 120px;}")
                     ),
                   titlePanel(h1("CFRP Energy Use Estimation Tool", style = "color:#007833")),
                   navlistPanel( 
                     
                     # GuideTab ----
                     tabPanel("Guide",h1("Tool Guide"),img(src = "ToolScope.svg", height = 300)
-                             ,p("This tool is being developed by ORNL to provide CFRP researchers and manufacturers the ability 
-                                to quickly estimate the embodied energy use of their CFRP manufactuing process 
-                                and compare it to other processes")
+                             , br()
+                              ,p('This tool has been developed by ORNL to provide CFRP researchers and manufacturers
+                                the ability to quickly estimate the embodied energy use of their CFRP manufacturing 
+                                process and compare it to other processes.  For more help or information, click the 
+                                Downloads tab and download the "Background Information". A table for comparing 
+                                different molding technologies is also available on the "Molding Properties" Tab.')
                              ),
                     # Add data tab ----
                     tabPanel("Custom Data",h1("Custom Data")
@@ -622,23 +626,39 @@ shinyUI(fluidPage(theme = "bootstrap.css",
                     
                     # Molding Properties Tab ----
                     tabPanel("Molding Properties", h1("Molding Properties"),
-                             selectizeInput('show_vars', 
+                             fluidRow(
+                             column(6,
+                             
+                             
+                             checkboxInput('show_allmolds', "Select all Molding Technology Options", value = TRUE)
+                             , selectizeInput('show_molds', 
+                                            label =  'Molding Technologies Visible:', 
+                                            choices = NULL,
+                                            selected = NULL,
+                                            multiple = TRUE,
+                                            width = '100%')
+                             )
+                             , column(6,
+                             checkboxInput('show_allvars', "Select all Columns", value = FALSE)
+                            ,  selectizeInput('show_vars', 
                                                label =  'Columns Visible:', 
                                                choices = NULL,
                                                 selected = NULL,
-                                               multiple = TRUE),
-                             
-                             
-                              dataTableOutput("props")
+                                               multiple = TRUE,
+                                              width = '100%')
+                             )
+                             ),
+                              DT::dataTableOutput("props")
                     ),
                     
                     
                     
                     # DownloadTab ----
-                    tabPanel("Download", h1("Download Results")
-                                , p('Can download Results and Calculation Data.  Choose a file name then click "Download"')
-                                , fluidRow(                                  
-                                  column(6 
+                    tabPanel("Downloads", h1("Downloads")
+                                , fluidRow(             
+                                  p('This allows the user download Results of the tool.  Choose a file name then click "Download Results"')
+                                  
+                                  ,column(6 
                                          , h2("Technology Set 1")
                                          , textInput("results1", "Part 1 Results File Name","CFRP_Tool_Results_1")
                                          , downloadButton('DL_results1', "Download Results")
@@ -650,27 +670,18 @@ shinyUI(fluidPage(theme = "bootstrap.css",
                                   ) )
                                 , fluidRow(
                                   h2("Calculation Data")
+                                  , p('This allows the user to download the calculation files made by this tool.
+                                        It requires both technology sets to be fully rendered.  Check the "Results" Tab, if both
+                                           table are displaying with no errors, then this is ready to be downloaded.')
+                                  ,br()
                                 , downloadButton('zipcalcs', "Download Calculation Zip File")
                                 )
                              , fluidRow(
                                h2("Background Infromation")
-                              , p("Download raw energy data, data source information and infromation explaining calculations")
+                              , p("This allows the user to download raw energy data, data source information and infromation explaining calculations")
                                , downloadButton('info', "Download Background Zip File")
                              )
-                             #THINGS TO ADD
-                             # DOWNLOAD RAW DATA & SOURCES
-                             # DOWNLOAD .PDF EXPLAINING CALCULATIONS
-                                
                              
-                             
-                             
-                                # , br()
-                                # , textInput("bkgrd", "Calculations File Name","CFRP_Tool_Calcs") 
-                                # , downloadButton('DL_calcs', "Download Calculations")
-                                #  
-                                #  , tableOutput("View1")
-                                # , tableOutput("View2")
-                                
                     )
                    #TEST TAB ----
                    # Tab to display tests

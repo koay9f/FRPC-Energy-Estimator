@@ -1,6 +1,14 @@
 library(tidyverse)
 
 #  FUNCTIONS TO MAKE SERVER.R WORK
+# for molding process dataframe ----
+checkboxprops <- function(YN, allx, some){
+  if (YN){
+    allx
+  } else {
+    some
+  }
+}
 # determine if need to use appended dataframes ----
 whichone <- function(go, new, old){
   if (go > 0) {

@@ -10,6 +10,7 @@ library(readr)
 library(plotly)
 source("math.R")
 library(tidyverse)
+library(DT)
 
 #Naming variables & data sheets ---- 
 #Name Data_Mold columns
@@ -69,17 +70,37 @@ shinyServer(function(input, output, session) {
   partname2e<- reactive(input$name2)
   output$partweight2d <- output$partweight2c <- output$partweight2b <- output$partweight2a <- output$partweight2 <- renderText({paste(input$finalweight2, "kg")})
   
+  #Molding Process Properties----
+  Props.df <- Props[,-1]
+  rownames(Props.df) <- Props[,1]
+  propmolds <- rownames(Props.df)
+  new_col <- c("Surface Finish","Part Size", "Part Shape-Complexity", "Dimensional Control", "Mold Sides", "Capital Costs", "Part Cost", 
+                       "Production Speed", "Production Volume", "Max Fiber Mass Frac.", "Strength", "Fiber Placement Control", "Molding Yield", 
+                       "Additional Curing?", "Heat Cure", "Pressure Cure", "Vacuum Cure", "Prepreg?", "Preform?", "Easily Incorp. Inserts")
+names(Props.df)<- new_col
   
-  propnames <- names(Props)
-  updateSelectizeInput(session, 'show_vars',
-                           choices = propnames,
-                           selected = c("Process"))
+  propnames <- names(Props.df)
+  selected_mold <- reactive(checkboxprops(input$show_allmolds, propmolds, NULL))
+  selected_vars <- reactive(checkboxprops(input$show_allvars, new_col, c("Surface Finish", "Part Size")))
   
   
-  output$props <- renderDataTable({
-    Props[,input$show_vars]
-    }, options = list(lengthMenu = c(4, 8, 12, 16), pageLength = 16))
   
+  observeEvent(input$show_allmolds,{
+    updateSelectizeInput(session, 'show_molds',
+                         choices = propmolds,
+                         selected =  selected_mold())
+  })
+  
+  
+  observeEvent(input$show_allvars,{
+    updateSelectizeInput(session, 'show_vars',
+                         choices = new_col,
+                         selected = selected_vars())
+  })
+  
+  output$props <- DT::renderDataTable({
+    Props.df[input$show_molds , input$show_vars]
+  },  options = list(lengthMenu = c(2, 4, 8, 12, 16), pageLength = 16, scrollX = TRUE), style = 'bootstrap')
   
   # Molding ----
   # Make List for Select Box
@@ -1008,7 +1029,7 @@ Data_Primatrix_new  <- reactiveValues()
     updateNumericInput(session, "primatrixfrac2", value = 100-rff2)
     })
     
-  # Calculations ----
+# Calculations ----
     # Mass Fractions converion (calculations treats inserts as part of sum(mass fractions) = 1 )----  
     raw.to.actual.fracs1 <- reactive(Data_mass_fxn(finalweight1(), raw.f.f1(), raw.f.pm1(), raw.f.ma1(), raw.f.mb1(), raw.f.mc1(), m.ia1(), m.ib1()))
     raw.to.actual.fracs2 <- reactive(Data_mass_fxn(finalweight2(), raw.f.f2(), raw.f.pm2(), raw.f.ma2(), raw.f.mb2(), raw.f.mc2(), m.ia2(), m.ib2()))
@@ -1034,8 +1055,8 @@ Data_Primatrix_new  <- reactiveValues()
     f.ib2 <- reactive(raw.to.actual.fracs2()$mass.frac[7])
 
     # Build Cumulative Yield dataframe ----  
-    # yield_data1.df <- reactiveValues()
-    # yield_data2.df <- reactiveValues()
+    yield_data1.df<- reactiveValues()
+    yield_data2.df<- reactiveValues()
     
     yield_data1.df <- reactive(BIGFUNCTION1(partname1e(),
       finish.yield1(), mold.yield1(), layup.yield1(),
@@ -1049,6 +1070,8 @@ Data_Primatrix_new  <- reactiveValues()
       int.prepregYN2(), finalweight2()
     ))   
 
+    
+    
     # Energy Variables ----
     E.fib1 <- reactive(fiberenergyfetch1())
     E.int1 <- reactive(intenergyfetch1())
@@ -1076,8 +1099,9 @@ Data_Primatrix_new  <- reactiveValues()
     E.fin2  <- reactive(finishenergyfetch2())  
     
     # Build Energy use dataframe ----
-    # energy_data1.df <- reactiveValues()
-    # energy_data2.df <- reactiveValues()
+    energy_data1.df <- reactiveValues()
+    energy_data2.df <- reactiveValues()
+   
     
     energy_data1.df <- reactive(BIGFUNCTION2(yield_data1.df(),partname1e(),
              f.pm1(), f.ma1(), f.mb1(), f.mc1(), f.ia1(), f.ib1(),
@@ -1322,7 +1346,6 @@ Data_Primatrix_new  <- reactiveValues()
                    layup.yield1(), mold.yield1(), " -- " , finish.yield1(), (layup.yield1()* mold.yield1()* finish.yield1())),
     "Embodied Energy (MJ/part)" = c(E.f.fib1(), E.f.pm1(), E.f.ma1(), E.f.mb1(), E.f.mc1(), E.f.ia1(), E.f.ib1(), sum(E.f.fib1(), E.f.pm1(), E.f.ma1(), E.f.mb1(), E.f.mc1(), E.f.ia1(), E.f.ib1()),
                                     E.f.int1(), E.f.mold1(), E.f.cure1(), E.f.fin1(), sum(E.f.int1(), E.f.mold1(), E.f.cure1(), E.f.fin1()))
-
   ))
   
   RESULTSTABLE2 <-  reactive(data_frame(
@@ -1334,8 +1357,7 @@ Data_Primatrix_new  <- reactiveValues()
                    layup.yield2(), mold.yield2(), " -- " , finish.yield2(), (layup.yield2()* mold.yield2()* finish.yield2())),
     "Embodied Energy (MJ/part)" = c(E.f.fib2(), E.f.pm2(), E.f.ma2(), E.f.mb2(), E.f.mc2(), E.f.ia2(), E.f.ib2(), sum(E.f.fib2(), E.f.pm2(), E.f.ma2(), E.f.mb2(), E.f.mc2(), E.f.ia2(), E.f.ib2()),
                                     E.f.int2(), E.f.mold2(), E.f.cure2(), E.f.fin2(), sum(E.f.int2(), E.f.mold2(), E.f.cure2(), E.f.fin2()))
-    
-  ))
+      ))
   
   # Attach tables to download buttons
      output$DL_results1 <- downloadHandler(
@@ -1349,12 +1371,10 @@ Data_Primatrix_new  <- reactiveValues()
          write.csv(RESULTSTABLE2(), file)
        }   )
      
-
-     
-     #maybe write the .csv out here then just call it like above
-   
-blank.df <- c("No Data")
-     
+y1table <- isolate(reactive(yield_data1.df()))
+y2table <- isolate(reactive(yield_data2.df()))
+e1table <- isolate(reactive(energy_data1.df()))
+e2table <- isolate(reactive(energy_data2.df()))
 
      output$zipcalcs <- downloadHandler(
          filename = 'CFRP_Tool_Calcualtion_Data.zip',
@@ -1365,48 +1385,25 @@ blank.df <- c("No Data")
     print(tempdir())
 
    filestosave <- c("yield_table1.csv","energy_table1.csv","yield_table2.csv","energy_table2.csv")
-    
-   if(exists("yield_data1.df()")){
-      write.csv(yield_data1.df(), file = "yield_table1.csv")
-    } else{
-          write.csv(blank.df, file = "yield_table1.csv")
-        }        
-   
-   if(exists("yield_data2.df()")){
-     write.csv(yield_data2.df(), file = "yield_table2.csv")
-   } else{
-     write.csv(blank.df, file = "yield_table2.csv")
-   }
-   
-   if(exists("energy_data1.df()")){
-        write.csv(energy_data1.df(), file = "energy_table1.csv")
-   } else{
-     write.csv(blank.df, file = "energy_table1.csv")
-    }
-   
-   if(exists("energy_data2.df()")){
-       write.csv(energy_data2.df(), file = "energy_table2.csv")   
-     } else{
-     write.csv(blank.df, file = "energy_table2.csv")
-   }
-   
+
+      write.csv(y1table(), file = "yield_table1.csv")
+     write.csv(y2table(), file = "yield_table2.csv")
+        write.csv(e1table(), file = "energy_table1.csv")
+       write.csv(e2table(), file = "energy_table2.csv")
+
     zip(zipfile = fname, files = filestosave)
     if(file.exists(paste0(fname, ".zip"))) {file.rename(paste0(fname, ".zip"), fname)}      },
-    
-contentType = "application/zip"
 
+contentType = "application/zip"
          )
-     
+
      
      output$info <- downloadHandler(
        filename = 'CFRP_Tool_Background_Info.zip',
        content = function(file){
-         file.copy("data/CFRP_Tool_Background_Info.zip", file)     },
-       
+         file.copy("www/CFRP_Tool_Background_Info.zip", file)     },
        contentType = "application/zip"
-       
      )
-     
-     
-#  End ----
-   })
+
+     #  End ----
+     session$onSessionEnded(stopApp) })
