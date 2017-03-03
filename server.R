@@ -271,15 +271,15 @@ moldshortfetch2 <- eventReactive(input$moldingInput2, {
     f_energy[f_name %in% input$fiberInput2]  })
   
  # Generate Outputs
-  output$fibername1d  <- output$fibername1 <- renderText(fibernamefetch1())
-  output$fibername2d  <- output$fibername2 <- renderText(fibernamefetch2())
+  output$fibername1d  <-  output$fibername1c <- output$fibername1b <- output$fibername1a <- output$fibername1 <- renderText(as.character(fibernamefetch1()))
+  output$fibername2d  <- output$fibername2c <-output$fibername2b <-output$fibername2a <-output$fibername2 <- renderText(as.character(fibernamefetch2()))
   output$fiberEnergyNum1 <- renderText({paste(fiberenergyfetch1(), "MJ/kg")})
   output$fiberEnergyNum2 <- renderText({paste(fiberenergyfetch2(), "MJ/kg")})
   
   # Pull used fiber fractions for use in matrix tab and calculations
-  output$fiberfrac1b <- renderText({paste(input$moldfracUSERNum1, "%")})
+  output$fiberfrac1c <-output$fiberfrac1a <-output$fiberfrac1b <- renderText({paste(input$moldfracUSERNum1, "%")})
   output$fiberfrac1z <-output$fiberfrac1e <-output$fiberfrac1d <- renderText(input$moldfracUSERNum1)
-  output$fiberfrac2b <- renderText({paste(input$moldfracUSERNum2, "%")})
+  output$fiberfrac2c <-output$fiberfrac2a <-output$fiberfrac2b <- renderText({paste(input$moldfracUSERNum2, "%")})
   output$fiberfrac2z <-output$fiberfrac2e <-output$fiberfrac2d  <- renderText(input$moldfracUSERNum2)
   
   # Intermediate ----
@@ -389,14 +389,15 @@ moldshortfetch2 <- eventReactive(input$moldingInput2, {
     int_preg[int_name %in% input$intInput2]  })
   
   #Generate Outputs
-  output$intname1d  <- output$intname1 <- renderText(intnamefetch1())
-  output$intname2d  <- output$intname2 <- renderText(intnamefetch2())
+  output$intname1d  <- output$intname1c <-output$intname1 <- renderText(as.character(intnamefetch1()))
+  output$intname2d  <- output$intname2c <-output$intname2 <- renderText(as.character(intnamefetch2()))
   output$intEnergyNum1 <- renderText({paste(intenergyfetch1(), "MJ/kg")})
   output$intEnergyNum2 <- renderText({paste(intenergyfetch2(), "MJ/kg")})
-  output$intscrapNum1 <- renderText({paste(intscrapfetch1()*100, "%")})
-  output$intscrapNum2 <- renderText({paste(intscrapfetch2()*100, "%")})
+  output$intscrapNum1c <-output$intscrapNum1 <- renderText({paste(intscrapfetch1()*100, "%")})
+  output$intscrapNum2c <-output$intscrapNum2 <- renderText({paste(intscrapfetch2()*100, "%")})
   int.prepregYN1 <-renderText(intprepregfetch1())
   int.prepregYN2<-renderText(intprepregfetch2())
+  
   
   # Matrix ----
   # Make List for Box if no custom data
@@ -448,10 +449,13 @@ Data_Primatrix_new  <- reactiveValues()
     matrixenergy_new()[matrixnames_new()  %in% input$PriMatrixInput2]  })
   
   # Generate Outputs
-  output$primatrixname1 <- renderText(primatrixnamefetch1())
-  output$primatrixname2 <- renderText(primatrixnamefetch2())
+  output$primatrixname1c <-output$primatrixname1a <- renderText(as.character(primatrixnamefetch1()))
+  output$primatrixname2c <-output$primatrixname2a <- renderText(as.character(primatrixnamefetch2()))
   output$primatrixEnergyNum1 <- renderText({paste(primatrixenergyfetch1(), "MJ/kg")})
   output$primatrixEnergyNum2 <- renderText({paste(primatrixenergyfetch2(), "MJ/kg")})
+  output$primatrixfrac1c <-output$primatrixfrac1a <- renderText({paste(input$primatrixfrac1, "%")})
+  output$primatrixfrac2c <-output$primatrixfrac2a <- renderText({paste(input$primatrixfrac2, "%")})
+  
   
   # OtherMat ----
   # Build temp and new data tables for when adding custom data
@@ -1116,11 +1120,11 @@ Data_Primatrix_new  <- reactiveValues()
     )) 
     
     #code to test that calculations are preformed correctly
-    # output$table1a <- renderTable(yield_data1.df())
-    # output$table1b <- renderTable(energy_data1.df())
-    # 
-    # output$table2a <- renderTable(yield_data2.df())
-    # output$table2b <- renderTable(energy_data2.df())
+    output$table1a <- renderTable(yield_data1.df())
+    output$table1b <- renderTable(energy_data1.df())
+
+    output$table2a <- renderTable(yield_data2.df())
+    output$table2b <- renderTable(energy_data2.df())
     
     
   # Final Display ----
@@ -1333,7 +1337,15 @@ Data_Primatrix_new  <- reactiveValues()
                            ) 
          })
    
-  
+  # display table
+
+     
+   Resultsdf <- reactive(finaldf(partname1e(), partname2e(), 
+                                 E.f.fib1(), E.f.pm1(), E.f.ma1(), E.f.mb1(), E.f.mc1(), E.f.ia1(), E.f.ib1(), E.f.int1(), E.f.mold1(), E.f.cure1(), E.f.fin1(),
+                                 E.f.fib2(), E.f.pm2(), E.f.ma2(), E.f.mb2(), E.f.mc2(), E.f.ia2(), E.f.ib2(), E.f.int2(), E.f.mold2(), E.f.cure2(), E.f.fin2()))
+   
+   output$ResultsTable <- renderTable(Resultsdf(), digits = 2, include.rownames = TRUE, na = "0")
+     
    
   # Download Results ----
    #Build tables for download
@@ -1405,5 +1417,10 @@ contentType = "application/zip"
        contentType = "application/zip"
      )
 
+     
+       
+     
+     
+     
      #  End ----
      session$onSessionEnded(stopApp) })

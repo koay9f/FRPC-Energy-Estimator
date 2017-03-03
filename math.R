@@ -128,7 +128,7 @@ intlistfxn <- function(moldtype) {
             c("Chopped")
           }else{
             if (moldtype == "Pultrusion"){
-              c("Dry Weave", "Not Used")
+              c("Dry Braid", "Not Used")
             }else{
               if (moldtype == "Filament Winding"){
                 c("Prepregs, Auto, Fiber (TS)", "Prepregs, Auto, Fiber (TP)", "Dry Braid", "Not Used")
@@ -264,7 +264,11 @@ BIGFUNCTION1 <- function(partname,
   # creates col: the final part mass (same for each material & stage)
   Data_yield <- Data_yield %>%
     rowwise() %>%
-    mutate(material_final_mass = finalmass)
+    mutate(final_mass = finalmass)
+  # creates col: the final part mass (for each material)
+  Data_yield <- Data_yield %>%
+    rowwise() %>%
+    mutate(material_final_mass = final_mass*massfrac)
   
   # creates col: divides the final mass by the  cumulative yield     
   Data_yield <- Data_yield %>%   
@@ -309,7 +313,7 @@ BIGFUNCTION2 <- function(Data_yield, partname,
     part = c(rep(partname, 11)),
     process_step = c("Fiber", "Fiber Intermediate", "Primary Matrix", "Additional Matrix A", "Additional Matrix B", " Additional Matrix C", "Insert A", "Insert B", "Molding", "Curing", "Finishing"),
     mass_materials = c(fib.mass.i , int.fib.mass.i, matrix.mass.i, insert.mass.i, mold.mass, cure.mass, finish.mass), 
-    energy_materials = c(E_1, E_2, E_3, E_4,E_5, E_6, E_7, E_8, E_9, E_10, E_11)
+    energy_kg = c(E_1, E_2, E_3, E_4,E_5, E_6, E_7, E_8, E_9, E_10, E_11)
     )
   
   # Calculate total energy per process segment
@@ -319,4 +323,28 @@ BIGFUNCTION2 <- function(Data_yield, partname,
   Data_energy[is.na(Data_energy)]<- 0
   
   Data_energy
+}
+
+# Final data frame ----
+finaldf <- function(name1, name2, AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK, AA2, BB2, CC2, DD2, EE2, FF2, GG2, HH2, II2, JJ2, KK2){
+  pd <- function (n1, n2){
+    pd <- abs(n1-n2)*100/n1
+    #pd <- paste(pd,"%")
+  }
+  
+  tempdf <- data_frame(
+    Part1 = c(AA, BB, sum(CC, DD,EE, FF, GG), HH, II, JJ, KK, sum(AA, BB, CC, DD,EE, FF, GG, HH, II, JJ, KK)),
+    Part2 = c(AA2, BB2, sum(CC2, DD2, EE2, FF2, GG2), HH2, II2, JJ2, KK2, sum(AA2, BB2, CC2, DD2, EE2, FF2, GG2, HH2, II2, JJ2, KK2))
+  )
+  
+  
+  tempdf <- tempdf %>%
+    rowwise() %>%
+    mutate(Percent_change = pd(Part1, Part2))
+  
+  displaydf <- t(tempdf)
+  suppressWarnings( rownames(displaydf) <- c(name1,name2, "Percent Change (%)"))
+  suppressWarnings( colnames(displaydf) <- c("Fiber", "Primary Matrix Material", "Other Materials", "Intermediate", "Molding", "Curing", "Finishing", "Total"))
+  
+  displaydf
 }

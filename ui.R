@@ -13,12 +13,13 @@ library(DT)
 shinyUI(fluidPage(title = "CFRP Tool",
   theme = "bootstrap.css",
                   tags$head(
-                    tags$style(HTML("
-                                    .shiny-output-error-validation {
-                                    color: red;
-                                    }
-                                    "))
+                    tags$style(HTML(" .shiny-output-error-validation {color: red; }"))
+                    ,   tags$style(id = "Table.mat.1", "tr:last-child {font-weight:bold;}")
+                    ,   tags$style(id = "Table.mat.2", "tr:last-child {font-weight:bold;}")
+                    ,   tags$style(id = "Table.energy.1", "tr:last-child {font-weight:bold;}")
+                    ,   tags$style(id = "Table.energy.2", "tr:last-child {font-weight:bold;}")
                     ),
+  
                   titlePanel(h1("CFRP Energy Use Estimation Tool", style = "color:#007833")),
                   navlistPanel( 
                     
@@ -234,12 +235,12 @@ shinyUI(fluidPage(title = "CFRP Tool",
                                                          options = list(placeholder = 'Choose Molding Technology    '))  )
                                       , fluidRow(column (8,strong("Embodied Energy:")),column(4,textOutput("EnergyNum1")))
                                       , wellPanel( style = "background-color: #FFCD00;"
-                                                   , checkboxInput("insertsAUSERYN1", "Does the part use inserts or a core?",FALSE)
+                                                   , checkboxInput("insertsAUSERYN1", strong("Does the part use inserts or a core?", style = "font-size:120%"),FALSE)
                                                       , conditionalPanel(
                                                         condition = "input.insertsAUSERYN1 == true"
                                                         , p("The final mass of the part should include the mass of the inserts or cores.")
                                                         , numericInput("insertsAfrac1","Insert/Core Mass", 0.0,  min = 0.0, NA, NA)
-                                                   , checkboxInput("insertsBUSERYN1", "Use Additional Insert/Core Material?",FALSE)
+                                                   , checkboxInput("insertsBUSERYN1", strong("Use Additional Insert/Core Material?", style = "font-size:120%"),FALSE)
                                                        , conditionalPanel(
                                                          condition = "input.insertsBUSERYN1 == true"
                                                          , numericInput("insertsBfrac1","Additional Insert/Core Mass", 0.0,  min = 0.0, NA, NA))))
@@ -256,14 +257,14 @@ shinyUI(fluidPage(title = "CFRP Tool",
                                         )
                                       , fluidRow(column (8,strong("Embodied Energy:")),column(4,textOutput("EnergyNum2")))
                                       , wellPanel( style = "background-color: #FFCD00;"
-                                                     , checkboxInput("insertsAUSERYN2", "Does the part use inserts or a core?",FALSE)
+                                                     , checkboxInput("insertsAUSERYN2", strong("Does the part use inserts or a core?", style = "font-size:120%"),FALSE)
                                                      , conditionalPanel(
                                                        condition = "input.insertsAUSERYN2 == true"
                                                        , p("The final mass of the part should include the mass of the inserts or cores.")
                                                        #THIS SHOULD BE MASS OF INSERT AND THEN NEED A CALC TO DETERMINE THE TRUE MASS FRACS
                                                        , numericInput("insertsAfrac2","Insert/Core Mass", 0.0,  min = 0.0, NA, NA)
                                                        
-                                                       , checkboxInput("insertsBUSERYN2", "Use Additional Insert/Core Material?",FALSE)
+                                                       , checkboxInput("insertsBUSERYN2", strong("Use Additional Insert/Core Material?", style = "font-size:120%"),FALSE)
                                                        
                                                        #THIS SHOULD BE MASS OF INSERT AND THEN NEED A CALC TO DETERMINE THE TRUE MASS FRACS
                                                        , conditionalPanel(
@@ -280,11 +281,10 @@ shinyUI(fluidPage(title = "CFRP Tool",
                                #TechSet1
                                column(6,
                                       h2("Technology Set 1")
-                                      , fluidRow(column(4, strong("Part Name: ")), column(8, textOutput("partname1"), align = "right"))
-                                      , fluidRow(column(8, strong("Part Weight:")), column(4, textOutput("partweight1"), align = "right"))
-                                      , fluidRow(column(8, strong("Molding Techology: ")), column(4, textOutput("moldshort1"), align = "right"))
+                                      , fluidRow(column(4, strong("Part: ")), column(5, textOutput("partname1"), align = "left"), column(3,textOutput("partweight1"), align = "right"))
+                                      , fluidRow(column(4, strong("Molding Techology: ")), column(5, textOutput("moldshort1"), align = "left"))
+                                      , hr()
                                       , fluidRow(column(8, strong("Default Mass Fiber Fraction: ")), column(4, textOutput("moldfracNum1"), align = "right"))
-                                      
                                       , wellPanel( 
                                         numericInput("moldfracUSERNum1","Fiber Mass Fraction",  min = 0.0, max = 100.0, value = 0.0,5.0)
                                         , selectizeInput("fiberInput1", label = "Fiber Type",
@@ -295,11 +295,10 @@ shinyUI(fluidPage(title = "CFRP Tool",
                                #TechSet2
                                , column(6,
                                         h2("Technology Set 2")
-                                        , fluidRow(column(4, strong("Part Name: ")), column(8, textOutput("partname2"), align = "right"))
-                                        , fluidRow(column(8, strong("Part Weight:")), column(4, textOutput("partweight2"), align = "right"))                                            
-                                        , fluidRow(column(8, strong("Molding Techology: ")), column(4, textOutput("moldshort2"), align = "right"))
+                                        , fluidRow(column(4, strong("Part: ")), column(5, textOutput("partname2"), align = "left"), column(3,textOutput("partweight2"), align = "right"))                                            
+                                        , fluidRow(column(4, strong("Molding Techology: ")), column(5, textOutput("moldshort2"), align = "left"))
+                                        , hr()
                                         , fluidRow(column(8, strong("Default Mass Fiber Fraction: ")), column(4, textOutput("moldfracNum2"), align = "right"))
-                                        
                                         , wellPanel(
                                           numericInput("moldfracUSERNum2","Fiber Mass Fraction", min = 0.0, max = 100.0, value = 0.0,5.0)
                                           , selectizeInput("fiberInput2", label = "Fiber Type",
@@ -317,11 +316,10 @@ shinyUI(fluidPage(title = "CFRP Tool",
                                #Matrix Techset1 ----
                                column(6
                                       , h2("Technology Set 1")
-                                      , fluidRow(column(4, strong("Part Name: ")), column(8, textOutput("partname1b"), align = "right"))
-                                      , fluidRow(column(8, strong("Part Weight:")), column(4, textOutput("partweight1b"), align = "right"))
-                                      , fluidRow(column(8, strong("Molding Techology: ")), column(4, textOutput("moldshort1b"), align = "right"))
-                                      , fluidRow(column(8, strong("Fiber Mass Fraction:")), column(4, textOutput("fiberfrac1b"), align = "right"))
-                                      
+                                      , fluidRow(column(4, strong("Part: ")), column(5, textOutput("partname1b"), align = "left"), column(3,textOutput("partweight1b"), align = "right"))
+                                      , fluidRow(column(4, strong("Fiber:")), column(5, textOutput("fibername1b"), align = "left"), column(3,textOutput("fiberfrac1b"), align = "right"))
+                                      , fluidRow(column(4, strong("Molding Techology: ")), column(8, textOutput("moldshort1b"), align = "left"))
+                                      , hr()
                                       #Choose Primary Matrix
                                       , wellPanel( 
                                         selectizeInput("PriMatrixInput1", label = "Choose Primary Matrix Material",
@@ -332,7 +330,7 @@ shinyUI(fluidPage(title = "CFRP Tool",
                                     
                                       # Additional Material 
                                       , wellPanel( style = "background-color: #FFCD00;"
-                                             , checkboxInput("othermatrixAUSERYN1", "Use Additional Matrix Materials?",FALSE)
+                                             , checkboxInput("othermatrixAUSERYN1", strong("Use Additional Matrix Materials?", style = "font-size:120%"),FALSE)
                                         # Additional Material A 
                                              , conditionalPanel(
                                                condition = "input.othermatrixAUSERYN1 == true"
@@ -347,7 +345,7 @@ shinyUI(fluidPage(title = "CFRP Tool",
                                         , fluidRow(column(8, strong("Embodied Energy:")), column(4,textOutput("othermatrixAEnergyNum1"), align = "right"))
                                          # Additional Material B
                                         , wellPanel(style = "background-color: #FFCD00;"
-                                            , checkboxInput("othermatrixBUSERYN1", "Use Additional Matrix Materials?",FALSE)
+                                            , checkboxInput("othermatrixBUSERYN1", strong("Use Additional Matrix Materials?", style = "font-size:120%"),FALSE)
                                             , conditionalPanel(
                                                condition = "input.othermatrixBUSERYN1 == true"
                                                , selectizeInput("types1b", label = "Choose Type of Additional Matrix Material",
@@ -362,7 +360,7 @@ shinyUI(fluidPage(title = "CFRP Tool",
                                         , fluidRow(column(8, strong("Embodied Energy:")), column(4,textOutput("othermatrixBEnergyNum1"), align = "right"))
                                         # Additional Material C
                                         ,  wellPanel(style = "background-color: #FFCD00;"
-                                             , checkboxInput("othermatrixCUSERYN1", "Use Additional Matrix Materials?",FALSE)
+                                             , checkboxInput("othermatrixCUSERYN1", strong("Use Additional Matrix Materials?", style = "font-size:120%"),FALSE)
                                              , conditionalPanel(
                                                 condition = "input.othermatrixCUSERYN1 == true"
                                                 , selectizeInput("types1c", label = "Choose Type of Additional Matrix Material",
@@ -399,11 +397,10 @@ shinyUI(fluidPage(title = "CFRP Tool",
                                # Matrix TechSet2 ----
                                , column(6
                                         , h2("Technology Set 2")
-                                        , fluidRow(column(4, strong("Part Name: ")), column(8, textOutput("partname2b"), align = "right"))
-                                        , fluidRow(column(8, strong("Part Weight:")), column(4, textOutput("partweight2b"), align = "right"))
-                                        , fluidRow(column(8, strong("Molding Techology: ")), column(4, textOutput("moldshort2b"), align = "right"))
-                                        , fluidRow(column(8, strong("Fiber Mass Fraction:")), column(4, textOutput("fiberfrac2b"), align = "right"))
-                                      
+                                        , fluidRow(column(4, strong("Part: ")), column(5, textOutput("partname2b"), align = "left"), column(3,textOutput("partweight2b"), align = "right"))
+                                        , fluidRow(column(4, strong("Fiber:")), column(5, textOutput("fibername2b"), align = "left"), column(3,textOutput("fiberfrac2b"), align = "right"))
+                                        , fluidRow(column(4, strong("Molding Techology: ")), column(8, textOutput("moldshort2b"), align = "left"))
+                                        , hr()
                                         #Choose Primary Matrix 
                                         ,  wellPanel(
                                           selectizeInput("PriMatrixInput2", label = "Choose Primary Matrix Material",
@@ -414,7 +411,7 @@ shinyUI(fluidPage(title = "CFRP Tool",
                                         
                                         # Additional Material 
                                         ,  wellPanel(style = "background-color: #FFCD00;"
-                                             , checkboxInput("othermatrixAUSERYN2", "Use Additional Matrix Materials?",FALSE)
+                                             , checkboxInput("othermatrixAUSERYN2", strong("Use Additional Matrix Materials?", style = "font-size:120%"),FALSE)
                                               # Additional Material A
                                               , conditionalPanel(
                                                   condition = "input.othermatrixAUSERYN2"
@@ -429,7 +426,7 @@ shinyUI(fluidPage(title = "CFRP Tool",
                                               ,fluidRow(column(8, strong("Embodied Energy:")), column(4,textOutput("othermatrixAEnergyNum2"), align = "right"))
                                                # Additional Mateiral B  
                                               , wellPanel(style = "background-color: #FFCD00;"
-                                              , checkboxInput("othermatrixBUSERYN2", "Use Additional Matrix Materials?",FALSE)
+                                              , checkboxInput("othermatrixBUSERYN2", strong("Use Additional Matrix Materials?", style = "font-size:120%"),FALSE)
                                                , conditionalPanel(
                                                  condition = "input.othermatrixBUSERYN2 == true"
                                                    , selectizeInput("types2b", label = "Choose Type of Additional Matrix Material",
@@ -443,7 +440,7 @@ shinyUI(fluidPage(title = "CFRP Tool",
                                           , fluidRow(column(8, strong("Embodied Energy:")), column(4,textOutput("othermatrixBEnergyNum2"), align = "right"))
                                           # Additional Material C 
                                           , wellPanel(style = "background-color: #FFCD00;"
-                                               , checkboxInput("othermatrixCUSERYN2", "Use Additional Matrix Materials?",FALSE)
+                                               , checkboxInput("othermatrixCUSERYN2", strong("Use Additional Matrix Materials?", style = "font-size:120%"),FALSE)
                                                , conditionalPanel(
                                                     condition = "input.othermatrixCUSERYN2 == true"
                                                    , selectizeInput("types2c", label = "Choose Type of Additional Matrix Material",
@@ -484,12 +481,13 @@ shinyUI(fluidPage(title = "CFRP Tool",
                                #Techset1
                                column(6
                                   , h2("Technology Set 1")
-                                  , fluidRow(column(4, strong("Part Name: ")), column(8, textOutput("partname1a"), align = "right"))
-                                  , fluidRow(column(8, strong("Part Weight:")), column(4, textOutput("partweight1a"), align = "right"))
-                                  , fluidRow(column(8, strong("Molding Techology: ")), column(4, textOutput("moldshort1a"), align = "right"))
-                                  
+                                  , fluidRow(column(4, strong("Part: ")), column(5, textOutput("partname1a"), align = "left"), column(3,textOutput("partweight1a"), align = "right"))
+                                  , fluidRow(column(4, strong("Fiber:")), column(5, textOutput("fibername1a"), align = "left"), column(3,textOutput("fiberfrac1a"), align = "right"))
+                                  , fluidRow(column(4, strong("Matrix:")), column(5, textOutput("primatrixname1a"), align = "left"), column(3,textOutput("primatrixfrac1a"), align = "right"))
+                                  , fluidRow(column(4, strong("Molding Techology: ")), column(8, textOutput("moldshort1a"), align = "left"))
+                                  , hr()
                                   , wellPanel(style = "background-color: #FFCD00;"
-                                              , checkboxInput("intYN1", "View all intermediate options?",FALSE)
+                                              , checkboxInput("intYN1", strong("View all intermediate options?", style = "font-size:120%"),FALSE)
                                   )
                                   , wellPanel(selectizeInput("intInput1", label = "Choose Fiber Intermediate",
                                                              choices = NULL,  selected = "",  multiple = FALSE,
@@ -503,12 +501,13 @@ shinyUI(fluidPage(title = "CFRP Tool",
                                #TechSet2
                                , column(6
                                   , h2("Technology Set 2")
-                                  , fluidRow(column(4, strong("Part Name: ")), column(8, textOutput("partname2a"), align = "right"))
-                                  , fluidRow(column(8, strong("Part Weight:")), column(4, textOutput("partweight2a"), align = "right"))
-                                  , fluidRow(column(8, strong("Molding Techology: ")), column(4, textOutput("moldshort2a"), align = "right"))
-                                  
+                                  , fluidRow(column(4, strong("Part: ")), column(5, textOutput("partname2a"), align = "left"), column(3,textOutput("partweight2a"), align = "right"))
+                                  , fluidRow(column(4, strong("Fiber:")), column(5, textOutput("fibername2a"), align = "left"), column(3,textOutput("fiberfrac2a"), align = "right"))
+                                  , fluidRow(column(4, strong("Matrix:")), column(5, textOutput("primatrixname2a"), align = "left"), column(3,textOutput("primatrixfrac2a"), align = "right"))
+                                  , fluidRow(column(4, strong("Molding Techology: ")), column(8, textOutput("moldshort2a"), align = "left"))
+                                  , hr()
                                   , wellPanel(style = "background-color: #FFCD00;"
-                                              , checkboxInput("intYN2", "View all fiber intermediate options?",FALSE)
+                                              , checkboxInput("intYN2", strong("View all intermediate options?", style = "font-size:120%"),FALSE)
                                   )
                                   , wellPanel(selectizeInput("intInput2", label = "Choose Fiber Intermediate",
                                                              choices = NULL,  selected = "",  multiple = FALSE,
@@ -530,9 +529,12 @@ shinyUI(fluidPage(title = "CFRP Tool",
                                #TechSet1
                                column(6
                                   , h2("Technology Set 1")
-                                  , fluidRow(column(4, strong("Part Name: ")), column(8, textOutput("partname1c"), align = "right"))
-                                  , fluidRow(column(8, strong("Part Weight:")), column(4, textOutput("partweight1c"), align = "right"))
-                                  , fluidRow(column(8, strong("Molding Techology: ")), column(4, textOutput("moldshort1c"), align = "right"))
+                                  , fluidRow(column(4, strong("Part: ")), column(5, textOutput("partname1c"), align = "left"), column(3,textOutput("partweight1c"), align = "right"))
+                                  , fluidRow(column(4, strong("Fiber:")), column(5, textOutput("fibername1c"), align = "left"), column(3,textOutput("fiberfrac1c"), align = "right"))
+                                  , fluidRow(column(4, strong("Matrix:")), column(5, textOutput("primatrixname1c"), align = "left"), column(3,textOutput("primatrixfrac1c"), align = "right"))
+                                  , fluidRow(column(4, strong("Intermediate")), column(5, textOutput("intname1c"), align = "left"), column(3,textOutput("intscrapNum1c"), align = "right"))
+                                  , fluidRow(column(4, strong("Molding Techology: ")), column(8, textOutput("moldshort1c"), align = "left"))
+                                  , hr()
                                   #Molding Yield
                                   , fluidRow(column(8, strong("Default Molding Yield: ")), column(4, textOutput("moldyieldNum1"), align = "right"))
                                   , wellPanel(numericInput("moldyieldUSERNum1","Molding Yield", 0.0,  min = 0.0, max = 100.0,5.0)
@@ -541,7 +543,7 @@ shinyUI(fluidPage(title = "CFRP Tool",
                                   , br()
                                   #curing tech & energy
                                   , wellPanel(style = "background-color: #FFCD00;"
-                                          , checkboxInput("cureYN1", "View all curing options?",FALSE))
+                                          , checkboxInput("cureYN1", strong("View all curing options?", style = "font-size:120%"),FALSE))
                                   , wellPanel(selectizeInput("cureInput1", label = "Curing Technology Options",
                                                      choices = NULL, selected = "", multiple = FALSE,
                                                      options = list(placeholder = 'Choose Curing Technology    ')))
@@ -561,9 +563,12 @@ shinyUI(fluidPage(title = "CFRP Tool",
                                #TechSet2
                                , column(6
                                         , h2("Technology Set 2")
-                                        , fluidRow(column(4, strong("Part Name: ")), column(8, textOutput("partname2c"), align = "right"))
-                                        , fluidRow(column(8, strong("Part Weight:")), column(4, textOutput("partweight2c"), align = "right"))
-                                        , fluidRow(column(8, strong("Molding Techology: ")), column(4, textOutput("moldshort2c"), align = "right"))
+                                        , fluidRow(column(4, strong("Part: ")), column(5, textOutput("partname2c"), align = "left"), column(3,textOutput("partweight2c"), align = "right"))
+                                        , fluidRow(column(4, strong("Fiber:")), column(5, textOutput("fibername2c"), align = "left"), column(3,textOutput("fiberfrac2c"), align = "right"))
+                                        , fluidRow(column(4, strong("Matrix:")), column(5, textOutput("primatrixname2c"), align = "left"), column(3,textOutput("primatrixfrac2c"), align = "right"))
+                                        , fluidRow(column(4, strong("Intermediate")), column(5, textOutput("intname2c"), align = "left"), column(3,textOutput("intscrapNum2c"), align = "right"))
+                                        , fluidRow(column(4, strong("Molding Techology: ")), column(8, textOutput("moldshort2c"), align = "left"))
+                                        , hr()
                                         #Molding Yield
                                         , fluidRow(column(8, strong("Default Molding Yield: ")), column(4, textOutput("moldyieldNum2"), align = "right"))
                                         , wellPanel(numericInput("moldyieldUSERNum2","Molding Yield", 0.0,  min = 0.0, max = 100.0,5)
@@ -572,7 +577,7 @@ shinyUI(fluidPage(title = "CFRP Tool",
                                         , br()
                                         #curing tech & energy
                                         , wellPanel(style = "background-color: #FFCD00;"
-                                                    , checkboxInput("cureYN2", "View all curing options?",FALSE))
+                                                    , checkboxInput("cureYN2", strong("View all curing options?", style = "font-size:120%"),FALSE))
                                         , wellPanel(selectizeInput("cureInput2", label = "Curing Technology Options",
                                                          choices = NULL, selected = "", multiple = FALSE,
                                                          options = list(placeholder = 'Choose Curing Technology    ')))
@@ -599,21 +604,25 @@ shinyUI(fluidPage(title = "CFRP Tool",
                                #TechSet1
                                column(6,
                                       h2("Technology Set 1")
-                                      , fluidRow(column(4, strong("Part Name: ")), column(8, textOutput("partname1d"), align = "right"))
-                                      , fluidRow(column(8, strong("Part Weight:")), column(4, textOutput("partweight1d"), align = "right"))
-                                      , tableOutput("Table.mat.1")
-                                      , br()
-                                      , tableOutput("Table.pro.1")
-                               )
+                                      , fluidRow(column(4, strong("Part: ")), column(5, textOutput("partname1d"), align = "left"), column(3,textOutput("partweight1d"), align = "right"))
+                                       )
                                #TechSet2
                                , column(6,
                                         h2("Technology Set 2")
-                                        , fluidRow(column(4, strong("Part Name: ")), column(8, textOutput("partname2d"), align = "right"))
-                                        , fluidRow(column(8, strong("Part Weight:")), column(4, textOutput("partweight2d"), align = "right"))
-                                        , tableOutput("Table.mat.2")
+                                        , fluidRow(column(4, strong("Part Name: ")), column(5, textOutput("partname2d"), align = "left"), column(3,textOutput("partweight2d"), align = "right"))
+                                         ))
+                             , hr()
+                             , fluidRow(
+                               column(6,
+                                        tableOutput("Table.mat.1")
+                                      , br()
+                                      , tableOutput("Table.pro.1")
+                                      , style = "border-right:2px solid #000;")
+                               , column(6,
+                                          tableOutput("Table.mat.2")
                                         , br()
-                                        , tableOutput("Table.pro.2")
-                               ))
+                                        , tableOutput("Table.pro.2"))
+                             )
                              #End Tab
                     ),
                     
@@ -621,6 +630,8 @@ shinyUI(fluidPage(title = "CFRP Tool",
                     tabPanel("Results", h1("Results"),
                              #p("This is where users will be able to graphically compare the two technology pathways"),
                              plotlyOutput("plot1")
+                             , hr()
+                             , tableOutput("ResultsTable")
                     ),
                     
                     
@@ -647,12 +658,9 @@ shinyUI(fluidPage(title = "CFRP Tool",
                                                multiple = TRUE,
                                               width = '100%')
                              )
-                             ),
-                              DT::dataTableOutput("props")
+                             )
+                            ,  DT::dataTableOutput("props")
                     ),
-                    
-                    
-                    
                     # DownloadTab ----
                     tabPanel("Downloads", h1("Downloads")
                                 , fluidRow(             
@@ -685,14 +693,14 @@ shinyUI(fluidPage(title = "CFRP Tool",
                     )
                    #TEST TAB ----
                    # Tab to display tests
-                  # , tabPanel("TEST", h1("TEST"),
-                  # To use, remove "#' from the lines with code here and the output generators in server.R.  
-                  # Currently testing yield & energy calculation data
-                  #             tableOutput("table1a")
-                  #            , tableOutput("table2a")
-                  #            , tableOutput("table1b")
-                  #            , tableOutput("table2b")
-                  # )
+                  , tabPanel("TEST", h1("TEST"),
+                  # #To use, remove "#' from the lines with code here and the output generators in server.R.  
+                  # # Currently testing yield & energy calculation data
+                              tableOutput("table1a")
+                             , tableOutput("table2a")
+                             , tableOutput("table1b")
+                             , tableOutput("table2b")
+                  )
                          
                     # End ----
                     , widths = c(2,10))))
