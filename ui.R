@@ -21,6 +21,7 @@ shinyUI(fluidPage(title = "CFRP Tool",
                     ,   tags$style(HTML(id = "Table.pro.1", "table tbody tr:last-child {font-weight:bold;}"))
                     ,   tags$style(HTML(id = "Table.mat.2", "table tbody tr:last-child {font-weight:bold;}"))
                     ,   tags$style(HTML(id = "Table.pro.2", "table tbody tr:last-child {font-weight:bold;}"))
+                    ,   tags$style(HTML(id = "diagram", "table tbody tr:last-child {font-weight:bold;}"))
                   ), 
   
   
@@ -31,7 +32,8 @@ shinyUI(fluidPage(title = "CFRP Tool",
                   navlistPanel( 
             
             # GuideTab ----
-            tabPanel("Guide",h1("Tool Guide"),img(src = "ToolScope.svg", height = 300)
+            tabPanel("Guide",h1("Tool Guide"),
+                     tags$object(type='image/svg+xml', data='ToolScope.svg', id='diagram', height = "300", width = "778.3079951422452")
                      , br()
                      , hr()
                      , br()

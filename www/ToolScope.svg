@@ -202,7 +202,7 @@
     </linearGradient>
     <style
        type="text/css"
-       id="style4149">@import url('http://fonts.googleapis.com/css?family=Raleway');</style>
+       id="style4149">@import url('https://fonts.googleapis.com/css?family=Raleway');</style>
   </defs>
   <g
      transform="translate(0.5,0.5)"
@@ -282,7 +282,7 @@
        id="rect39"
        style="fill:#ffffff;stroke:#000000" />
     <g
-       transform="translate(20.5,211.5)"
+       transform="translate(11.5,211.5)"
        id="g41">
       <switch
          id="switch43">
@@ -293,7 +293,7 @@
            height="34"
            requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
           <xhtml:div
-             style="display: inline-block; font-size: 30px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; vertical-align: top; width: 348px; white-space: nowrap; word-wrap: normal; text-align: center;">
+             style="display: inline-block; font-size: 30px; font-family: Raleway; color: rgb(0, 0, 0); line-height: 1.2; vertical-align: top; width: 348px; white-space: nowrap; word-wrap: normal; text-align: center;">
             <xhtml:div
                style="display:inline-block;text-align:inherit;text-decoration:inherit;">Reinforcement Production</xhtml:div>
           </xhtml:div>
