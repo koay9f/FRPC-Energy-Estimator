@@ -33,7 +33,7 @@ shinyUI(fluidPage(title = "CFRP Tool",
             
             # GuideTab ----
             tabPanel("Guide",h1("Tool Guide"),
-                     tags$object(type='image/svg+xml', data='ToolScope.svg', id='diagram', height = "300", width = "778.3079951422452")
+                     tags$object(type='image/svg+xml', data='ToolScope.svg', id='diagram', height = "300")
                      , br()
                      , hr()
                      , br()

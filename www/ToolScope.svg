@@ -8,8 +8,8 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="1275.7333"
-   height="491.73334"
+   width="100%"
+   height="300"
    version="1.1"
    id="svg2"
    inkscape:version="0.92.0 r15299"
@@ -41,8 +41,8 @@
      id="namedview171"
      showgrid="false"
      inkscape:zoom="1.3621856"
-     inkscape:cx="221.27954"
-     inkscape:cy="168.36224"
+     inkscape:cx="733.09907"
+     inkscape:cy="109.63309"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
@@ -586,7 +586,7 @@
        id="rect143"
        style="fill:url(#mx-gradient-ffe70a-1-ffcd00-1-e-0);stroke:#f5de0a" />
     <g
-       transform="translate(426.89014,405.18945)"
+       transform="translate(427.01926,405.52305)"
        id="g145">
       <switch
          id="switch147">
@@ -609,7 +609,7 @@
            id="text149"
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:50%;font-family:Raleway;-inkscape-font-specification:Raleway;text-anchor:middle;fill:#000000">
           <tspan
-             style="font-size:17.50000032px"
+             style="font-size:17.5px"
              id="tspan4708">Optional User Inputs</tspan>
         </text>
       </switch>
