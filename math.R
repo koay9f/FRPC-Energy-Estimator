@@ -9,6 +9,12 @@ checkboxprops <- function(YN, allx, some){
     some
   }
 }
+# for citations
+citefxn <- function(type){
+  cite.list <- dplyr::filter(Data_Citations, Type == type) %>%
+    select(Name)
+  unname(unlist(cite.list))
+ }
 # determine if need to use appended dataframes ----
 whichone <- function(go, new, old){
   if (go > 0) {
@@ -227,8 +233,8 @@ BIGFUNCTION1 <- function(partname,
   )
 
   # Match given material and stage to yield and generate cumulative yield to given point
-  yield_overall_fxn <- function(mat,stg, ts){
-    yield <- function(mat,stg, ts){
+
+    yield <- function(mat,stg){
       syield.df <- dplyr::filter(Data_yield, material == mat, stage == stg) %>%
         select(stageyield)
       yield <- unname(unlist(syield.df))
@@ -236,18 +242,26 @@ BIGFUNCTION1 <- function(partname,
     }
     
     # Determines if should apply the stage yield for a given material 
-    applyyield_fxn <- function(mat,stg, ts){
+    applyyield_fxn <- function(mat,stg){
       ayield.df <- dplyr::filter(Data_yield, material == mat, stage == stg) %>%
-        select(5)
+        select(6)
       apply_yield <- unname(unlist(ayield.df))
       apply_yield
     }
     
-    #Builds new datapoint for cumulative yield at given stage for a given material
+    #Builds column for stage yield
+    stage_yield_fxn <- function(mat, stg){
+      sy <- if (applyyield_fxn(mat,stg) == 1) {
+        yield(mat,stg)
+      } else 1
+      sy}
+    
+    #Builds new column for cumulative yield at given stage for a given material
+    yield_overall_fxn <- function(mat,stg){
     yield_overall <- switch(stg,
-                            finish =  yield(mat, "finish") ^ applyyield_fxn(mat, "finish"),
-                            mold   = (yield(mat, "finish") ^ applyyield_fxn(mat, "finish")) * (yield(mat, "mold")  ^ applyyield_fxn(mat, "mold")),
-                            layup  = (yield(mat, "finish") ^ applyyield_fxn(mat, "finish")) * (yield(mat, "mold")  ^ applyyield_fxn(mat, "mold")) * (yield(mat,"layup") ^ applyyield_fxn(mat, "layup"))
+                            finish =  stage_yield_fxn(mat, "finish"),
+                            mold   = stage_yield_fxn(mat, "finish") * stage_yield_fxn(mat, "mold"),
+                            layup  = stage_yield_fxn(mat, "finish") * stage_yield_fxn(mat, "mold") * stage_yield_fxn(mat,"layup")
     )
     yield_overall
   }
@@ -256,8 +270,14 @@ BIGFUNCTION1 <- function(partname,
   mass_initial_gen <- function(finalpartmass, yield){finalpartmass/yield}
   
   # APPEND DATAFRAME ----
-    # create col: cumulative yield for a given material & stage
+  #create col: stage yield
   Data_yield <- Data_yield %>%
+    rowwise() %>%
+    mutate(yield_stage = stage_yield_fxn(material, stage))
+  
+   # create col: cumulative yield for a given material & stage
+ 
+   Data_yield <- Data_yield %>%
     rowwise() %>%
     mutate(yield_actual = yield_overall_fxn(material, stage))
   
@@ -319,7 +339,7 @@ BIGFUNCTION2 <- function(Data_yield, partname,
   # Calculate total energy per process segment
   Data_energy <- Data_energy %>%
     rowwise() %>%
-    mutate(finalenergy = mass_materials*energy_materials)
+    mutate(finalenergy = mass_materials*energy_kg)
   Data_energy[is.na(Data_energy)]<- 0
   
   Data_energy
