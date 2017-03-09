@@ -15,10 +15,17 @@ library(shinyjs)
 shinyUI(fluidPage(title = "CFRP Tool",
   theme = "bootstrap.css",
                   tags$head(
-                    tags$style(HTML(" .shiny-output-error-validation {color: red; }"))
-                    ,   tags$style(HTML("tr:last-child {font-weight:bold;}"))
-                    , tags$style(HTML(" .shiny-notification-message {color: #007833;;background-color: #e7f1d8; border-color: #007833;}"))
-                    ), 
+                        tags$style(HTML(" .shiny-output-error-validation {color: red; }"))
+                    ,   tags$style(HTML(" .shiny-notification-message {color: #007833;background-color: #e7f1d8; border-color: #007833;}"))
+                    ,   tags$style(HTML(id = "Table.mat.1", "tr:last-child {font-weight:bold;}")) # Table is on line 658 and formed on line 1503 of server.  others are nearby
+                    ,   tags$style(HTML(id = "Table.pro.1", "tr:last-child {font-weight:bold;}"))
+                    ,   tags$style(HTML(id = "Table.mat.2", "tr:last-child {font-weight:bold;}"))
+                    ,   tags$style(HTML(id = "Table.pro.2", "tr:last-child {font-weight:bold;}"))
+                  ), 
+  
+  
+  
+  
   useShinyjs(),
                   titlePanel(h1("CFRP Energy Use Estimation Tool", style = "color:#007833")),
                   navlistPanel( 
@@ -748,14 +755,14 @@ shinyUI(fluidPage(title = "CFRP Tool",
           
            #TEST TAB ----
            # Tab to display tests
-          , tabPanel("TEST", h1("TEST"),
+        #  , tabPanel("TEST", h1("TEST"),
           # #To use, remove "#' from the lines with code here and the output generators in server.R.  
           # # Currently testing yield & energy calculation data
-                      tableOutput("table1a")
-                     , tableOutput("table2a")
-                     , tableOutput("table1b")
-                     , tableOutput("table2b")
-          )
+                  #    tableOutput("table1a")
+                  #   , tableOutput("table2a")
+                   #  , tableOutput("table1b")
+                   #  , tableOutput("table2b")
+         # )
                  
             # End ----
             , widths = c(2,10))))
