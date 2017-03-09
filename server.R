@@ -8,7 +8,6 @@
 library(shiny)
 library(readr)
 library(plotly)
-source("math.R")
 library(tidyverse)
 library(DT)
 library(shinyjs)
@@ -55,15 +54,8 @@ finishnames = Data_Finish$Name_Finishing
 #Name Molding Properties Tables
 Props = read.csv("data/Properties_Mold.csv")
 #Name Citation table
-Data_Cite = read.csv("data/Data_Citations.csv")
-cite_name = Data_Cite$Name
-cite_source = Data_Cite$Source
-cite_full1 = Data_Cite$Full_Citation1
-cite_full2 = Data_Cite$Full_Citation2
-cite_full3 = Data_Cite$Full_Citation3
-cite_full4 = Data_Cite$Full_Citation4
-cite_full5 = Data_Cite$Full_Citation5
 
+source("math.R") #ensure Data_Cite has been read first!!
 #Talk to server ----
 shinyServer(function(input, output, session) {
   
