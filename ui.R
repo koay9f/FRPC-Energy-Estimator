@@ -17,10 +17,10 @@ shinyUI(fluidPage(title = "CFRP Tool",
                   tags$head(
                         tags$style(HTML(" .shiny-output-error-validation {color: red; }"))
                     ,   tags$style(HTML(" .shiny-notification-message {color: #007833;background-color: #e7f1d8; border-color: #007833;}"))
-                    ,   tags$style(HTML(id = "Table.mat.1", "tr:last-child {font-weight:bold;}")) # Table is on line 658 and formed on line 1503 of server.  others are nearby
-                    ,   tags$style(HTML(id = "Table.pro.1", "tr:last-child {font-weight:bold;}"))
-                    ,   tags$style(HTML(id = "Table.mat.2", "tr:last-child {font-weight:bold;}"))
-                    ,   tags$style(HTML(id = "Table.pro.2", "tr:last-child {font-weight:bold;}"))
+                    ,   tags$style(HTML(id = "Table.mat.1", "table tbody tr:last-child {font-weight:bold;}")) # Table is on line 658 and formed on line 1503 of server.  others are nearby
+                    ,   tags$style(HTML(id = "Table.pro.1", "table tbody tr:last-child {font-weight:bold;}"))
+                    ,   tags$style(HTML(id = "Table.mat.2", "table tbody tr:last-child {font-weight:bold;}"))
+                    ,   tags$style(HTML(id = "Table.pro.2", "table tbody tr:last-child {font-weight:bold;}"))
                   ), 
   
   
