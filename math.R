@@ -1,5 +1,12 @@
 library(tidyverse)
-
+Data_Cite <- read.csv("data/Data_Citations.csv")
+cite_name = Data_Cite$Name
+cite_source = Data_Cite$Source
+cite_full1 = Data_Cite$Full_Citation1
+cite_full2 = Data_Cite$Full_Citation2
+cite_full3 = Data_Cite$Full_Citation3
+cite_full4 = Data_Cite$Full_Citation4
+cite_full5 = Data_Cite$Full_Citation5
 #  FUNCTIONS TO MAKE SERVER.R WORK
 # for molding process dataframe ----
 checkboxprops <- function(YN, allx, some){
@@ -11,7 +18,7 @@ checkboxprops <- function(YN, allx, some){
 }
 # for citations
 citefxn <- function(type){
-  cite.list <- dplyr::filter(Data_Citations, Type == type) %>%
+  cite.list <- dplyr::filter(Data_Cite, Type == type) %>%
     select(Name)
   unname(unlist(cite.list))
  }
