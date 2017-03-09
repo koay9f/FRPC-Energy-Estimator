@@ -310,7 +310,7 @@
       </switch>
     </g>
     <path
-       d="m 412.11167,161.43 0.09,146.99069"
+       d="m 420.11167,161.43 0.09,146.99069"
        stroke-miterlimit="10"
        pointer-events="none"
        id="path47"
@@ -644,7 +644,7 @@
        pointer-events="none"
        id="rect143" />
     <g
-       transform="translate(425.5,409.5)"
+       transform="translate(426.89014,405.18945)"
        id="g145">
       <switch
          id="switch147">
@@ -663,12 +663,9 @@
         <text
            x="83"
            y="33"
-           fill="#000000"
-           text-anchor="middle"
            font-size="20px"
-           font-family="Raleway"
            id="text149"
-           style="-inkscape-font-specification:Raleway;font-family:Raleway;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal;">
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;font-family:Raleway;-inkscape-font-specification:Raleway;text-anchor:middle;fill:#000000">
           <tspan
              style="font-size:15px"
              id="tspan4246">Optional User Inputs</tspan>
