@@ -22,12 +22,7 @@ shinyUI(fluidPage(title = "CFRP Tool",
                     ,   tags$style(HTML(id = "Table.mat.2", "table tbody tr:last-child {font-weight:bold;}"))
                     ,   tags$style(HTML(id = "Table.pro.2", "table tbody tr:last-child {font-weight:bold;}"))
                     ,   tags$style(HTML(id = "diagram", "table tbody tr:last-child {font-weight:bold;}"))
-
                   ), 
-  
-  
-  
-  
   useShinyjs(),
                   titlePanel(h1("CFRP Energy Use Estimation Tool", style = "color:#007833")),
                   navlistPanel( 
@@ -76,7 +71,7 @@ shinyUI(fluidPage(title = "CFRP Tool",
                        , fluidRow(column(5, h4("Custom Fiber Type")) )
                        ,  fluidRow(
                          column(4, textInput("fiber_add", "Name", "Custom Fiber Type"))
-                         , column (4, numericInput("fiber_add_E", "Specific Energy (MJ/kg)", 0, min = 0, NA, NA))
+                         , column (4, numericInput("fiber_add_E", "Specific Energy (MJ/kg fiber)", 0, min = 0, NA, NA))
                          , column(3,actionButton("gofiber", strong("Add Fiber Data")), style = "padding:25px;", align = "right") 
                          , column(1,         hidden(
                                     p(id = "fibi", icon("check", "fa-2x"))), style = "padding:25px;", align = "left" )
@@ -127,7 +122,7 @@ shinyUI(fluidPage(title = "CFRP Tool",
                        condition = 'input.add_data_which == "Intermediate"'
                        , fluidRow(column(5,h4("Custom Intermediate")))
                        , fluidRow(column(3, textInput("int_add", "Name", "Custom Intermediate"))
-                                  , column (3, numericInput("int_add_E", "Specific Energy (MJ/kg)", 0, min = 0, NA, NA))
+                                  , column (3, numericInput("int_add_E", "Specific Energy (MJ/kg fiber)", 0, min = 0, NA, NA))
                                   , column (3,  checkboxInput("int_add_PP", "Does the intermediate material include matrix material (i.e. prepregs)?",FALSE))
                                   , column(2,actionButton("goint", strong("Add Intermediate Data")), style = "padding:25px;")
                                   , column(1,         hidden(
@@ -135,7 +130,9 @@ shinyUI(fluidPage(title = "CFRP Tool",
                        )
                        , fluidRow(column(1,""), column(10, p("Normally the options available for curing process are dependent on the user's choice for molding technology.  
                                                              If a custom curing process has been added, this is overridden and all options for 
-                                                             curing (including the custom process) will be available.")))
+                                                             curing (including the custom process) will be available.")
+                                                       , p("In this tool, the matrix mass of a prepreg is accounted for when calculating change in material mass as material
+                                                           is scrapped.  The mass of the matrix is not included for when calculating the embodied energy of the intermediate.")))
                        )
                      
                      , conditionalPanel(
@@ -756,16 +753,18 @@ shinyUI(fluidPage(title = "CFRP Tool",
                 , textOutput("citation5")
                  )
           
-           #TEST TAB ----
+           
+            
+            #TEST TAB ----
            # Tab to display tests
-        #  , tabPanel("TEST", h1("TEST"),
-          # #To use, remove "#' from the lines with code here and the output generators in server.R.  
-          # # Currently testing yield & energy calculation data
-                  #    tableOutput("table1a")
-                  #   , tableOutput("table2a")
-                   #  , tableOutput("table1b")
-                   #  , tableOutput("table2b")
-         # )
+         , tabPanel("TEST", h1("TEST"),
+        #To use, remove "#' from the lines with code here and the output generators in server.R.
+        # Currently testing yield & energy calculation data
+           tableOutput("table1a")
+          , tableOutput("table2a")
+         , tableOutput("table1b")
+         , tableOutput("table2b")
+        )
                  
             # End ----
             , widths = c(2,10))))

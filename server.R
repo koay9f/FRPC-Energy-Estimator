@@ -13,19 +13,15 @@ library(DT)
 library(shinyjs)
 
 #Naming variables & data sheets ---- 
-#Name Data_Mold columns
+#Molding
 Data_Mold = read_csv("data/Data_Mold.csv")
 moldnames = Data_Mold$Name_Mold
 
-#Name Data_Int columns
-Data_Int = read_csv("data/Data_Int.csv")
-intnames = Data_Int$Name_Int
-
-#Name Data_Fiber columns
+#Fiber
 Data_Fiber = read.csv("data/Data_Fiber.csv")
 fibernames = Data_Fiber$Name_Fiber
 
-#Name Data_MatrixM columns
+#Matrix
 Data_MatrixM = read.csv("data/Data_Matrix.csv")
 matrixnames = Data_MatrixM$Name_Matrix
 Data_Primatrix <- subset(Data_MatrixM, Type_Matrix == "Matrix")
@@ -34,11 +30,15 @@ Data_Filler <- subset(Data_MatrixM, Type_Matrix == "Filler")
 Data_Other <- subset(Data_MatrixM, Type_Matrix == "Other")
 primatrixnames = Data_Primatrix$Name_Matrix
 
-#Name Data_Inserts columns
+#Intermediate
+Data_Int = read_csv("data/Data_Int.csv")
+intnames = Data_Int$Name_Int
+
+#Inserts
 Data_Insert =  read.csv("data/Data_Inserts.csv")
 insertsnames = Data_Insert$Name_Insert
 
-#Name Data_Cure columns
+#Curing
 Data_Cure = read.csv("data/Data_Cure.csv")
 curenames = Data_Cure$Name_Cure
 allcure <- c("Cures in Mold","Autoclave Curing","Oven Curing","Oven Curing with Vacuum","QuickStep",
@@ -47,13 +47,15 @@ onlymoldcure <- c("Cures in Mold")
 wetcure <- c("Cures in Mold","Oven Curing","QuickStep","Microwave Curing","Infrared Curing","Direct Induction Curing","E Beam Curing")
 vbcure <- c("Autoclave Curing","QuickStep","Microwave Curing with Vacuum","Infrared Curing","Direct Induction Curing","E Beam Curing")
 
-#Name Data_Finishing columns
+#Finishing
 Data_Finish = read.csv("data/Data_Finishing.csv")
 finishnames = Data_Finish$Name_Finishing
 
-#Name Molding Properties Tables
+#Properties & Citations
 Props = read.csv("data/Properties_Mold.csv")
-#Name Citation table
+Data_Cite <- read.csv("data/Data_Citations.csv")
+
+
 
 source("math.R") #ensure Data_Cite has been read first!!
 #Talk to server ----
@@ -1314,12 +1316,11 @@ Data_Primatrix_new  <- reactiveValues()
     )) 
     
     #code to test that calculations are preformed correctly
-    # output$table1a <- renderTable(yield_data1.df())
-    # output$table1b <- renderTable(energy_data1.df())
-    # 
-    # output$table2a <- renderTable(yield_data2.df())
-    # output$table2b <- renderTable(energy_data2.df())
-    
+     output$table1a <- renderTable(yield_data1.df())
+     output$table1b <- renderTable(energy_data1.df())
+     output$table2a <- renderTable(yield_data2.df())
+     output$table2b <- renderTable(energy_data2.df())
+
     
   # Final Display ----
     # Reactive Names for display table ----
