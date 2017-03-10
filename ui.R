@@ -22,6 +22,7 @@ shinyUI(fluidPage(title = "CFRP Tool",
                     ,   tags$style(HTML(id = "Table.mat.2", "table tbody tr:last-child {font-weight:bold;}"))
                     ,   tags$style(HTML(id = "Table.pro.2", "table tbody tr:last-child {font-weight:bold;}"))
                     ,   tags$style(HTML(id = "diagram", "table tbody tr:last-child {font-weight:bold;}"))
+
                   ), 
   
   
@@ -44,6 +45,7 @@ shinyUI(fluidPage(title = "CFRP Tool",
                       , p(icon("internet-explorer"),'   Some features of this tool are not fully suppported in Internet Explorer.')
                      , p(icon("envelope-o"), '   If you wish to permanently add a process to our database or otherwise wish to comment on this tool, please contact 
                          the developers by email: Kristina Armstrong (', span('armstrongko@ornl.gov', style = "text-decoration: underline"),  ') or Sujit Das (', span('dass@ornl.gov', style = "text-decoration: underline"),').')
+                     , helpText(a("Or connect with us on GitHub", href = "https://github.com/koay9f/CFRP-Energy-Estimator", target= "_blank"))
                    , hr()
                      , p(icon("file-zip-o"),'   For more help or information, download the "Background Information".' ) 
                      , downloadButton('info', "Download Background Zip File")
@@ -680,7 +682,6 @@ shinyUI(fluidPage(title = "CFRP Tool",
             
             # Molding Properties Tab ----
             tabPanel("Molding Properties", h1("Molding Properties")
-                     ,   tags$head(tags$style("tr:last-child {font-weight:normal;}"))
                      , fluidRow(
                      column(6,
                      

@@ -149,8 +149,8 @@ names(Props.df)<- new_col
   calcmoldE <- reactive(calcenergy(input$mold_add_E_m, input$mold_add_E_P_M, input$mold_add_E_per_M, input$mold_add_E_t_M, input$mold_add_E_P_p, input$mold_add_E_per_p, input$mold_add_E_t_p,
                                    input$mold_add_E_P_c, input$mold_add_E_per_c, input$mold_add_E_t_c,input$mold_add_E_P_h, input$mold_add_E_per_h, input$mold_add_E_t_h,
                                    input$mold_add_E_P_o, input$mold_add_E_per_o, input$mold_add_E_t_o))
-  output$calcedmoldE <- renderText({paste(calcmoldE(), "MJ/kg")})
-  
+  output$calcedmoldE <- renderText({paste(signif(calcmoldE(), digits = 3), "MJ/kg")})
+
   # Change Select box if add new molding process
   observeEvent(input$gomold, { 
     updateSelectizeInput(session, 'moldingInput1',
@@ -881,7 +881,7 @@ Data_Primatrix_new  <- reactiveValues()
   calccureE <- reactive(calcenergy(input$cure_add_E_m, input$cure_add_E_P_M, input$cure_add_E_per_M, input$cure_add_E_t_M, input$cure_add_E_P_p, input$cure_add_E_per_p, input$cure_add_E_t_p,
                           input$cure_add_E_P_c, input$cure_add_E_per_c, input$cure_add_E_t_c,input$cure_add_E_P_h, input$cure_add_E_per_h, input$cure_add_E_t_h,
                           input$cure_add_E_P_o, input$cure_add_E_per_o, input$cure_add_E_t_o))
-  output$calcedcureE <- renderText({paste(calccureE(), "MJ/kg")})
+  output$calcedcureE <- renderText({paste(signif(calccureE(), digits = 3), "MJ/kg")})
   
   # Make list for box if custom values used
   observeEvent(input$gocure, { 
