@@ -23,14 +23,21 @@ shinyUI(fluidPage(title = "CFRP Tool",
                     ,   tags$style(HTML(id = "Table.pro.2", "table tbody tr:last-child {font-weight:bold;}"))
                     ,   tags$style(HTML(id = "diagram", "table tbody tr:last-child {font-weight:bold;}"))
                   ), 
+  
+
+  
+  
   useShinyjs(),
                   titlePanel(h1("CFRP Energy Use Estimation Tool", style = "color:#007833")),
                   navlistPanel( 
             
             # GuideTab ----
             tabPanel("Guide",h1("Tool Guide"),
-                     tags$object(type='image/svg+xml', data='ToolScope.svg', style = "height: 300; width: 100%; max-width: 778.3079951422452px;")
-                     , br()
+                     #tags$object(type='image/svg+xml', data='ToolScope.svg', style = "height: 300; width: 100%; max-width: 778.3079951422452px;",
+                                 #tags$img(src = 'diagram.svg', alt = 'No SVG Support'))
+                     tags$img(src='ToolScope.svg', style = "height: 300; width: 100%; max-width: 778.3079951422452px;")
+                     , 
+                     br()
                      , hr()
                      , br()
                       , strong('This tool has been developed by ORNL to provide CFRP researchers and manufacturers the ability to quickly estimate 
