@@ -228,17 +228,29 @@ moldshortfetch2 <- eventReactive(input$moldingInput2, {
   # Generate outputs
   moldname1 <- output$moldname1d <- output$moldname1c <- output$moldname1b <- output$moldname1a <- output$moldname1 <- renderText(moldnamefetch1())
   output$moldshort1d <- output$moldshort1c <- output$moldshort1b <- output$moldshort1a <- output$moldshort1 <- renderText(moldshortfetch1())
-  output$EnergyNum1 <- renderText({paste(moldenergyfetch1(), "MJ/kg")})
   output$moldfracNum1 <- renderText({paste(moldfracfetch1() *100, "%" )})
-  output$moldyieldNum1 <- renderText({paste(moldyieldfetch1() *100, "%" )})
-  
+  output$moldyieldNum1 <- renderText({paste(moldyieldfetch1() *100, "%" )}) 
   
   moldname2 <-output$moldname2e <-output$moldname2d <-output$moldname2c <- output$moldname2b <- output$moldname2a <- output$moldname2 <- renderText(moldnamefetch2())
   output$moldshort2d <- output$moldshort2c <- output$moldshort2b <- output$moldshort2a <- output$moldshort2 <- renderText(moldshortfetch2())
-  output$EnergyNum2 <- renderText({paste(moldenergyfetch2(), "MJ/kg")})
   output$moldfracNum2 <- renderText({paste(moldfracfetch2() *100, "%" )})
   output$moldyieldNum2 <- renderText({paste(moldyieldfetch2() *100, "%" )})
+ 
   
+   #Display error message instead of blank energy number
+  output$EnergyNum1 <-  renderText({
+    validate(
+      need(moldnamefetch1(), "Choose Molding Technology"),   
+      need(input$finalweight1 > 0, "Part Weight cannot be negative")     )  
+    ({paste(moldenergyfetch1(), "MJ/kg")}                   )})
+  
+  output$EnergyNum2 <- renderText({
+    validate(
+      need(moldnamefetch2(), "Choose Molding Technology"),   
+      need(input$finalweight2 > 0, "Part Weight cannot be negative")       ) 
+      ({paste(moldenergyfetch2(), "MJ/kg")}                   )})
+
+  #build citations
   moldcite1 <- renderText(as.character(moldcitefetch1()))
   observeEvent(input$moldingInput1, {
    validate(need(moldname1(), "")) 
@@ -249,6 +261,29 @@ moldshortfetch2 <- eventReactive(input$moldingInput2, {
     validate(need(moldname2(), "")) 
     showNotification(paste("Citation for ", moldname2(), ": ",moldcite2()), duration = 5, closeButton = TRUE, type = "message")})
   
+  # Update Fiber fractions & mold yield based on mold process choice
+  observeEvent(input$moldingInput1,{
+    ff1 <- moldfracfetch1()
+    moldy1 <-  moldyieldfetch1()
+    updateNumericInput(session, "moldfracUSERNum1", value = (ff1*100)) 
+    updateNumericInput(session, "moldyieldUSERNum1", value = (moldy1*100)) 
+  })
+  
+  observeEvent(input$moldingInput2,{
+    ff2 <- moldfracfetch2()
+    moldy2 <-  moldyieldfetch2()
+    updateNumericInput(session, "moldfracUSERNum2", value = (ff2*100)) 
+    updateNumericInput(session, "moldyieldUSERNum2", value = (moldy2*100) )
+  })
+  
+  #If adding custom molding process make all int & cure options available
+  
+  observeEvent(input$gomold, {
+    updateCheckboxInput(session, "intYN1", value = 1)
+    updateCheckboxInput(session, "intYN2", value = 1)
+    updateCheckboxInput(session, "cureYN1", value = 1)
+    updateCheckboxInput(session, "cureYN2", value = 1)
+  })
 
   # Fiber ----
     # Make List for Box if no custom data
@@ -307,8 +342,6 @@ moldshortfetch2 <- eventReactive(input$moldingInput2, {
  # Generate Outputs
   fibername1 <- output$fibername1d  <-  output$fibername1c <- output$fibername1b <- output$fibername1a <- output$fibername1 <- renderText(as.character(fibernamefetch1()))
   fibername2 <- output$fibername2d  <- output$fibername2c <-output$fibername2b <-output$fibername2a <-output$fibername2 <- renderText(as.character(fibernamefetch2()))
-  output$fiberEnergyNum1 <- renderText({paste(fiberenergyfetch1(), "MJ/kg")})
-  output$fiberEnergyNum2 <- renderText({paste(fiberenergyfetch2(), "MJ/kg")})
   
   # Pull used fiber fractions for use in matrix tab and calculations
   output$fiberfrac1c <-output$fiberfrac1a <-output$fiberfrac1b <- renderText({paste(input$moldfracUSERNum1, "%")})
@@ -316,6 +349,20 @@ moldshortfetch2 <- eventReactive(input$moldingInput2, {
   output$fiberfrac2c <-output$fiberfrac2a <-output$fiberfrac2b <- renderText({paste(input$moldfracUSERNum2, "%")})
   output$fiberfrac2z <-output$fiberfrac2e <-output$fiberfrac2d  <- renderText(input$moldfracUSERNum2)
   
+  #Display error message instead of blank energy number
+  output$fiberEnergyNum1 <- renderText({
+    validate(
+      need(fibernamefetch1(), "Choose Fiber Technology"),
+      need(input$moldfracUSERNum1 >0, "Mass Fraction cannot be negative"),
+      need(input$moldfracUSERNum1 <100, "Mass Fraction cannot be greater than 100%")      ) 
+    ({paste(fiberenergyfetch1(), "MJ/kg")}                   )})
+  
+  output$fiberEnergyNum2 <- renderText({
+    validate(
+      need(fibernamefetch2(), "Choose Fiber Technology"),
+      need(input$moldfracUSERNum2 >0, "Mass Fraction cannot be negative"),
+      need(input$moldfracUSERNum2 <100, "Mass Fraction cannot be greater than 100%")      ) 
+    ({paste(fiberenergyfetch2(), "MJ/kg")}                   )})
   
   #Citations
   fibercitefetch1 <- eventReactive(input$fiberInput1,{
@@ -442,12 +489,36 @@ moldshortfetch2 <- eventReactive(input$moldingInput2, {
   #Generate Outputs
   intname1 <- output$intname1d  <- output$intname1c <-output$intname1 <- renderText(as.character(intnamefetch1()))
   intname2 <- output$intname2d  <- output$intname2c <-output$intname2 <- renderText(as.character(intnamefetch2()))
-  output$intEnergyNum1 <- renderText({paste(intenergyfetch1(), "MJ/kg")})
-  output$intEnergyNum2 <- renderText({paste(intenergyfetch2(), "MJ/kg")})
   output$intscrapNum1c <-output$intscrapNum1 <- renderText({paste(intscrapfetch1()*100, "%")})
   output$intscrapNum2c <-output$intscrapNum2 <- renderText({paste(intscrapfetch2()*100, "%")})
   int.prepregYN1 <-renderText(intprepregfetch1())
   int.prepregYN2<-renderText(intprepregfetch2())
+
+  #Update scrap to match int choice
+  observeEvent(input$intInput1,{
+    ints1 <-  intscrapfetch1()
+    updateNumericInput(session, "intscrapUSERNum1", value = (ints1*100)) 
+  })
+  
+  observeEvent(input$intInput2,{
+    ints2 <-  intscrapfetch2()
+    updateNumericInput(session, "intscrapUSERNum2", value = (ints2*100)) 
+  })
+  
+  #Display error instead of energy number
+  output$intEnergyNum1 <-renderText({
+    validate(
+      need(intnamefetch1(), "Choose Intermediate Technology"),
+      need(input$intscrapUSERNum1 >=0, "Scrap cannot be negative"),
+      need(input$intscrapUSERNum1 <100, "Scrap cannot be greater than 100%")      ) 
+    ({paste(fiberenergyfetch1(), "MJ/kg")}                   )})
+  
+  output$intEnergyNum2 <- renderText({
+    validate(
+      need(intnamefetch2(), "Choose Intermediate Technology"),
+      need(input$intscrapUSERNum2 >=0, "Scrap cannot be negative"),
+      need(input$intscrapUSERNum2 <100, "Scrap cannot be greater than 100%")      ) 
+    ({paste(fiberenergyfetch1(), "MJ/kg")}                   )})
   
   #Citations
   intcitefetch1 <- eventReactive(input$intInput1,{
@@ -517,10 +588,26 @@ Data_Primatrix_new  <- reactiveValues()
   # Generate Outputs
   primatrixname1 <- output$primatrixname1c <-output$primatrixname1a <- renderText(as.character(primatrixnamefetch1()))
   primatrixname2 <- output$primatrixname2c <-output$primatrixname2a <- renderText(as.character(primatrixnamefetch2()))
-  output$primatrixEnergyNum1 <- renderText({paste(primatrixenergyfetch1(), "MJ/kg")})
-  output$primatrixEnergyNum2 <- renderText({paste(primatrixenergyfetch2(), "MJ/kg")})
   output$primatrixfrac1c <-output$primatrixfrac1a <- renderText({paste(input$primatrixfrac1, "%")})
   output$primatrixfrac2c <-output$primatrixfrac2a <- renderText({paste(input$primatrixfrac2, "%")})
+  
+  # Generate Error message if no choice
+    output$primatrixEnergyNum1 <-renderText({
+    validate(
+      need(primatrixnamefetch1(), "Choose Primary Matrix"),
+      need(sum(input$moldfracUSERNum1, input$primatrixfrac1, input$othermatrixAfrac1, input$othermatrixBfrac1, input$othermatrixCfrac1) == 100,      "Sum of Mass Fractions should add to 100%"),
+      need(input$primatrixfrac1 >=0, "Mass Fraction cannot be negative"),
+      need(input$primatrixfrac1 <100, "Mass Fraction cannot be greater than 100%")      ) 
+      ({paste(primatrixenergyfetch1(), "MJ/kg")}                )})
+  
+    output$primatrixEnergyNum2 <- renderText({    
+      validate(
+       need(primatrixnamefetch2(), "Choose Primary Matrix"),
+       need(sum(input$moldfracUSERNum2, input$primatrixfrac2, input$othermatrixAfrac2, input$othermatrixBfrac2, input$othermatrixCfrac2) == 100,      "Sum of Mass Fractions should add to 100%"),
+       need(input$primatrixfrac2 >=0, "Mass Fraction cannot be negative"),
+        need(input$primatrixfrac2 <100, "Mass Fraction cannot be greater than 100%")      ) 
+     ({ paste(primatrixenergyfetch2(), "MJ/kg")}               )})
+    
   
   #Citations
   primatrixcitefetch1 <- eventReactive(input$PriMatrixInput1,{
@@ -652,12 +739,43 @@ Data_Primatrix_new  <- reactiveValues()
   othermatrixBname2 <- renderText(as.character(othermatrixBnamefetch2()))
   othermatrixCname2 <- renderText(as.character(othermatrixCnamefetch2()))
   
-  output$othermatrixAEnergyNum1 <- renderText({paste(othermatrixAenergyfetch1(), "MJ/kg")})
-  output$othermatrixBEnergyNum1 <- renderText({paste(othermatrixBenergyfetch1(), "MJ/kg")})
-  output$othermatrixCEnergyNum1 <- renderText({paste(othermatrixCenergyfetch1(), "MJ/kg")})
-  output$othermatrixAEnergyNum2 <-  renderText({paste(othermatrixAenergyfetch2(), "MJ/kg")})
-  output$othermatrixBEnergyNum2 <- renderText({paste(othermatrixBenergyfetch2(), "MJ/kg")})
-  output$othermatrixCEnergyNum2 <- renderText({paste(othermatrixCenergyfetch2(), "MJ/kg")})
+  
+  # Generate Error message if no choice
+  output$othermatrixAEnergyNum1 <-renderText({
+    validate(
+      need(input$othermatrixAfrac1 >=0, "Mass Fraction cannot be negative"),
+      need(input$othermatrixAfrac1 <100, "Mass Fraction cannot be greater than 100%")      ) 
+    ({paste(othermatrixAenergyfetch1(), "MJ/kg")}                )})
+  
+  output$othermatrixAEnergyNum2 <- renderText({    
+    validate(
+      need(input$othermatrixAfrac2 >=0, "Mass Fraction cannot be negative"),
+      need(input$othermatrixAfrac2 <100, "Mass Fraction cannot be greater than 100%")      ) 
+    ({ paste(othermatrixAenergyfetch2(), "MJ/kg")}               )})
+  
+  output$othermatrixBEnergyNum1 <-renderText({
+    validate(
+      need(input$othermatrixBfrac1 >=0, "Mass Fraction cannot be negative"),
+      need(input$othermatrixBfrac1 <100, "Mass Fraction cannot be greater than 100%")      ) 
+    ({paste(othermatrixBenergyfetch1(), "MJ/kg")}                )})
+  
+  output$othermatrixBEnergyNum2 <- renderText({    
+    validate(
+      need(input$othermatrixBfrac2 >=0, "Mass Fraction cannot be negative"),
+      need(input$othermatrixBfrac2 <100, "Mass Fraction cannot be greater than 100%")      ) 
+    ({ paste(othermatrixBenergyfetch2(), "MJ/kg")}               )})
+  
+  output$othermatrixCEnergyNum1 <-renderText({
+    validate(
+      need(input$othermatrixCfrac1 >=0, "Mass Fraction cannot be negative"),
+      need(input$othermatrixCfrac1 <100, "Mass Fraction cannot be greater than 100%")      ) 
+    ({paste(othermatrixCenergyfetch1(), "MJ/kg")}                )})
+  
+  output$othermatrixCEnergyNum2 <- renderText({    
+    validate(
+      need(input$othermatrixCfrac2 >=0, "Mass Fraction cannot be negative"),
+      need(input$othermatrixCfrac2 <100, "Mass Fraction cannot be greater than 100%")      ) 
+    ({ paste(othermatrixCenergyfetch2(), "MJ/kg")}               )})
   
   #Citations a
   othermatrixAcitefetch1 <- eventReactive(input$OtherMatrixAInput1,{cite_source[cite_name %in% input$OtherMatrixAInput1]  })
@@ -796,10 +914,29 @@ Data_Primatrix_new  <- reactiveValues()
   insertsAname2 <- renderText(as.character(insertsAnamefetch2()))
   insertsBname2 <- renderText(as.character(insertsBnamefetch2()))
   
-  output$insertsAEnergyNum1 <- renderText({paste(insertsAenergyfetch1(), "MJ/kg")})
-  output$insertsBEnergyNum1 <- renderText({paste(insertsBenergyfetch1(), "MJ/kg")})
-  output$insertsAEnergyNum2 <- renderText({paste(insertsAenergyfetch2(), "MJ/kg")})
-  output$insertsBEnergyNum2 <- renderText({paste(insertsBenergyfetch2(), "MJ/kg")})
+  output$insertsAEnergyNum1 <-renderText({
+    validate(
+      need(input$insertsAfrac1 >= 0, "Mass of inserts cannot be negative (Go to Initial Page)"),
+      need(sum(input$insertsAfrac1,input$insertsBfrac1) < finalweight1(), "Mass of inserts cannot be greater than part mass (Go to Initial Page)")      ) 
+    ({paste(insertsAenergyfetch1(), "MJ/kg")}                )})
+  
+  output$insertsAEnergyNum2 <- renderText({    
+    validate(
+      need(input$insertsAfrac2 >= 0, "Mass of inserts cannot be negative (Go to Initial Page)"),
+      need(sum(input$insertsAfrac2,input$insertsBfrac2) < finalweight2(), "Mass of inserts cannot be greater than part mass (Go to Initial Page)")      ) 
+    ({ paste(insertsAenergyfetch2(), "MJ/kg")}               )})
+  
+  output$insertsBEnergyNum1 <-renderText({
+    validate(
+      need(input$insertsBfrac1 >= 0, "Mass of inserts cannot be negative (Go to Initial Page)"),
+      need(sum(input$insertsAfrac1,input$insertsBfrac1) < finalweight1(), "Mass of inserts cannot be greater than part mass (Go to Initial Page)")      ) 
+    ({paste(insertsBenergyfetch1(), "MJ/kg")}                )})
+  
+  output$insertsBEnergyNum2 <- renderText({    
+    validate(
+      need(input$insertsBfrac2 >= 0, "Mass of inserts cannot be negative (Go to Initial Page)"),
+      need(sum(input$insertsAfrac2,input$insertsBfrac2) < finalweight2(), "Mass of inserts cannot be greater than part mass (Go to Initial Page)")      ) 
+    ({ paste(insertsBenergyfetch2(), "MJ/kg")}               )})
   
   
   #Citations
@@ -920,9 +1057,21 @@ Data_Primatrix_new  <- reactiveValues()
  # Generate Outputs
   output$curename1d  <- curename1 <- renderText(as.character(curenamefetch1()))
   output$curename2d  <- curename2 <- renderText(as.character(curenamefetch2()))
-  output$cureEnergyNum1 <- renderText({paste(cureenergyfetch1(), "MJ/kg")})
-  output$cureEnergyNum2 <- renderText({paste(cureenergyfetch2(), "MJ/kg")})
+
+  #Display error instead of energy number
+  output$cureEnergyNum1 <-renderText({
+    validate(
+      need(curenamefetch1(), "Choose Curing Technology"),
+      need(input$moldyieldUSERNum1 >=0, "Yield cannot be negative"),
+      need(input$moldyieldUSERNum1 <100, "Yield cannot be greater than 100%")      ) 
+    ({paste(cureenergyfetch1(), "MJ/kg")}                   )})
   
+  output$cureEnergyNum2 <- renderText({
+    validate(
+      need(curenamefetch2(), "Choose Curing Technology"),
+      need(input$moldyieldUSERNum2 >=0, "Yield cannot be negative"),
+      need(input$moldyieldUSERNum2 <100, "Yield cannot be greater than 100%")      ) 
+    ({paste(cureenergyfetch2(), "MJ/kg")}                   )})
   
   #Citations
   curecitefetch1 <- eventReactive(input$cureInput1,{
@@ -999,8 +1148,21 @@ Data_Primatrix_new  <- reactiveValues()
   # Generate Outputs 
   output$finishname1d  <- finishname1 <- renderText(as.character(finishnamefetch1()))
   output$finishname2d  <- finishname2 <- renderText(as.character(finishnamefetch2()))
-  output$finishEnergyNum1 <- renderText({paste(finishenergyfetch1(), "MJ/kg")})
-  output$finishEnergyNum2 <- renderText({paste(finishenergyfetch2(), "MJ/kg")})
+
+  output$finishEnergyNum1 <-renderText({
+    validate(
+      need(input$finishscrap1 >=0, "Scrap cannot be negative"),
+      need(input$finishscrap1 <100, "Scrap cannot be greater than 100%")      ) 
+    ({paste(finishenergyfetch1(), "MJ/kg")}                   )})
+  
+  output$finishEnergyNum2 <- renderText({
+    validate(
+      need(input$finishscrap2 >=0, "Scrap cannot be negative"),
+      need(input$finishscrap2 <100, "Scrap cannot be greater than 100%")      ) 
+    ({paste(finishenergyfetch2(), "MJ/kg")}                   )})
+  
+  
+  
   
   #Citations
   finishcitefetch1 <- eventReactive(input$finishInput1,{
@@ -1020,42 +1182,6 @@ Data_Primatrix_new  <- reactiveValues()
   
   
   
-  # Change Fiber fraction, yield and scrap values to default based on molding process and intermediate type ----
-
-  
-    observeEvent(input$moldingInput1,{
-    ff1 <- moldfracfetch1()
-    moldy1 <-  moldyieldfetch1()
-    updateNumericInput(session, "moldfracUSERNum1", value = (ff1*100)) 
-    updateNumericInput(session, "moldyieldUSERNum1", value = (moldy1*100)) 
-  })
- 
- observeEvent(input$intInput1,{
-   ints1 <-  intscrapfetch1()
-       updateNumericInput(session, "intscrapUSERNum1", value = (ints1*100)) 
- })
- 
- observeEvent(input$moldingInput2,{
-   ff2 <- moldfracfetch2()
-   moldy2 <-  moldyieldfetch2()
-   updateNumericInput(session, "moldfracUSERNum2", value = (ff2*100)) 
-   updateNumericInput(session, "moldyieldUSERNum2", value = (moldy2*100) )
- })
-
-  observeEvent(input$intInput2,{
-   ints2 <-  intscrapfetch2()
-        updateNumericInput(session, "intscrapUSERNum2", value = (ints2*100)) 
- })
- 
- #If adding custom molding process
- 
- observeEvent(input$gomold, {
-   updateCheckboxInput(session, "intYN1", value = 1)
-   updateCheckboxInput(session, "intYN2", value = 1)
-   updateCheckboxInput(session, "cureYN1", value = 1)
-   updateCheckboxInput(session, "cureYN2", value = 1)
- })
- 
   # Return Mass/Massfracs to zero if "Use ..." checkboxes are false ----
  #Set Inserts mass to zero
  observeEvent(input$insertsAUSERYN1, {
@@ -1235,7 +1361,15 @@ Data_Primatrix_new  <- reactiveValues()
     raw.to.actual.fracs2 <- reactive(Data_mass_fxn(finalweight2(), raw.f.f2(), raw.f.pm2(), raw.f.ma2(), raw.f.mb2(), raw.f.mc2(), m.ia2(), m.ib2()))
     
      f.raw.sum1 <- reactive(sum(raw.f.f1(), raw.f.pm1(), raw.f.ma1(), raw.f.mb1(), raw.f.mc1()))
+     
+     output$massfracsum1 <- renderText({ paste(f.raw.sum1() * 100, "%")})
+     
      f.raw.sum2 <- reactive(sum(raw.f.f2(), raw.f.pm2(), raw.f.ma2(), raw.f.mb2(), raw.f.mc2()))
+     output$massfracsum2 <- renderText( { paste(f.raw.sum2() * 100, "%")}  )
+     
+     
+     
+     
      m.inserts1 <- reactive(sum(m.ia1(), m.ib1()))
      m.inserts2 <- reactive(sum(m.ia2(), m.ib2()))
       
@@ -1402,19 +1536,20 @@ Data_Primatrix_new  <- reactiveValues()
     # Final Tables ----
     Mat1.E.df <- reactive({  
       validate(
-          need(f.raw.sum1() == 1, "Sum of Mass Fractions should add to 100% (Go to Matrix Page)")
+        need(sum(input$moldfracUSERNum1, input$primatrixfrac1, input$othermatrixAfrac1, 
+                 input$othermatrixBfrac1, input$othermatrixCfrac1) == 100,      "Sum of Mass Fractions should add to 100% (Go to Matrix Page)")
         , need(m.inserts1() < finalweight1(), "Inserts should not weigh more than the final part (Go to Initial Page)")
-        , need(raw.f.f1() >= 0, "Mass Fractions must not be negative (Go to Fiber Page)")
-        , need(raw.f.f1() <= 1, "Mass Fractions must not be greater than 100% (Go to Fiber Page)")
-        , need(raw.f.pm1() >= 0, "Mass Fractions must not be negative (Go to Matrix Page)")
-        , need(raw.f.ma1() >= 0, "Mass Fractions must not be negative (Go to Matrix Page)")
-        , need(raw.f.mb1() >= 0, "Mass Fractions must not be negative (Go to Matrix Page)")
-        , need(raw.f.mc1() >= 0, "Mass Fractions must not be negative (Go to Matrix Page)")
-        , need(E.fib1(), "Please chose a fiber type (Go to Fiber Page)")  
-        , need(E.pm1(), "Please chose a primary matrix material (Go to Matrix Page)")   
-        , need(E.int1(), 'Please chose a fiber intermediate ("Not Used" is an option) (Go to Intermediate Page)')    
-        , need(E.mold1(), "Please chose a molding option (Go to Initial Page)") 
-        , need(E.cure1(), 'Please chose a curing option ("Cures in mold" is an option)  (Go to Molding Page)')
+        , need(raw.f.f1() >= 0,               "Mass Fractions must not be negative (Go to Fiber Page)")
+        , need(raw.f.f1() <= 1,               "Mass Fractions must not be greater than 100% (Go to Fiber Page)")
+        , need(raw.f.pm1() >= 0,              "Mass Fractions must not be negative (Go to Matrix Page)")
+        , need(raw.f.ma1() >= 0,              "Mass Fractions must not be negative (Go to Matrix Page)")
+        , need(raw.f.mb1() >= 0,              "Mass Fractions must not be negative (Go to Matrix Page)")
+        , need(raw.f.mc1() >= 0,              "Mass Fractions must not be negative (Go to Matrix Page)")
+        , need(E.fib1(),                      "Please chose a fiber type (Go to Fiber Page)")  
+        , need(E.pm1(),                       "Please chose a primary matrix material (Go to Matrix Page)")   
+        , need(E.int1(),                      'Please chose a fiber intermediate ("Not Used" is an option) (Go to Intermediate Page)')    
+        , need(E.mold1(),                     "Please chose a molding option (Go to Initial Page)") 
+        , need(E.cure1(),                     'Please chose a curing option ("Cures in mold" is an option) (Go to Molding Page)')
            )
      
      data_frame(
@@ -1426,7 +1561,8 @@ Data_Primatrix_new  <- reactiveValues()
     
     Process1.E.df <- reactive({
       validate(
-          need(f.raw.sum1() == 1, "")
+        need(sum(input$moldfracUSERNum1, input$primatrixfrac1, input$othermatrixAfrac1, 
+                 input$othermatrixBfrac1, input$othermatrixCfrac1) == 100,      "")
         , need(m.inserts1() < finalweight1(), "")
         , need(raw.f.f1() >= 0, "")
         , need(raw.f.pm1() >= 0, "")
@@ -1449,19 +1585,20 @@ Data_Primatrix_new  <- reactiveValues()
     
     Mat2.E.df <- reactive({
         validate(
-            need(f.raw.sum2() == 1, "Sum of Mass Fractions should add to 100% (Go to Matrix Page)")
+          need(sum(input$moldfracUSERNum2, input$primatrixfrac2, input$othermatrixAfrac2, 
+                   input$othermatrixBfrac2, input$othermatrixCfrac2) == 100,      "Sum of Mass Fractions should add to 100% (Go to Matrix Page)")
           , need(m.inserts2() < finalweight2(), "Inserts should not weigh more than the final part (Go to Initial Page)")
-          , need(raw.f.f2() >= 0, "Mass Fractions must not be negative (Go to Fiber Page)")
-          , need(raw.f.f2() <= 1, "Mass Fractions must not be greater than 100% (Go to Fiber Page)")
-          , need(raw.f.pm2() >= 0, "Mass Fractions must not be negative (Go to Matrix Page)")
-          , need(raw.f.ma2() >= 0, "Mass Fractions must not be negative (Go to Matrix Page)")
-          , need(raw.f.mb2() >= 0, "Mass Fractions must not be negative (Go to Matrix Page)")
-          , need(raw.f.mc2() >= 0, "Mass Fractions must not be negative (Go to Matrix Page)")
-          , need(E.fib2(), "Please chose a fiber type (Go to Fiber Page)")  
-          , need(E.pm2(), "Please chose a primary matrix material (Go to Matrix Page)")   
-          , need(E.int2(), 'Please chose a fiber intermediate ("Not Used" is an option) (Go to Intermediate Page)')    
-          , need(E.mold2(), "Please chose a molding option (Go to Initial Page)") 
-          , need(E.cure2(), 'Please chose a curing option ("Cures in mold" is an option) (Go to Molding Page)')
+          , need(raw.f.f2() >= 0,               "Mass Fractions must not be negative (Go to Fiber Page)")
+          , need(raw.f.f2() <= 1,               "Mass Fractions must not be greater than 100% (Go to Fiber Page)")
+          , need(raw.f.pm2() >= 0,              "Mass Fractions must not be negative (Go to Matrix Page)")
+          , need(raw.f.ma2() >= 0,              "Mass Fractions must not be negative (Go to Matrix Page)")
+          , need(raw.f.mb2() >= 0,              "Mass Fractions must not be negative (Go to Matrix Page)")
+          , need(raw.f.mc2() >= 0,              "Mass Fractions must not be negative (Go to Matrix Page)")
+          , need(E.fib2(),                      "Please chose a fiber type (Go to Fiber Page)")  
+          , need(E.pm2(),                       "Please chose a primary matrix material (Go to Matrix Page)")   
+          , need(E.int2(),                      'Please chose a fiber intermediate ("Not Used" is an option) (Go to Intermediate Page)')    
+          , need(E.mold2(),                     "Please chose a molding option (Go to Initial Page)") 
+          , need(E.cure2(),                     'Please chose a curing option ("Cures in mold" is an option) (Go to Molding Page)')
                 )
         
      data_frame(
@@ -1473,7 +1610,8 @@ Data_Primatrix_new  <- reactiveValues()
     
     Process2.E.df <- reactive({
           validate(
-              need(f.raw.sum2() == 1, "")
+            need(sum(input$moldfracUSERNum1, input$primatrixfrac1, input$othermatrixAfrac1, 
+                     input$othermatrixBfrac1, input$othermatrixCfrac1) == 100,      "")
             , need(m.inserts2() < finalweight2(), "")
             , need(raw.f.f2() >= 0, "")
             , need(raw.f.pm2() >= 0, "")
@@ -1505,30 +1643,32 @@ Data_Primatrix_new  <- reactiveValues()
     
    energy_plot.df <- reactive({
      validate(
-         need(f.raw.sum1() == 1, "Sum of Mass Fractions (1) should add to 100%")
+       need(sum(input$moldfracUSERNum1, input$primatrixfrac1, input$othermatrixAfrac1, 
+                input$othermatrixBfrac1, input$othermatrixCfrac1) == 100,      "Sum of Mass Fractions should add to 100% (1)")
        , need(m.inserts1() < finalweight1(), "Inserts (1) should not weigh more than the final part")
-       , need(raw.f.f1() >= 0, "Mass Fractions (Fiber - 1) must not be negative")
-       , need(raw.f.pm1() >= 0, "Mass Fractions (Primary Matrix - 1) must not be negative")
-       , need(raw.f.ma1() >= 0, "Mass Fractions (Matrix 1A) must not be negative")
-       , need(raw.f.mb1() >= 0, "Mass Fractions (Matrix 1B) must not be negative")
-       , need(raw.f.mc1() >= 0, "Mass Fractions (Matrix 1C) must not be negative")
-       , need(E.fib1(), "Please chose a fiber type (1)")  
-       , need(E.pm1(), "Please chose a primary matrix material(1)")   
-       , need(E.int1(), 'Please chose a fiber intermediate (1) ("Not Used" is an option)')    
-       , need(E.mold1(), "Please chose a molding option (1)") 
-       , need(E.cure1(), 'Please chose a curing option (1) ("Cures in mold" is an option)')
-       , need(f.raw.sum2() == 1, "Sum of Mass Fractions (2) should add to 100%")
+       , need(raw.f.f1() >= 0,               "Mass Fractions (Fiber - 1) must not be negative")
+       , need(raw.f.pm1() >= 0,              "Mass Fractions (Primary Matrix - 1) must not be negative")
+       , need(raw.f.ma1() >= 0,              "Mass Fractions (Matrix 1A) must not be negative")
+       , need(raw.f.mb1() >= 0,              "Mass Fractions (Matrix 1B) must not be negative")
+       , need(raw.f.mc1() >= 0,              "Mass Fractions (Matrix 1C) must not be negative")
+       , need(E.fib1(),                      "Please chose a fiber type (1)")  
+       , need(E.pm1(),                       "Please chose a primary matrix material(1)")   
+       , need(E.int1(),                      'Please chose a fiber intermediate (1) ("Not Used" is an option)')    
+       , need(E.mold1(),                     "Please chose a molding option (1)") 
+       , need(E.cure1(),                     'Please chose a curing option (1) ("Cures in mold" is an option)')
+       , need(sum(input$moldfracUSERNum2, input$primatrixfrac2, input$othermatrixAfrac2, 
+                input$othermatrixBfrac2, input$othermatrixCfrac2) == 100,      "Sum of Mass Fractions should add to 100% (2)")       
        , need(m.inserts2() < finalweight2(), "Inserts (2) should not weigh more than the final part")
-       , need(raw.f.f2() >= 0, "Mass Fractions (Fiber - 2) must not be negative")
-       , need(raw.f.pm2() >= 0, "Mass Fractions (Primary Matrix - 2) must not be negative")
-       , need(raw.f.ma2() >= 0, "Mass Fractions (Matrix 2A) must not be negative")
-       , need(raw.f.mb2() >= 0, "Mass Fractions (Matrix 2B) must not be negative")
-       , need(raw.f.mc2() >= 0, "Mass Fractions (Matrix 2C) must not be negative")
-       , need(E.fib2(), "Please chose a fiber type(2)")  
-       , need(E.pm2(), "Please chose a primary matrix material(2)")   
-       , need(E.int2(), 'Please chose a fiber intermediate (2) ("Not Used" is an option)')    
-       , need(E.mold2(), "Please chose a molding option (2)") 
-       , need(E.cure2(), 'Please chose a curing option (2) ("Cures in mold" is an option)')
+       , need(raw.f.f2() >= 0,               "Mass Fractions (Fiber - 2) must not be negative")
+       , need(raw.f.pm2() >= 0,              "Mass Fractions (Primary Matrix - 2) must not be negative")
+       , need(raw.f.ma2() >= 0,              "Mass Fractions (Matrix 2A) must not be negative")
+       , need(raw.f.mb2() >= 0,              "Mass Fractions (Matrix 2B) must not be negative")
+       , need(raw.f.mc2() >= 0,              "Mass Fractions (Matrix 2C) must not be negative")
+       , need(E.fib2(),                      "Please chose a fiber type (2)")  
+       , need(E.pm2(),                       "Please chose a primary matrix material (2)")   
+       , need(E.int2(),                      'Please chose a fiber intermediate (2) ("Not Used" is an option)')    
+       , need(E.mold2(),                     "Please chose a molding option (2)") 
+       , need(E.cure2(),                     'Please chose a curing option (2) ("Cures in mold" is an option)')
        )
      
      data_frame(
