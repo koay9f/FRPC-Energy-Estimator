@@ -342,14 +342,15 @@ BIGFUNCTION2 <- function(Data_yield, partname,
 }
 
 # Results DataTable ----
-finaldf <- function(name1, name2, AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK, AA2, BB2, CC2, DD2, EE2, FF2, GG2, HH2, II2, JJ2, KK2){
+finaldf <- function(name1, name2, AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK, YF1, YM1, YT1,
+                                  AA2, BB2, CC2, DD2, EE2, FF2, GG2, HH2, II2, JJ2, KK2, YF2, YM2, YT2){
   pd <- function (n1, n2){
     pd <- abs(n1-n2)*100/n1
     }
   
   tempdf <- data_frame(
-    Part1 = c(AA, BB, sum(CC, DD,EE, FF, GG), HH, II, JJ, KK, sum(AA, BB, CC, DD,EE, FF, GG, HH, II, JJ, KK)),
-    Part2 = c(AA2, BB2, sum(CC2, DD2, EE2, FF2, GG2), HH2, II2, JJ2, KK2, sum(AA2, BB2, CC2, DD2, EE2, FF2, GG2, HH2, II2, JJ2, KK2))
+    Part1 = c(AA, BB, sum(CC, DD,EE, FF, GG), HH, II, JJ, KK, sum(AA, BB, CC, DD,EE, FF, GG, HH, II, JJ, KK), YF1*100, YM1*100, YT1*100),
+    Part2 = c(AA2, BB2, sum(CC2, DD2, EE2, FF2, GG2), HH2, II2, JJ2, KK2, sum(AA2, BB2, CC2, DD2, EE2, FF2, GG2, HH2, II2, JJ2, KK2), YF2*100, YM2*100, YT2*100)
   )
   
   tempdf <- tempdf %>%
@@ -358,7 +359,7 @@ finaldf <- function(name1, name2, AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK, AA
   
   displaydf <- t(tempdf)
   suppressWarnings( rownames(displaydf) <- c(name1,name2, "Percent Change (%)"))
-  suppressWarnings( colnames(displaydf) <- c("Fiber", "Primary Matrix Material", "Other Materials", "Intermediate", "Molding", "Curing", "Finishing", "Total"))
+  suppressWarnings( colnames(displaydf) <- c("Fiber", "Primary Matrix Material", "Other Materials", "Intermediate", "Molding", "Curing", "Finishing", "Total", "Fiber Yield", "Matrix Yield", "Process Yield"))
   
   displaydf
 }

@@ -17,27 +17,21 @@ shinyUI(fluidPage(title = "CFRP Tool",
                   tags$head(
                         tags$style(HTML(" .shiny-output-error-validation {color: red; }"))
                     ,   tags$style(HTML(" .shiny-notification-message {color: #007833;background-color: #e7f1d8; border-color: #007833;}"))
-                    ,   tags$style(HTML(id = "Table.mat.1", "table tbody tr:last-child {font-weight:bold;}")) # Table is on line 658 and formed on line 1503 of server.  others are nearby
-                    ,   tags$style(HTML(id = "Table.pro.1", "table tbody tr:last-child {font-weight:bold;}"))
-                    ,   tags$style(HTML(id = "Table.mat.2", "table tbody tr:last-child {font-weight:bold;}"))
-                    ,   tags$style(HTML(id = "Table.pro.2", "table tbody tr:last-child {font-weight:bold;}"))
-                    ,   tags$style(HTML(id = "diagram", "table tbody tr:last-child {font-weight:bold;}"))
+                    ,   tags$style(HTML(" table tbody tr:last-child {font-weight:bold;}")) 
+                    #,   tags$style(HTML(id = "Table.pro.1", "table tbody tr:last-child {font-weight:bold;}"))
+                    #,   tags$style(HTML(id = "Table.mat.2", "table tbody tr:last-child {font-weight:bold;}"))
+                    #,   tags$style(HTML(id = "Table.pro.2", "table tbody tr:last-child {font-weight:bold;}"))
+                    #,   tags$style(HTML(id = "diagram", "table tbody tr:last-child {font-weight:bold;}"))
                   ), 
-  
-
-  
-  
   useShinyjs(),
                   titlePanel(h1("CFRP Energy Use Estimation Tool", style = "color:#007833")),
                   navlistPanel( 
             
             # GuideTab ----
             tabPanel("Guide",h1("Tool Guide"),
-                     #tags$object(type='image/svg+xml', data='ToolScope.svg', style = "height: 300; width: 100%; max-width: 778.3079951422452px;",
-                                 #tags$img(src = 'diagram.svg', alt = 'No SVG Support'))
-                     tags$img(src='ToolScope.svg', style = "height: 300; width: 100%; max-width: 778.3079951422452px;")
-                     , 
-                     br()
+                     , tags$img(src='ToolScope.svg', style = "height: 300; width: 100%; max-width: 778.3079951422452px;")
+                     
+                     , br()
                      , hr()
                      , br()
                       , strong('This tool has been developed by ORNL to provide CFRP researchers and manufacturers the ability to quickly estimate 
@@ -49,7 +43,8 @@ shinyUI(fluidPage(title = "CFRP Tool",
                          the developers by email: Kristina Armstrong (', span('armstrongko@ornl.gov', style = "text-decoration: underline"),  ') or Sujit Das (', span('dass@ornl.gov', style = "text-decoration: underline"),').')
                      , helpText(a("Or connect with us on GitHub", href = "https://github.com/koay9f/CFRP-Energy-Estimator", target= "_blank"))
                    , hr()
-                     , p(icon("file-zip-o"),'   For more help or information, download the "Background Information".' ) 
+                     , p(icon("file-zip-o"),'   For more help or information, download the "Tool Documentation". This includes includes energy data,
+                         molding process properties, references and details of tool computations' ) 
                      , downloadButton('info', "Download Background Zip File")
                      , p("If you are unable to download the background zip file, try reloading the application.",  
                          span("Note: you will lose any information you have entered into the app.", style = "color:red"))
@@ -708,6 +703,9 @@ shinyUI(fluidPage(title = "CFRP Tool",
                                       width = '100%')
                      )
                      )
+                    , p('The columns and rows visible can be changed by clicking the "Select all..." boxes 
+                        or within the "... Visible" boxes and selecting from the list or using the "Backspace" 
+                        or "Delete" buttons on your keyboard to remove options')
                     ,  DT::dataTableOutput("props")
                     
                     

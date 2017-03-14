@@ -1203,7 +1203,7 @@ Data_Primatrix_new  <- reactiveValues()
     updateNumericInput(session, "primatrixfrac2", value = 100-rff2)
     })
     
-    # Build Citation ----
+  # Build Citation ----
     observeEvent(input$cite_type, {
      citelist <- citefxn(input$cite_type)
     updateSelectizeInput(session, 'cite_specific',
@@ -1402,18 +1402,19 @@ Data_Primatrix_new  <- reactiveValues()
     # Final Tables ----
     Mat1.E.df <- reactive({  
       validate(
-          need(f.raw.sum1() == 1, "Sum of Mass Fractions should add to 100%")
-        , need(m.inserts1() < finalweight1(), "Inserts should not weigh more than the final part")
-        , need(raw.f.f1() >= 0, "Mass Fractions must not be negative")
-        , need(raw.f.pm1() >= 0, "Mass Fractions must not be negative")
-        , need(raw.f.ma1() >= 0, "Mass Fractions must not be negative")
-        , need(raw.f.mb1() >= 0, "Mass Fractions must not be negative")
-        , need(raw.f.mc1() >= 0, "Mass Fractions must not be negative")
-        , need(E.fib1(), "Please chose a fiber type")  
-        , need(E.pm1(), "Please chose a primary matrix material")   
-        , need(E.int1(), 'Please chose a fiber intermediate ("Not Used" is an option)')    
-        , need(E.mold1(), "Please chose a molding option") 
-        , need(E.cure1(), 'Please chose a curing option ("Cures in mold" is an option)')
+          need(f.raw.sum1() == 1, "Sum of Mass Fractions should add to 100% (Go to Matrix Page)")
+        , need(m.inserts1() < finalweight1(), "Inserts should not weigh more than the final part (Go to Initial Page)")
+        , need(raw.f.f1() >= 0, "Mass Fractions must not be negative (Go to Fiber Page)")
+        , need(raw.f.f1() <= 1, "Mass Fractions must not be greater than 100% (Go to Fiber Page)")
+        , need(raw.f.pm1() >= 0, "Mass Fractions must not be negative (Go to Matrix Page)")
+        , need(raw.f.ma1() >= 0, "Mass Fractions must not be negative (Go to Matrix Page)")
+        , need(raw.f.mb1() >= 0, "Mass Fractions must not be negative (Go to Matrix Page)")
+        , need(raw.f.mc1() >= 0, "Mass Fractions must not be negative (Go to Matrix Page)")
+        , need(E.fib1(), "Please chose a fiber type (Go to Fiber Page)")  
+        , need(E.pm1(), "Please chose a primary matrix material (Go to Matrix Page)")   
+        , need(E.int1(), 'Please chose a fiber intermediate ("Not Used" is an option) (Go to Intermediate Page)')    
+        , need(E.mold1(), "Please chose a molding option (Go to Initial Page)") 
+        , need(E.cure1(), 'Please chose a curing option ("Cures in mold" is an option)  (Go to Molding Page)')
            )
      
      data_frame(
@@ -1448,18 +1449,19 @@ Data_Primatrix_new  <- reactiveValues()
     
     Mat2.E.df <- reactive({
         validate(
-            need(f.raw.sum2() == 1, "Sum of Mass Fractions should add to 100%")
-          , need(m.inserts2() < finalweight2(), "Inserts should not weigh more than the final part")
-          , need(raw.f.f2() >= 0, "Mass Fractions must not be negative")
-          , need(raw.f.pm2() >= 0, "Mass Fractions must not be negative")
-          , need(raw.f.ma2() >= 0, "Mass Fractions must not be negative")
-          , need(raw.f.mb2() >= 0, "Mass Fractions must not be negative")
-          , need(raw.f.mc2() >= 0, "Mass Fractions must not be negative")
-          , need(E.fib2(), "Please chose a fiber type")  
-          , need(E.pm2(), "Please chose a primary matrix material")   
-          , need(E.int2(), 'Please chose a fiber intermediate ("Not Used" is an option)')    
-          , need(E.mold2(), "Please chose a molding option") 
-          , need(E.cure2(), 'Please chose a curing option ("Cures in mold" is an option)')
+            need(f.raw.sum2() == 1, "Sum of Mass Fractions should add to 100% (Go to Matrix Page)")
+          , need(m.inserts2() < finalweight2(), "Inserts should not weigh more than the final part (Go to Initial Page)")
+          , need(raw.f.f2() >= 0, "Mass Fractions must not be negative (Go to Fiber Page)")
+          , need(raw.f.f2() <= 1, "Mass Fractions must not be greater than 100% (Go to Fiber Page)")
+          , need(raw.f.pm2() >= 0, "Mass Fractions must not be negative (Go to Matrix Page)")
+          , need(raw.f.ma2() >= 0, "Mass Fractions must not be negative (Go to Matrix Page)")
+          , need(raw.f.mb2() >= 0, "Mass Fractions must not be negative (Go to Matrix Page)")
+          , need(raw.f.mc2() >= 0, "Mass Fractions must not be negative (Go to Matrix Page)")
+          , need(E.fib2(), "Please chose a fiber type (Go to Fiber Page)")  
+          , need(E.pm2(), "Please chose a primary matrix material (Go to Matrix Page)")   
+          , need(E.int2(), 'Please chose a fiber intermediate ("Not Used" is an option) (Go to Intermediate Page)')    
+          , need(E.mold2(), "Please chose a molding option (Go to Initial Page)") 
+          , need(E.cure2(), 'Please chose a curing option ("Cures in mold" is an option) (Go to Molding Page)')
                 )
         
      data_frame(
@@ -1505,8 +1507,8 @@ Data_Primatrix_new  <- reactiveValues()
      validate(
          need(f.raw.sum1() == 1, "Sum of Mass Fractions (1) should add to 100%")
        , need(m.inserts1() < finalweight1(), "Inserts (1) should not weigh more than the final part")
-       , need(raw.f.f1() >= 0, "Mass Fractions (Fiber-1) must not be negative")
-       , need(raw.f.pm1() >= 0, "Mass Fractions (Primary Matrix -1) must not be negative")
+       , need(raw.f.f1() >= 0, "Mass Fractions (Fiber - 1) must not be negative")
+       , need(raw.f.pm1() >= 0, "Mass Fractions (Primary Matrix - 1) must not be negative")
        , need(raw.f.ma1() >= 0, "Mass Fractions (Matrix 1A) must not be negative")
        , need(raw.f.mb1() >= 0, "Mass Fractions (Matrix 1B) must not be negative")
        , need(raw.f.mc1() >= 0, "Mass Fractions (Matrix 1C) must not be negative")
@@ -1517,8 +1519,8 @@ Data_Primatrix_new  <- reactiveValues()
        , need(E.cure1(), 'Please chose a curing option (1) ("Cures in mold" is an option)')
        , need(f.raw.sum2() == 1, "Sum of Mass Fractions (2) should add to 100%")
        , need(m.inserts2() < finalweight2(), "Inserts (2) should not weigh more than the final part")
-       , need(raw.f.f2() >= 0, "Mass Fractions (Fiber-2) must not be negative")
-       , need(raw.f.pm2() >= 0, "Mass Fractions (Primary Matrix -2) must not be negative")
+       , need(raw.f.f2() >= 0, "Mass Fractions (Fiber - 2) must not be negative")
+       , need(raw.f.pm2() >= 0, "Mass Fractions (Primary Matrix - 2) must not be negative")
        , need(raw.f.ma2() >= 0, "Mass Fractions (Matrix 2A) must not be negative")
        , need(raw.f.mb2() >= 0, "Mass Fractions (Matrix 2B) must not be negative")
        , need(raw.f.mc2() >= 0, "Mass Fractions (Matrix 2C) must not be negative")
@@ -1591,12 +1593,18 @@ Data_Primatrix_new  <- reactiveValues()
        , need(E.cure2(), '')
      )
      
+     y.f1 <- reactive(as.double(yield_data1.df()$yield_cumulative[3]))
+     y.m1 <- reactive(as.double(yield_data1.df()$yield_cumulative[6]))
+     y.f2 <- reactive(as.double(yield_data2.df()$yield_cumulative[3]))
+     y.m2 <- reactive(as.double(yield_data2.df()$yield_cumulative[6]))
+     
+     
      finaldf(partname1e(), partname2e(), 
-                                 E.f.fib1(), E.f.pm1(), E.f.ma1(), E.f.mb1(), E.f.mc1(), E.f.ia1(), E.f.ib1(), E.f.int1(), E.f.mold1(), E.f.cure1(), E.f.fin1(),
-                                 E.f.fib2(), E.f.pm2(), E.f.ma2(), E.f.mb2(), E.f.mc2(), E.f.ia2(), E.f.ib2(), E.f.int2(), E.f.mold2(), E.f.cure2(), E.f.fin2())
+                                 E.f.fib1(), E.f.pm1(), E.f.ma1(), E.f.mb1(), E.f.mc1(), E.f.ia1(), E.f.ib1(), E.f.int1(), E.f.mold1(), E.f.cure1(), E.f.fin1(), y.f1(), y.m1(), y.f1(),
+                                 E.f.fib2(), E.f.pm2(), E.f.ma2(), E.f.mb2(), E.f.mc2(), E.f.ia2(), E.f.ib2(), E.f.int2(), E.f.mold2(), E.f.cure2(), E.f.fin2(), y.f2(), y.m2(), y.f2())
      })
    
-   output$ResultsTable <- renderTable(Resultsdf(), digits = 2, include.rownames = TRUE, na = "0")
+   output$ResultsTable <- renderTable(Resultsdf(), digits = 0, include.rownames = TRUE, na = "0")
      
    
   # Download Results ----
@@ -1697,4 +1705,5 @@ contentType = "application/zip"
      
      
      #  End ----
-     session$onSessionEnded(stopApp) })
+     #session$onSessionEnded(stopApp) 
+     })
