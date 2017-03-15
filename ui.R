@@ -38,14 +38,14 @@ shinyUI(fluidPage(title = "CFRP Tool",
                      , hr()    
                      , p(icon("table"),'   A table for comparing molding technologies is also available on the "Molding Properties" Tab.')  
                       , p(icon("internet-explorer"),'   Some features of this tool are not fully suppported in Internet Explorer.')
-                     , p(icon("envelope-o"), '   If you wish to permanently add a process to our database or otherwise wish to comment on this tool, please contact 
-                         the developers by email: Kristina Armstrong (', span('armstrongko@ornl.gov', style = "text-decoration: underline"),  ') or Sujit Das (', span('dass@ornl.gov', style = "text-decoration: underline"),').')
+                     , p(icon("envelope-o"), '   If you wish to permanently add a material or process to our database or otherwise wish to comment on this tool, please contact 
+                         the developers by', span(strong(" email:")), 'Kristina Armstrong (', span('armstrongko@ornl.gov', style = "text-decoration: underline"),  ') or Sujit Das (', span('dass@ornl.gov', style = "text-decoration: underline"),').')
                      , helpText(a("Or connect with us on GitHub", href = "https://github.com/koay9f/CFRP-Energy-Estimator", target= "_blank"))
                    , hr()
-                     , p(icon("file-zip-o"),'   For more help or information, download the Tool Documentation. This includes includes energy data,
+                     , p(icon("file-zip-o"),'   For more help or information,', span(strong( "download" )), 'the Tool Documentation. This includes includes energy data,
                          molding process properties, references and details of tool computations' ) 
                      , downloadButton('info', "Download Tool Documentation Zip File")
-                     , p("If you are unable to download the background zip file, try reloading the application.",  
+                     , p("If you are unable to download the background zip file, try", span(strong("reloading")), "the application.",  
                          span("Note: you will lose any information you have entered into the app.", style = "color:red"))
                    ),
             # Add data tab ----
@@ -57,10 +57,10 @@ shinyUI(fluidPage(title = "CFRP Tool",
                      
                      , conditionalPanel(
                        condition = 'input.add_data_which == "Instructions"'
-                       , p("Presently, the user can only add one data point per process segment (in other words, you can only add one custom molding process).  
+                       , p("Presently, the user can only add", span("one", style = "text-decoration: underline"), "data point per process segment (in other words, you can only add one custom molding process).  
                            Additionally, the custom process segment is only available for the current session.")
                        , p ("If you require adding several custom process segments or plan to run multiple scenarios with the same custom segments, 
-                            it is recommended that you download R studio and a copy of this app from GitHub and edit the data personally. ")
+                            it is recommended that you", span(strong("download")), "R studio and a copy of this app from GitHub and edit the data personally. ")
                       ,p(' Alternatively, you can contact Kristina Armstrong (', span('armstrongko@ornl.gov', style = "text-decoration: underline"),  
                             ') or Sujit Das (', span('dass@ornl.gov', style = "text-decoration: underline"),'). and 
                             we can work with you to add your technology to our tool and grow our database of CFRP manufacturing technologies.')
@@ -72,7 +72,7 @@ shinyUI(fluidPage(title = "CFRP Tool",
                        , fluidRow(column(5, h4("Custom Fiber Type")) )
                        ,  fluidRow(
                          column(4, textInput("fiber_add", "Name", "Custom Fiber Type"))
-                         , column (4, numericInput("fiber_add_E", "Specific Energy (MJ/kg fiber)", 0, min = 0, NA, NA))
+                         , column (4, numericInput("fiber_add_E", "Specific Embodied Energy (MJ/kg fiber)", 0, min = 0, NA, NA))
                          , column(3,actionButton("gofiber", strong("Add Fiber Data")), style = "padding:25px;", align = "right") 
                          , column(1,         hidden(
                                     p(id = "fibi", icon("check", "fa-2x"))), style = "padding:25px;", align = "left" )
@@ -83,7 +83,7 @@ shinyUI(fluidPage(title = "CFRP Tool",
                        condition = 'input.add_data_which == "Insert/Core Material"'
                        , fluidRow(column(5,h4("Custom Insert or Core")))
                        , fluidRow(column(4, textInput("insert_add", "Name", "Custom Insert/Core"))
-                                  , column (4, numericInput("insert_add_E", "Specific Energy (MJ/kg)", 0, min = 0, NA, NA))
+                                  , column (4, numericInput("insert_add_E", "Specific Embodied Energy (MJ/kg)", 0, min = 0, NA, NA))
                                   , column(3,actionButton("goinsert", strong("Add Insert/Core Data")), style = "padding:25px;")
                                   , column(1,         hidden(
                                     p(id = "insi", icon("check", "fa-2x"))), style = "padding:25px;", align = "left" )
@@ -93,7 +93,7 @@ shinyUI(fluidPage(title = "CFRP Tool",
                        condition = 'input.add_data_which == "Matrix"'
                        , fluidRow(column(5, h4("Custom Matrix Polymer") ))
                        , fluidRow(column(4, textInput("matrix_add", "Name", "Custom Matrix"))
-                                  , column (4, numericInput("matrix_add_E", "Specific Energy (MJ/kg)", 0, min = 0, NA, NA))
+                                  , column (4, numericInput("matrix_add_E", "Specific Embodied Energy (MJ/kg)", 0, min = 0, NA, NA))
                                   , column(3,actionButton("gomatrix", strong("Add Matrix Data")), style = "padding:25px;")
                                   , column(1,         hidden(
                                     p(id = "mati", icon("check", "fa-2x"))), style = "padding:25px;", align = "left" )
@@ -103,7 +103,7 @@ shinyUI(fluidPage(title = "CFRP Tool",
                        condition = 'input.add_data_which == "Filler"'
                        , fluidRow(column(5, h4("Custom Matrix Filler") ))
                        , fluidRow(column(4, textInput("filler_add", "Name", "Custom Filler"))
-                                  , column (4, numericInput("filler_add_E", "Specific Energy (MJ/kg)", 0, min = 0, NA, NA))
+                                  , column (4, numericInput("filler_add_E", "Specific Embodied Energy (MJ/kg)", 0, min = 0, NA, NA))
                                   , column(3,actionButton("gofiller", strong("Add Filler Data")), style = "padding:25px;")
                                   , column(1,         hidden(
                                     p(id = "fili", icon("check", "fa-2x"))), style = "padding:25px;", align = "left" )
@@ -113,7 +113,7 @@ shinyUI(fluidPage(title = "CFRP Tool",
                        condition = 'input.add_data_which == "Additive"'
                        , fluidRow(column(5, h4("Custom Matrix Additive") ))
                        , fluidRow(column(4, textInput("additive_add", "Name", "Custom Additive"))
-                                  , column (4, numericInput("additive_add_E", "Specific Energy (MJ/kg)", 0, min = 0, NA, NA))
+                                  , column (4, numericInput("additive_add_E", "Specific Embodied Energy (MJ/kg)", 0, min = 0, NA, NA))
                                   , column(3,actionButton("goadditive", strong("Add Additive Data")), style = "padding:25px;")
                                   , column(1,         hidden(
                                     p(id = "addi", icon("check", "fa-2x"))), style = "padding:25px;", align = "left" )
@@ -123,15 +123,15 @@ shinyUI(fluidPage(title = "CFRP Tool",
                        condition = 'input.add_data_which == "Intermediate"'
                        , fluidRow(column(5,h4("Custom Intermediate")))
                        , fluidRow(column(3, textInput("int_add", "Name", "Custom Intermediate"))
-                                  , column (3, numericInput("int_add_E", "Specific Energy (MJ/kg fiber)", 0, min = 0, NA, NA))
+                                  , column (3, numericInput("int_add_E", "Specific Embodied Energy (MJ/kg fiber)", 0, min = 0, NA, NA))
                                   , column (3,  checkboxInput("int_add_PP", "Does the intermediate material include matrix material (i.e. prepregs)?",FALSE))
                                   , column(2,actionButton("goint", strong("Add Intermediate Data")), style = "padding:25px;")
                                   , column(1,         hidden(
                                     p(id = "inti", icon("check", "fa-2x"))), style = "padding:25px;", align = "left" )
                        )
-                       , fluidRow(column(1,""), column(10, p("Normally the options available for curing process are dependent on the user's choice for molding technology.  
-                                                             If a custom curing process has been added, this is overridden and all options for 
-                                                             curing (including the custom process) will be available.")
+                       , fluidRow(column(12, p("Normally the options available for fiber intermediate are dependent on the user's choice for molding technology.  
+                                                             If a custom intermediate has been added, this is overridden and all options for 
+                                                             intermediates (including the custom process) will be available.")
                                                        , p("In this tool, the matrix mass of a prepreg is accounted for when calculating change in material mass as material
                                                            is scrapped.  The mass of the matrix is not included for when calculating the embodied energy of the intermediate.")))
                        )
@@ -144,7 +144,7 @@ shinyUI(fluidPage(title = "CFRP Tool",
                            If a custom molding process has been added, this is overridden and all options for these will be available.")
                        , fluidRow(
                          column(4, textInput("mold_add", "Name", "Custom Mold Tech"))
-                         , column(4, checkboxInput("mold_add_EYN", "Is the specific energy of the molding process known?",FALSE), style = "padding:15px;")
+                         , column(4, checkboxInput("mold_add_EYN", "Is the specific embodied Energy of the molding process known?",FALSE), style = "padding:15px;")
                          , column(3,actionButton("gomold", strong("Add Molding Data")), style = "padding:25px;")
                          , column(1,         hidden(
                            p(id = "moldi", icon("check", "fa-2x"))), style = "padding:25px;", align = "left" )
@@ -152,7 +152,7 @@ shinyUI(fluidPage(title = "CFRP Tool",
                        , br()
                        , conditionalPanel( 
                          condition = "input.mold_add_EYN == true"
-                         , numericInput("mold_add_E_Y", "Specific Energy (MJ/kg)", 0, min = 0, NA, NA)
+                         , numericInput("mold_add_E_Y", "Specific Embodied Energy (MJ/kg)", 0, min = 0, NA, NA)
                          )
                        , conditionalPanel( 
                          condition = "input.mold_add_EYN == false"
@@ -202,7 +202,7 @@ shinyUI(fluidPage(title = "CFRP Tool",
                            curing (including the custom process) will be available.")
                        , fluidRow(
                           column(4, textInput("cure_add", "Name", "Custom Cure Tech"))
-                         , column(4, checkboxInput("cure_add_EYN", "Is the specific energy of the curing process known?",FALSE), style = "padding:15px;")
+                         , column(4, checkboxInput("cure_add_EYN", "Is the specific embodied energy of the curing process known?",FALSE), style = "padding:15px;")
                          , column(3,actionButton("gocure", strong("Add Curing Data")), style = "padding:25px;")
                          , column(1,         hidden(
                            p(id = "curei", icon("check", "fa-2x"))), style = "padding:25px;", align = "left" )
@@ -210,7 +210,7 @@ shinyUI(fluidPage(title = "CFRP Tool",
                        , br()
                        , conditionalPanel( 
                          condition = "input.cure_add_EYN == true"
-                         , numericInput("cure_add_E_Y", "Specific Energy (MJ/kg)", 0, min = 0, NA, NA)
+                         , numericInput("cure_add_E_Y", "Specific Embodied Energy (MJ/kg)", 0, min = 0, NA, NA)
                          )
                        , conditionalPanel( 
                          condition = "input.cure_add_EYN == false"
@@ -257,7 +257,7 @@ shinyUI(fluidPage(title = "CFRP Tool",
                        condition = 'input.add_data_which == "Finish"'
                        , fluidRow(column(5,h4("Custom Finishing Process")))
                        , fluidRow(column(4, textInput("finish_add", "Name", "Custom Finish"))
-                                  , column (4, numericInput("finish_add_E", "Specific Energy (MJ/kg)", 0, min = 0, NA, NA))
+                                  , column (4, numericInput("finish_add_E", "Specific Embodied Energy (MJ/kg)", 0, min = 0, NA, NA))
                                   , column(3,actionButton("gofinish", strong("Add Finishing Data")), style = "padding:25px;")
                                   , column(1,         hidden(
                                     p(id = "fini", icon("check", "fa-2x"))), style = "padding:25px;", align = "left" )
@@ -683,9 +683,9 @@ shinyUI(fluidPage(title = "CFRP Tool",
             # Molding Properties Tab ----
             tabPanel("Molding Properties", h1("Molding Properties")
                      , fluidRow(
-                     p('The columns and rows visible can be changed by clicking the "Select all..." boxes 
-                        or within the "... Visible" boxes and selecting from the list or using the "Backspace" 
-                           or "Delete" buttons on your keyboard to remove options')
+                       p('The columns and rows visible can be changed by clicking the "Select all..." boxes 
+                        or within the "... Visible" boxes and selecting from the list or using the', span(strong(' "Backspace" ')), "or", 
+                         span(strong('"Delete"')), 'buttons on your keyboard to remove options')
                      , column(6,
                      
                      

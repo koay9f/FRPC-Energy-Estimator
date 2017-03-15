@@ -1,19 +1,19 @@
 Process,Surface_Finish,Part_Size,Part_Shape/complexity,Dimensional_Control,Mold_Sides,Capital_Costs,Part_Cost,Production_Speed,Production_Volume,Max_Fiber_Mass_Frac.,Strength,Fiber_Placement_Control,Molding_Yield,Additional_Curing?,Heat_Cure,Pressure_Cure,Vacuum_Cure,Prepreg?,Preform?,Easily_Incorp._Inserts
-Wet Lay up (Hand Lay up),"High, One Side",Small - Large,Simple - Complex,Low,1,Low,Medium,Slow,Small,0.35,High,Variable,0.97,Maybe,Maybe,Maybe,Maybe,Yes,Maybe,Yes
-Vacuum Bag (Autoclave),"High, All Sides",Small - Large,Simple - Complex,High,1,High,Medium,Slow,Small,0.65,High,Precise,0.93,Yes,Yes,Yes,Yes,Yes,No,No
-Spray Up,Poor,Small - Large,Simple - Complex,Low,1,Low,Low,Medium - Fast,Small - Medium,0.4,Low,Variable,0.95,No,No,No,No,No,No,No
 Automatic Fiber Placement (AFP),"Fair, One Side",Medium - Large,Simple - Complex,High,1,High,Low,Medium,High,0.6,High,Precise,0.95,Maybe,Yes,Maybe,Maybe,Yes,No,No
 Automatic Tape Placement (ATP),"Fair, One Side",Medium - Large,Flat or shallow curve,High,1,High,Low,Medium,High,0.6,High,Precise,0.95,Maybe,Yes,Maybe,Maybe,Yes,No,No
-Pultrusion,"High, All Sides",Long,Constant Cross Section,High,1,Medium,Low - Medium,Fast,High,0.7,High* along length only,Precise,0.98,No,Yes,No,No,No,No,No
+Compression Molding,"Fair, All Sides",Small - Medium,Simple - Complex,High,2,High,Low,Fast,High,0.3,Medium,Variable,0.95,Maybe,Yes,Yes,No,Maybe,Maybe,Yes
 Filament Winding,"High, Interior; 
 Low, Exterior",Small - Large,Cylindrical/ Axisymmetric,High,1,Medium,Low - High,Slow - Fast,High,0.6,High,"Variable* 
 in thickness",0.95,No,Yes,No,No,No,Maybe,No
-Compression Molding,"Fair, All Sides",Small - Medium,Simple - Complex,High,2,High,Low,Fast,High,0.3,Medium,Variable,0.95,Maybe,Yes,Yes,No,Maybe,Maybe,Yes
-Sheet Molding Compound (SMC),"Fair, All Sides",Small - Medium,Simple - Complex,High,2,High,Low,Fast,High,0.3,Medium - Low,Variable,0.95,No,Yes,Yes,No,No,No,Yes
-Thermo-hydroforming (THF),"High, One Side",Small - Medium,Deep drawn curve,Medium,1,High,In development,Medium,In development,0.5,High,Precise,0.93,No,Yes,Yes,Yes,Maybe,Maybe,Yes
-Resin Transfer Molding (RTM),"High, All Sides",Small - Medium,Simple - Very Complex,Medium - High,2,Medium,Medium,Medium,Medium,0.6,High,Medium,0.93,Maybe,Maybe,Maybe,No,Maybe,Maybe,Yes
-Vacuum Assisted-RTM (VARTM),"High, One Side",Large,Simple - Very Complex,Medium - High,1,Medium-High,Low,Medium - Fast,Medium,0.7,High,Precise,0.95,No,Maybe,No,Yes,Maybe,Maybe,No
-Seeman Composite Resin Infusion Molding Process (SCRIMP) ,"High, One Side",Medium - Large,Simple - Very Complex,Medium - High,1,Medium-High,Low,Medium - Fast,Medium - High,0.7,High,Very Precise,0.95,No,Maybe,No,Yes,Maybe,Maybe,No
 High Pressure-RTM (HPRTM),"High, All Sides",Small - Medium,Simple - Very Complex,High,2,Medium- High,Medium,Medium - Fast,Medium - High,0.75,High,Medium,0.93,No,Yes,Maybe,Yes,No,Yes,Yes
 Injection Molding (IM),"High, All Sides",Small - Medium,Simple - Complex,Very High,2,High,Low,Fast,Very High,0.2,Low,Variable,0.95,No,No,No,No,No,No,Yes
+Pultrusion,"High, All Sides",Long,Constant Cross Section,High,1,Medium,Low - Medium,Fast,High,0.7,High* along length only,Precise,0.98,No,Yes,No,No,No,No,No
+Resin Transfer Molding (RTM),"High, All Sides",Small - Medium,Simple - Very Complex,Medium - High,2,Medium,Medium,Medium,Medium,0.6,High,Medium,0.93,Maybe,Maybe,Maybe,No,Maybe,Maybe,Yes
+Seeman Composite Resin Infusion Molding Process (SCRIMP) ,"High, One Side",Medium - Large,Simple - Very Complex,Medium - High,1,Medium-High,Low,Medium - Fast,Medium - High,0.7,High,Very Precise,0.95,No,Maybe,No,Yes,Maybe,Maybe,No
+Sheet Molding Compound (SMC),"Fair, All Sides",Small - Medium,Simple - Complex,High,2,High,Low,Fast,High,0.3,Medium - Low,Variable,0.95,No,Yes,Yes,No,No,No,Yes
+Spray Up,Poor,Small - Large,Simple - Complex,Low,1,Low,Low,Medium - Fast,Small - Medium,0.4,Low,Variable,0.95,No,No,No,No,No,No,No
 Structural Reaction Injection Molding (SRIM),"High, All Sides",Small - Medium,Simple - Complex,Very High,2,High,Low,Fast,Very High,0.4,Medium,Medium,0.94,No,No,No,No,No,Maybe,Yes
+Thermo-hydroforming (THF),"High, One Side",Small - Medium,Deep drawn curve,Medium,1,High,In development,Medium,In development,0.5,High,Precise,0.93,No,Yes,Yes,Yes,Maybe,Maybe,Yes
+Vacuum Assisted-RTM (VARTM),"High, One Side",Large,Simple - Very Complex,Medium - High,1,Medium-High,Low,Medium - Fast,Medium,0.7,High,Precise,0.95,No,Maybe,No,Yes,Maybe,Maybe,No
+Vacuum Bag (Autoclave),"High, All Sides",Small - Large,Simple - Complex,High,1,High,Medium,Slow,Small,0.65,High,Precise,0.93,Yes,Yes,Yes,Yes,Yes,No,No
+Wet Lay up (Hand Lay up),"High, One Side",Small - Large,Simple - Complex,Low,1,Low,Medium,Slow,Small,0.35,High,Variable,0.97,Maybe,Maybe,Maybe,Maybe,Yes,Maybe,Yes

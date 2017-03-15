@@ -124,9 +124,9 @@ curelistfxn <- function(moldtype, all, only, wlup, autoclave){
 # Intermediate Tech dependent on molding type ----
 intlistfxn <- function(moldtype) {
   if (moldtype == "Wet (Hand) Lay up") {
-    c("Prepregs, Hand (TS)", "Prepregs, Hand (TP)", "Dry Weave", "Dry Braid", "Dry Knit", "Not Used")
+    c("Prepregs, Manual, Fabric (TS)", "Prepregs, Manual, Fabric (TP)", "Dry Weave", "Dry Braid", "Dry Knit", "Not Used")
   } else if (moldtype == "Vacuum Bag (Autoclave)"){
-      c("Prepregs, Hand (TS)", "Prepregs, Hand (TP)")
+      c("Prepregs, Manual, Fabric (TS)", "Prepregs, Manual, Fabric (TP)")
   }else if (moldtype == "Automatic Fiber Placement"){
       c("Prepregs, Auto, Fiber (TS)", "Prepregs, Auto, Fiber (TP)")
   } else if (moldtype == "Automatic Tape Placement"){
@@ -142,7 +142,7 @@ intlistfxn <- function(moldtype) {
   }else if (moldtype == "Structural Reaction Injection Molding"){
       c("Chopped", "Dry Weave", "Dry Knit", "Powdered P4")
   }  else {
-      c("Prepregs, Hand (TS)", "Prepregs, Auto, Tape (TS)", "Prepregs, Auto, Fiber (TS)", "Prepregs, Hand (TP)", "Prepregs, Auto, Tape (TP)", "Prepregs, Auto, Fiber (TP)", "Powdered P4", "Dry Weave", "Dry Braid", "Dry Knit", "Not Used")
+      c("Prepregs, Manual, Fabric (TS)", "Prepregs, Auto, Tape (TS)", "Prepregs, Auto, Fiber (TS)", "Prepregs, Manual, Fabric (TP)", "Prepregs, Auto, Tape (TP)", "Prepregs, Auto, Fiber (TP)", "Powdered P4", "Dry Weave", "Dry Braid", "Dry Knit", "Not Used")
           }}
 
 # FUNCTIONS USED FOR FINAL CALCULATIONS ----

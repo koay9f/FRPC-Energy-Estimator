@@ -511,14 +511,14 @@ moldshortfetch2 <- eventReactive(input$moldingInput2, {
       need(intnamefetch1(), "Choose Intermediate Technology"),
       need(input$intscrapUSERNum1 >=0, "Scrap cannot be negative"),
       need(input$intscrapUSERNum1 <100, "Scrap cannot be greater than 100%")      ) 
-    ({paste(fiberenergyfetch1(), "MJ/kg")}                   )})
+    ({paste(intenergyfetch1(), "MJ/kg")}                   )})
   
   output$intEnergyNum2 <- renderText({
     validate(
       need(intnamefetch2(), "Choose Intermediate Technology"),
       need(input$intscrapUSERNum2 >=0, "Scrap cannot be negative"),
       need(input$intscrapUSERNum2 <100, "Scrap cannot be greater than 100%")      ) 
-    ({paste(fiberenergyfetch1(), "MJ/kg")}                   )})
+    ({paste(intenergyfetch2(), "MJ/kg")}                   )})
   
   #Citations
   intcitefetch1 <- eventReactive(input$intInput1,{
@@ -1707,8 +1707,8 @@ Data_Primatrix_new  <- reactiveValues()
      
    Resultsdf <- reactive({
      validate(
-       need(f.raw.sum1() == 1, "")
-       , need(m.inserts1() < finalweight1(), "")
+         need(sum(input$moldfracUSERNum2, input$primatrixfrac2, input$othermatrixAfrac2, input$othermatrixBfrac2, input$othermatrixCfrac2) == 100,      "")       
+         , need(m.inserts1() < finalweight1(), "")
        , need(raw.f.f1() >= 0, "")
        , need(raw.f.pm1() >= 0, "")
        , need(raw.f.ma1() >= 0, "")
@@ -1719,7 +1719,7 @@ Data_Primatrix_new  <- reactiveValues()
        , need(E.int1(), '')    
        , need(E.mold1(), "") 
        , need(E.cure1(), '')
-       , need(f.raw.sum2() == 1, "")
+       , need(sum(input$moldfracUSERNum2, input$primatrixfrac2, input$othermatrixAfrac2, input$othermatrixBfrac2, input$othermatrixCfrac2) == 100,      "")       
        , need(m.inserts2() < finalweight2(), "")
        , need(raw.f.f2() >= 0, "")
        , need(raw.f.pm2() >= 0, "")
