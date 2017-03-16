@@ -1450,10 +1450,10 @@ Data_Primatrix_new  <- reactiveValues()
     )) 
     
     #code to test that calculations are preformed correctly
-     output$table1a <- renderTable(yield_data1.df())
-     output$table1b <- renderTable(energy_data1.df())
-     output$table2a <- renderTable(yield_data2.df())
-     output$table2b <- renderTable(energy_data2.df())
+     # output$table1a <- renderTable(yield_data1.df())
+     # output$table1b <- renderTable(energy_data1.df())
+     # output$table2a <- renderTable(yield_data2.df())
+     # output$table2b <- renderTable(energy_data2.df())
 
     
   # Final Display ----
@@ -1756,10 +1756,11 @@ Data_Primatrix_new  <- reactiveValues()
                n.int1(), n.mold1(), n.cure1(), n.fin1(), " "),
     "Frac/Yield" = c(f.f1(), f.pm1(), f.ma1(), f.mb1() , f.mc1(), f.ia1(), f.ib1() , sum(f.f1()  , f.pm1() , f.ma1() , f.mb1() , f.mc1() , f.ia1() , f.ib1() ),
                    layup.yield1(), mold.yield1(), " -- " , finish.yield1(), (layup.yield1()* mold.yield1()* finish.yield1())),
-    "Evaluated Mass (kg)"= c(m.f.fib1(), m.f.pm1(), m.f.ma1(), m.f.mb1(), m.f.mc1(), m.f.ia1(), m.f.ib1(), "----", m.f.int1(), m.f.mold1(), m.f.cure1(), m.f.fin1(), "----"),
+    "Evaluated Mass (kg)"= round(c(m.f.fib1(), m.f.pm1(), m.f.ma1(), m.f.mb1(), m.f.mc1(), m.f.ia1(), m.f.ib1(), sum(m.f.fib1(), m.f.pm1(), m.f.ma1(), m.f.mb1(), m.f.mc1(), m.f.ia1(), m.f.ib1()),
+                             m.f.int1(), m.f.mold1(), m.f.cure1(), m.f.fin1(), finalweight1()),2),
     "Specific Energy (MJ/kg)" = c(E.fib1(),  E.pm1(), E.ma1(), E.mb1(), E.mc1(),E.ia1(), E.ib1(), "----" , E.int1(), E.mold1(), E.cure1(), E.fin1(), "----"), 
-    "Embodied Energy (MJ/part)" = c(E.f.fib1(), E.f.pm1(), E.f.ma1(), E.f.mb1(), E.f.mc1(), E.f.ia1(), E.f.ib1(), sum(E.f.fib1(), E.f.pm1(), E.f.ma1(), E.f.mb1(), E.f.mc1(), E.f.ia1(), E.f.ib1()),
-                                    E.f.int1(), E.f.mold1(), E.f.cure1(), E.f.fin1(), sum(E.f.int1(), E.f.mold1(), E.f.cure1(), E.f.fin1()))
+    "Embodied Energy (MJ/part)" = round(c(E.f.fib1(), E.f.pm1(), E.f.ma1(), E.f.mb1(), E.f.mc1(), E.f.ia1(), E.f.ib1(), sum(E.f.fib1(), E.f.pm1(), E.f.ma1(), E.f.mb1(), E.f.mc1(), E.f.ia1(), E.f.ib1()),
+                                    E.f.int1(), E.f.mold1(), E.f.cure1(), E.f.fin1(), sum(E.f.int1(), E.f.mold1(), E.f.cure1(), E.f.fin1())), 2)
   ))
   
    
@@ -1773,16 +1774,16 @@ Data_Primatrix_new  <- reactiveValues()
                n.int2(), n.mold2(), n.cure2(), n.fin2(), " "),
     "Frac/Yield" = c(f.f2(), f.pm2(), f.ma2(), f.mb2() , f.mc2(), f.ia2(), f.ib2() , sum(f.f2()  , f.pm2() , f.ma2() , f.mb2() , f.mc2() , f.ia2() , f.ib2() ),
                    layup.yield2(), mold.yield2(), " -- " , finish.yield2(), (layup.yield2()* mold.yield2()* finish.yield2())),
-    "Evaluated Mass (kg)" = c(m.f.fib2(), m.f.pm2(), m.f.ma2(), m.f.mb2(), m.f.mc2(), m.f.ia2(), m.f.ib2(), sum(m.f.fib2(), m.f.pm2(), m.f.ma2(), m.f.mb2(), m.f.mc2(), m.f.ia2(), m.f.ib2()),
-                                    m.f.int2(), m.f.mold2(), m.f.cure2(), m.f.fin2(), sum(m.f.int2(), m.f.mold2(), m.f.cure2(), m.f.fin2())),
+    "Evaluated Mass (kg)" = round(c(m.f.fib2(), m.f.pm2(), m.f.ma2(), m.f.mb2(), m.f.mc2(), m.f.ia2(), m.f.ib2(), sum(m.f.fib2(), m.f.pm2(), m.f.ma2(), m.f.mb2(), m.f.mc2(), m.f.ia2(), m.f.ib2()),
+                                    m.f.int2(), m.f.mold2(), m.f.cure2(), m.f.fin2(), finalweight2()),2),
     "Specific Energy (MJ/kg)" = c(E.fib2(),  E.pm2(), E.ma2(), E.mb2(), E.mc2(),E.ia2(), E.ib2(), "----" , E.int2(), E.mold2(), E.cure2(), E.fin2(), "----"),
-    "Embodied Energy (MJ/part)" = c(E.f.fib2(), E.f.pm2(), E.f.ma2(), E.f.mb2(), E.f.mc2(), E.f.ia2(), E.f.ib2(), sum(E.f.fib2(), E.f.pm2(), E.f.ma2(), E.f.mb2(), E.f.mc2(), E.f.ia2(), E.f.ib2()),
-                                    E.f.int2(), E.f.mold2(), E.f.cure2(), E.f.fin2(), sum(E.f.int2(), E.f.mold2(), E.f.cure2(), E.f.fin2()))
+    "Embodied Energy (MJ/part)" = round(c(E.f.fib2(), E.f.pm2(), E.f.ma2(), E.f.mb2(), E.f.mc2(), E.f.ia2(), E.f.ib2(), sum(E.f.fib2(), E.f.pm2(), E.f.ma2(), E.f.mb2(), E.f.mc2(), E.f.ia2(), E.f.ib2()),
+                                    E.f.int2(), E.f.mold2(), E.f.cure2(), E.f.fin2(), sum(E.f.int2(), E.f.mold2(), E.f.cure2(), E.f.fin2())),2)
       ))
   
-   # output$table1a <- renderTable(RESULTSTABLE1())
-   # output$table1b <- renderTable(RESULTSTABLE2())
-  
+   output$table1a <- renderTable(RESULTSTABLE1())
+   output$table1b <- renderTable(RESULTSTABLE2())
+
   
   
   # Attach tables to download buttons

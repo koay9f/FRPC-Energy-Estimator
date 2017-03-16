@@ -322,8 +322,8 @@ BIGFUNCTION2 <- function(Data_yield, partname,
   fib.mass.i <- int.fib.mass.i <- mass_fxn("fiber", "layup")
   matrix.mass.i <- c(f_pm, f_ma, f_mb, f_mc) * mass_fxn("matrix", "layup")/massfrac_fxn("matrix", "layup")
   insert.mass.i <- c(f_ia, f_ib)* mass_fxn("insert", "layup")/massfrac_fxn("insert", "layup")
-  mold.mass <- sum(mass_fxn("fiber", "mold"), mass_fxn("matrix", "mold"), mass_fxn("insert", "mold"))
-  finish.mass <- cure.mass <- sum(mass_fxn("fiber", "finish"), mass_fxn("matrix", "finish"), mass_fxn("insert", "finish"))
+  mold.mass <- cure.mass <- sum(mass_fxn("fiber", "mold"), mass_fxn("matrix", "mold"), mass_fxn("insert", "mold"))
+  finish.mass <- sum(mass_fxn("fiber", "finish"), mass_fxn("matrix", "finish"), mass_fxn("insert", "finish"))
   
   # Build Data Frame
   Data_energy <- data_frame(

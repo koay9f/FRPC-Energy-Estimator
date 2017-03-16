@@ -18,10 +18,7 @@ shinyUI(fluidPage(title = "CFRP Tool",
                         tags$style(HTML(" .shiny-output-error-validation {color: red; }"))
                     ,   tags$style(HTML(" .shiny-notification-message {color: #007833;background-color: #e7f1d8; border-color: #007833;}"))
                     ,   tags$style(HTML(" table tbody tr:last-child {font-weight:bold;}")) 
-                    #,   tags$style(HTML(id = "Table.pro.1", "table tbody tr:last-child {font-weight:bold;}"))
-                    #,   tags$style(HTML(id = "Table.mat.2", "table tbody tr:last-child {font-weight:bold;}"))
-                    #,   tags$style(HTML(id = "Table.pro.2", "table tbody tr:last-child {font-weight:bold;}"))
-                    #,   tags$style(HTML(id = "diagram", "table tbody tr:last-child {font-weight:bold;}"))
+                    ,   tags$style(HTML(id = "diagram", "table tbody tr:last-child {font-weight:bold;}"))
                   ), 
   useShinyjs(),
                   titlePanel(h1("CFRP Energy Use Estimation Tool", style = "color:#007833")),
@@ -41,7 +38,9 @@ shinyUI(fluidPage(title = "CFRP Tool",
                      , p(icon("envelope-o"), '   If you wish to permanently add a material or process to our database or otherwise wish to comment on this tool, please contact 
                          the developers by', span(strong(" email:")), 'Kristina Armstrong (', span('armstrongko@ornl.gov', style = "text-decoration: underline"),  ') or Sujit Das (', span('dass@ornl.gov', style = "text-decoration: underline"),').')
                      , helpText(a("Or connect with us on GitHub", href = "https://github.com/koay9f/CFRP-Energy-Estimator", target= "_blank"))
-                   , hr()
+                     , p(icon("save"), span("At this time, when you exit the application, all data is lost and there is no way to save data for 
+                                               reuse at a later time. We will be working on a way to save and reuse data.", style = "color: red"))
+                     , hr()
                      , p(icon("file-zip-o"),'   For more help or information,', span(strong( "download" )), 'the Tool Documentation. This includes includes energy data,
                          molding process properties, references and details of tool computations' ) 
                      , downloadButton('info', "Download Tool Documentation Zip File")
@@ -764,14 +763,14 @@ shinyUI(fluidPage(title = "CFRP Tool",
            
             
             #TEST TAB ----
-           # Tab to display test tables or other tests
-        #  , tabPanel("TEST", h1("TEST")
-        # #To use, remove "#' (do not remove from this line) # Currently testing yield & energy calculation data
-        #   , tableOutput("table1a")
-        #   , tableOutput("table2a")
-        #   , tableOutput("table1b")
-        #   , tableOutput("table2b")
-        # )
+       # # Tab to display test tables or other tests
+       #   , tabPanel("TEST", h1("TEST")
+       #  #To use, remove "#' (do not remove from this line) # Currently testing yield & energy calculation data
+       #    , tableOutput("table1a")
+       #    , tableOutput("table2a")
+       #    , tableOutput("table1b")
+       #    , tableOutput("table2b")
+       #  )
                  
             # End ----
             , widths = c(2,10))))
