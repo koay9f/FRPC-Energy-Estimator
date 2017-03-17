@@ -101,7 +101,8 @@ BuildnewMatrix.df <- function(gom, goa, gof, newmat, oldmat, newadd, oldadd, new
 
   df <- rbind(mat, additive, filler, other)
   df
-  }
+}
+
 
 # Curing Tech dependent on molding type ----
 curelistfxn <- function(moldtype, all, only, wlup, autoclave){

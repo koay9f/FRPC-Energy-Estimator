@@ -644,6 +644,7 @@ shinyUI(fluidPage(title = "CFRP Tool",
             tabPanel("Summary", h1("Summary")
                     #, p("Summary of User Choices and Embodied Energy")
                      #Display Part Name & Weight & Molding Process & Fiber Fraction
+                    #, fluidRow(actionButton("calculate", strong("Run Model")))
                      , fluidRow(
                        #TechSet1
                        column(6,
@@ -763,14 +764,15 @@ shinyUI(fluidPage(title = "CFRP Tool",
            
             
             #TEST TAB ----
-       # # Tab to display test tables or other tests
-       #   , tabPanel("TEST", h1("TEST")
-       #  #To use, remove "#' (do not remove from this line) # Currently testing yield & energy calculation data
-       #    , tableOutput("table1a")
-       #    , tableOutput("table2a")
-       #    , tableOutput("table1b")
-       #    , tableOutput("table2b")
-       #  )
+       # Tab to display test tables or other tests
+        #  , tabPanel("TEST", h1("TEST")
+        # #To use, remove "#' (do not remove from this line) # Currently testing yield & energy calculation data
+        #   # , tableOutput("table1a")
+        #   # , tableOutput("table2a")
+        #   # , tableOutput("table1b")
+        #   # , tableOutput("table2b")
+        # , tableOutput("table1x")
+        # )
                  
             # End ----
             , widths = c(2,10))))

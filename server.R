@@ -121,25 +121,24 @@ names(Props.df)<- new_col
   
   # Molding ----
   # Make List for Select Box
-  updateSelectizeInput(session, 'moldingInput1',
-                    choices = moldnames,
-                    selected = "",
-                    server = TRUE)
-  updateSelectizeInput(session, 'moldingInput2',
-                       choices = moldnames,
-                       selected = "",
-                       server = TRUE)
+  # updateSelectizeInput(session, 'moldingInput1',
+  #                      choices = moldnames,
+  #                      selected = "",
+  #                      server = TRUE)
+  # updateSelectizeInput(session, 'moldingInput2',
+  #                      choices = moldnames,
+  #                      selected = "",
+  #                      server = TRUE)
   
   # Build new dataframe if add new molding process
-  Data_Mold_new  <- reactiveValues()
-  
-  Data_Mold_new  <- eventReactive(input$gomold, {
+  Data_Mold_temp  <- reactiveValues()
+  Data_Mold_temp <- eventReactive(input$gomold, {
     mold.name <- as.character(input$mold_add)
     mold.E.calc <- calcenergy(input$mold_add_E_m, input$mold_add_E_P_M, input$mold_add_E_per_M, input$mold_add_E_t_M, input$mold_add_E_P_p, input$mold_add_E_per_p, input$mold_add_E_t_p,
                               input$mold_add_E_P_c, input$mold_add_E_per_c, input$mold_add_E_t_c,input$mold_add_E_P_h, input$mold_add_E_per_h, input$mold_add_E_t_h,
                               input$mold_add_E_P_o, input$mold_add_E_per_o, input$mold_add_E_t_o)
     mold.Ener <- whichenergy(input$mold_add_EYN, mold.E.calc, input$mold_add_E_Y)
-  
+    
     df <- isolate(Data_Mold) %>%
       add_row(Name_Mold = mold.name,
               ShortName_Mold = mold.name,
@@ -147,14 +146,18 @@ names(Props.df)<- new_col
               Frac_Fiber = 0.5,
               Yield_Mold = 1)
   })
-    
+  
   calcmoldE <- reactive(calcenergy(input$mold_add_E_m, input$mold_add_E_P_M, input$mold_add_E_per_M, input$mold_add_E_t_M, input$mold_add_E_P_p, input$mold_add_E_per_p, input$mold_add_E_t_p,
                                    input$mold_add_E_P_c, input$mold_add_E_per_c, input$mold_add_E_t_c,input$mold_add_E_P_h, input$mold_add_E_per_h, input$mold_add_E_t_h,
                                    input$mold_add_E_P_o, input$mold_add_E_per_o, input$mold_add_E_t_o))
   output$calcedmoldE <- renderText({paste(signif(calcmoldE(), digits = 3), "MJ/kg")})
-
-  # Change Select box if add new molding process
-  observeEvent(input$gomold, { 
+  
+  
+  Data_Mold_new  <- reactiveValues()
+  Data_Mold_new  <- reactive(whichone(input$gomold, Data_Mold_temp(), Data_Mold))
+  
+   # Change Select box if add new molding process
+  observe( { 
     updateSelectizeInput(session, 'moldingInput1',
                          choices = Data_Mold_new()$Name_Mold,
                          selected = "",
@@ -164,61 +167,43 @@ names(Props.df)<- new_col
                          selected = "",
                          server = TRUE)
   })
-
+  
   #Match Names to Table
   moldnamefetch1 <- eventReactive(input$moldingInput1,{
-    mold_name <- whichone(input$gomold, Data_Mold_new()$Name_Mold, Data_Mold$Name_Mold)
-    mold_name[mold_name %in% input$moldingInput1]  })
-
+    Data_Mold_new()$Name_Mold[Data_Mold_new()$Name_Mold %in% input$moldingInput1]  })
+  
   moldnamefetch2 <- eventReactive(input$moldingInput2,{
-    mold_name <- whichone(input$gomold, Data_Mold_new()$Name_Mold, Data_Mold$Name_Mold)
-    mold_name[mold_name %in% input$moldingInput2]  })
-
+    Data_Mold_new()$Name_Mold[Data_Mold_new()$Name_Mold %in% input$moldingInput2]  })
+  
   #Match Energy to Name
   moldenergyfetch1 <- eventReactive(input$moldingInput1,{
-    mold_name <- whichone(input$gomold, Data_Mold_new()$Name_Mold, Data_Mold$Name_Mold)
-    mold_energy <- whichone(input$gomold, Data_Mold_new()$Energy_Mold, Data_Mold$Energy_Mold)
-    mold_energy[mold_name %in% input$moldingInput1]  })
-
+    Data_Mold_new()$Energy_Mold[Data_Mold_new()$Name_Mold %in% input$moldingInput1]  })
+  
   moldenergyfetch2 <- eventReactive(input$moldingInput2,{
-    mold_name <- whichone(input$gomold, Data_Mold_new()$Name_Mold, Data_Mold$Name_Mold)
-    mold_energy <- whichone(input$gomold, Data_Mold_new()$Energy_Mold, Data_Mold$Energy_Mold)
-    mold_energy[mold_name %in% input$moldingInput2]  })
-
- #Match ShortName to Name
-
-moldshortfetch1 <-  eventReactive(input$moldingInput1,{
-  mold_name <- whichone(input$gomold, Data_Mold_new()$Name_Mold, Data_Mold$Name_Mold)
-  mold_short <- whichone(input$gomold, Data_Mold_new()$ShortName_Mold, Data_Mold$ShortName_Mold)
-  mold_short[mold_name  %in% input$moldingInput1]  })
-
-moldshortfetch2 <- eventReactive(input$moldingInput2, {
-  mold_name <- whichone(input$gomold, Data_Mold_new()$Name_Mold, Data_Mold$Name_Mold)
-  mold_short <- whichone(input$gomold, Data_Mold_new()$ShortName_Mold, Data_Mold$ShortName_Mold)
-  mold_short[mold_name %in% input$moldingInput2]})
-   
- # Match Fraction to Name
+    Data_Mold_new()$Energy_Mold[Data_Mold_new()$Name_Mold %in% input$moldingInput2]  })
+  
+  #Match ShortName to Name
+  
+  moldshortfetch1 <-  eventReactive(input$moldingInput1,{
+    Data_Mold_new()$ShortName_Mold[Data_Mold_new()$Name_Mold  %in% input$moldingInput1]  })
+  
+  moldshortfetch2 <- eventReactive(input$moldingInput2, {
+   Data_Mold_new()$ShortName_Mold[Data_Mold_new()$Name_Mold %in% input$moldingInput2]})
+  
+  # Match Fraction to Name
   moldfracfetch1 <- eventReactive(input$moldingInput1,{
-    mold_name <- whichone(input$gomold, Data_Mold_new()$Name_Mold, Data_Mold$Name_Mold)
-    mold_frac <- whichone(input$gomold, Data_Mold_new()$Frac_Fiber, Data_Mold$Frac_Fiber)
-    mold_frac[mold_name %in% input$moldingInput1]  })
+    Data_Mold_new()$Frac_Fiber[Data_Mold_new()$Name_Mold %in% input$moldingInput1]  })
   
   moldfracfetch2 <- eventReactive(input$moldingInput2,{ 
-    mold_name <- whichone(input$gomold, Data_Mold_new()$Name_Mold, Data_Mold$Name_Mold)
-  mold_frac <- whichone(input$gomold, Data_Mold_new()$Frac_Fiber, Data_Mold$Frac_Fiber)
-  mold_frac[mold_name %in% input$moldingInput2]  })
-
+    Data_Mold_new()$Frac_Fiber[Data_Mold_new()$Name_Mold %in% input$moldingInput2]  })
+  
   # Match Yield to Name
   moldyieldfetch1 <- eventReactive(input$moldingInput1,{ 
-  mold_name <- whichone(input$gomold, Data_Mold_new()$Name_Mold, Data_Mold$Name_Mold)
-  mold_yield <- whichone(input$gomold, Data_Mold_new()$Yield_Mold, Data_Mold$Yield_Mold)
-  mold_yield[mold_name %in% input$moldingInput1]  })
+   Data_Mold_new()$Yield_Mold[Data_Mold_new()$Name_Mold %in% input$moldingInput1]  })
   
-
+  
   moldyieldfetch2 <- eventReactive(input$moldingInput2,{
-    mold_name <- whichone(input$gomold, Data_Mold_new()$Name_Mold, Data_Mold$Name_Mold)
-    mold_yield <- whichone(input$gomold, Data_Mold_new()$Yield_Mold, Data_Mold$Yield_Mold)
-    mold_yield[mold_name %in% input$moldingInput2]  })
+    Data_Mold_new()$Yield_Mold[Data_Mold_new()$Name_Mold %in% input$moldingInput2]  })
   
   moldcitefetch1 <- eventReactive(input$moldingInput1,{
     cite_source[cite_name %in% input$moldingInput1]  })
@@ -235,9 +220,9 @@ moldshortfetch2 <- eventReactive(input$moldingInput2, {
   output$moldshort2d <- output$moldshort2c <- output$moldshort2b <- output$moldshort2a <- output$moldshort2 <- renderText(moldshortfetch2())
   output$moldfracNum2 <- renderText({paste(moldfracfetch2() *100, "%" )})
   output$moldyieldNum2 <- renderText({paste(moldyieldfetch2() *100, "%" )})
- 
   
-   #Display error message instead of blank energy number
+  
+  #Display error message instead of blank energy number
   output$EnergyNum1 <-  renderText({
     validate(
       need(moldnamefetch1(), "Choose Molding Technology"),   
@@ -248,12 +233,12 @@ moldshortfetch2 <- eventReactive(input$moldingInput2, {
     validate(
       need(moldnamefetch2(), "Choose Molding Technology"),   
       need(input$finalweight2 > 0, "Part Weight cannot be negative")       ) 
-      ({paste(moldenergyfetch2(), "MJ/kg")}                   )})
-
+    ({paste(moldenergyfetch2(), "MJ/kg")}                   )})
+  
   #build citations
   moldcite1 <- renderText(as.character(moldcitefetch1()))
   observeEvent(input$moldingInput1, {
-   validate(need(moldname1(), "")) 
+    validate(need(moldname1(), "")) 
     showNotification(paste("Citation for ", moldname1(), ": ",moldcite1()), duration = 5, closeButton = TRUE, type = "message")})
   
   moldcite2 <- renderText(as.character(moldcitefetch2()))
@@ -284,21 +269,11 @@ moldshortfetch2 <- eventReactive(input$moldingInput2, {
     updateCheckboxInput(session, "cureYN1", value = 1)
     updateCheckboxInput(session, "cureYN2", value = 1)
   })
-
   # Fiber ----
     # Make List for Box if no custom data
-  updateSelectizeInput(session, 'fiberInput1',
-                       choices = fibernames,
-                       selected = "",
-                       server = TRUE)
-  updateSelectizeInput(session, 'fiberInput2',
-                       choices = fibernames,
-                       selected = "",
-                       server = TRUE)
-  
   # Make dataframe for Box if  custom data
-  Data_Fiber_new  <- reactiveValues()
-  Data_Fiber_new  <- eventReactive(input$gofiber, {
+  Data_Fiber_temp  <- reactiveValues()
+  Data_Fiber_temp <- eventReactive(input$gofiber, {
     fiber.name <- input$fiber_add
     fiber.Ener <- as.double(input$fiber_add_E)
     
@@ -307,8 +282,12 @@ moldshortfetch2 <- eventReactive(input$moldingInput2, {
               Energy_Fiber = fiber.Ener)
   })
   
+  Data_Fiber_new  <- reactiveValues()
+  Data_Fiber_new  <- reactive(whichone(input$gofiber, Data_Fiber_temp(), Data_Fiber))
+  
+  
   # Make List for Box if  custom data
-  observeEvent(input$gofiber, { 
+  observe({ 
     updateSelectizeInput(session, 'fiberInput1',
                          choices = Data_Fiber_new()$Name_Fiber,
                          selected = "",
@@ -321,23 +300,19 @@ moldshortfetch2 <- eventReactive(input$moldingInput2, {
   
   #Match Names to Table
   fibernamefetch1 <- eventReactive(input$fiberInput1,{
-    f_name <- whichone(input$gofiber, Data_Fiber_new()$Name_Fiber, Data_Fiber$Name_Fiber)
-    f_name[f_name %in% input$fiberInput1]  })
+    Data_Fiber_new()$Name_Fiber[Data_Fiber_new()$Name_Fiber %in% input$fiberInput1]  })
   
   fibernamefetch2 <- eventReactive(input$fiberInput2,{
-    f_name <- whichone(input$gofiber, Data_Fiber_new()$Name_Fiber, Data_Fiber$Name_Fiber)
-    f_name[f_name %in% input$fiberInput2]  })
+    Data_Fiber_new()$Name_Fiber[Data_Fiber_new()$Name_Fiber %in% input$fiberInput2]  })
   
   #Match Energy to Name
   fiberenergyfetch1 <- eventReactive(input$fiberInput1,{
     f_name <- whichone(input$gofiber, Data_Fiber_new()$Name_Fiber, Data_Fiber$Name_Fiber)
-    f_energy <- whichone(input$gofiber, Data_Fiber_new()$Energy_Fiber, Data_Fiber$Energy_Fiber)
-    f_energy[f_name %in% input$fiberInput1]  })
+    Data_Fiber_new()$Energy_Fiber[Data_Fiber_new()$Name_Fiber %in% input$fiberInput1]  })
   
   fiberenergyfetch2 <- eventReactive(input$fiberInput2,{
     f_name <- whichone(input$gofiber, Data_Fiber_new()$Name_Fiber, Data_Fiber$Name_Fiber)
-    f_energy <- whichone(input$gofiber, Data_Fiber_new()$Energy_Fiber, Data_Fiber$Energy_Fiber)
-    f_energy[f_name %in% input$fiberInput2]  })
+    Data_Fiber_new()$Energy_Fiber[Data_Fiber_new()$Name_Fiber %in% input$fiberInput2]  })
   
  # Generate Outputs
   fibername1 <- output$fibername1d  <-  output$fibername1c <- output$fibername1b <- output$fibername1a <- output$fibername1 <- renderText(as.character(fibernamefetch1()))
@@ -381,14 +356,34 @@ moldshortfetch2 <- eventReactive(input$moldingInput2, {
     showNotification(paste("Citation for ", fibername2(), ": ",fibercite2()), duration = 5, closeButton = TRUE, type = "message")})
   
   # Intermediate ----
-    #Make List for select box based on molding choice
-    observeEvent({
+  # Make dataframe Box if  custom data
+  Data_Int_temp  <- reactiveValues()
+  Data_Int_temp  <- eventReactive(input$goint, {
+    int.name <- input$int_add
+    int.Ener <- as.double(input$int_add_E)
+    int.Scrap <- 0
+    int.PP <- input$int_add_PP
+    
+    df <- isolate(Data_Int) %>%
+      add_row(Name_Int = int.name,
+              Energy_Int = int.Ener,
+              Scrap_Int = int.Scrap,
+              Prepreg_Int = int.PP
+              )
+  })
+  
+  # dataframe for if custom data or not
+  Data_Int_new <- reactiveValues()
+  Data_Int_new <- reactive(whichone(input$goint, Data_Int_temp(), Data_Int))
+  
+  # Make list Box : choose if check box is selected
+ observeEvent({
     input$intYN1
     input$moldingInput1} ,{
       intlist1 <- intlistfxn(input$moldingInput1)
       if (input$intYN1 == TRUE) {
         updateSelectizeInput(session, 'intInput1',
-                             choices = intnames,
+                             choices = Data_Int_new()$Name_Int,
                              selected = "",
                              server = TRUE)
       }
@@ -405,7 +400,7 @@ moldshortfetch2 <- eventReactive(input$moldingInput2, {
       intlist2 <- intlistfxn(input$moldingInput2)
       if (input$intYN2 == TRUE) {
         updateSelectizeInput(session, 'intInput2',
-                             choices = intnames,
+                             choices = Data_Int_new()$Name_Int,
                              selected = "",
                              server = TRUE)
       }
@@ -416,74 +411,46 @@ moldshortfetch2 <- eventReactive(input$moldingInput2, {
                              server = TRUE)
     })
   
-  # Make dataframe Box if  custom data
-  Data_Int_new  <- reactiveValues()
-  Data_Int_new  <- eventReactive(input$goint, {
-    int.name <- input$int_add
-    int.Ener <- as.double(input$int_add_E)
-    int.Scrap <- 0
-    int.PP <- input$int_add_PP
-    
-    df <- isolate(Data_Int) %>%
-      add_row(Name_Int = int.name,
-              Energy_Int = int.Ener,
-              Scrap_Int = int.Scrap,
-              Prepreg_Int = int.PP
-              )
-  })
-  
-  # Make list Box if  custom data
-  observeEvent(input$goint, { 
-    updateSelectizeInput(session, 'intInput1',
-                         choices = Data_Int_new()$Name_Int,
-                         selected = "",
-                         server = TRUE)
-    updateSelectizeInput(session, 'intInput2',
-                         choices = Data_Int_new()$Name_Int,
-                         selected = "",
-                         server = TRUE)
-  })
-  
   #Match Names to Table
   intnamefetch1 <- eventReactive(input$intInput1,{
-    int_name <- whichone(input$goint, Data_Int_new()$Name_Int, Data_Int$Name_Int)
+    int_name <- Data_Int_new()$Name_Int
     int_name[int_name %in% input$intInput1]  })
   
   intnamefetch2 <- eventReactive(input$intInput2,{
-    int_name <- whichone(input$goint, Data_Int_new()$Name_Int, Data_Int$Name_Int)
+    int_name <- Data_Int_new()$Name_Int
     int_name[int_name %in% input$intInput2]  })
   
   #Match Energy to Name
   intenergyfetch1 <- eventReactive(input$intInput1,{
-    int_name <- whichone(input$goint, Data_Int_new()$Name_Int, Data_Int$Name_Int)
-    int_energy <- whichone(input$goint, Data_Int_new()$Energy_Int, Data_Int$Energy_Int)
+    int_name <- Data_Int_new()$Name_Int
+    int_energy <- Data_Int_new()$Energy_Int
     int_energy[int_name %in% input$intInput1]  })
   
   intenergyfetch2 <- eventReactive(input$intInput2,{
-    int_name <- whichone(input$goint, Data_Int_new()$Name_Int, Data_Int$Name_Int)
-    int_energy <- whichone(input$goint, Data_Int_new()$Energy_Int, Data_Int$Energy_Int)
+    int_name <- Data_Int_new()$Name_Int
+    int_energy <- Data_Int_new()$Energy_Int
     int_energy[int_name %in% input$intInput2]  })
   
   #Match Scrap to Name
   intscrapfetch1 <- eventReactive(input$intInput1,{
-    int_name <- whichone(input$goint, Data_Int_new()$Name_Int, Data_Int$Name_Int)
-    int_scrap <- whichone(input$goint, Data_Int_new()$Scrap_Int, Data_Int$Scrap_Int)
+    int_name <- Data_Int_new()$Name_Int
+    int_scrap <- Data_Int_new()$Scrap_Int
     int_scrap[int_name %in% input$intInput1]  })
   
   intscrapfetch2 <- eventReactive(input$intInput2,{
-    int_name <- whichone(input$goint, Data_Int_new()$Name_Int, Data_Int$Name_Int)
-    int_scrap <- whichone(input$goint, Data_Int_new()$Scrap_Int, Data_Int$Scrap_Int)
+    int_name <- Data_Int_new()$Name_Int
+    int_scrap <- Data_Int_new()$Scrap_Int
     int_scrap[int_name %in% input$intInput2]  })
   
   #Match PrepregYN to Name (for determining if matrix material needs to be included in intermediate scrap)
   intprepregfetch1 <- eventReactive(input$intInput1,{
-    int_name <- whichone(input$goint, Data_Int_new()$Name_Int, Data_Int$Name_Int)
-    int_preg <- whichone(input$goint, Data_Int_new()$Prepreg_Int, Data_Int$Prepreg_Int)
+    int_name <- Data_Int_new()$Name_Int
+    int_preg <- Data_Int_new()$Prepreg_Int
     int_preg[int_name %in% input$intInput1]  })
   
   intprepregfetch2 <- eventReactive(input$intInput2,{
-    int_name <- whichone(input$goint, Data_Int_new()$Name_Int, Data_Int$Name_Int)
-    int_preg <- whichone(input$goint, Data_Int_new()$Prepreg_Int, Data_Int$Prepreg_Int)
+    int_name <- Data_Int_new()$Name_Int
+    int_preg <- Data_Int_new()$Prepreg_Int
     int_preg[int_name %in% input$intInput2]  })
   
   #Generate Outputs
@@ -537,18 +504,9 @@ moldshortfetch2 <- eventReactive(input$moldingInput2, {
     showNotification(paste("Citation for ", intname2(), ": ",intcite2()), duration = 5, closeButton = TRUE, type = "message")})
   
   # Matrix ----
-  # Make List for Box if no custom data
-  updateSelectizeInput(session, 'PriMatrixInput1',
-                         choices = primatrixnames,
-                         selected = "",
-                         server = TRUE)
-  updateSelectizeInput(session, 'PriMatrixInput2',
-                       choices = primatrixnames,
-                       selected = "",
-                       server = TRUE)
   # Make dataframe for Box if  custom data
-Data_Primatrix_new  <- reactiveValues()
-  Data_Primatrix_new  <- eventReactive(input$gomatrix, {
+  Data_Primatrix_temp  <- reactiveValues()
+  Data_Primatrix_temp  <- eventReactive(input$gomatrix, {
     matrix.name <- input$matrix_add
     matrix.Ener <- as.double(input$matrix_add_E)
     matrix.type <- "Matrix"
@@ -559,8 +517,13 @@ Data_Primatrix_new  <- reactiveValues()
               Type_Matrix = matrix.type)
   })
   
-  # Make List for Box if  custom data
-  observeEvent(input$gomatrix, { 
+  
+  Data_Primatrix_new  <- reactiveValues()
+  Data_Primatrix_new  <- reactive(whichone(input$gomatrix, Data_Primatrix_temp, Data_Primatrix))
+  
+  
+  # Make List for Box 
+  observe({ 
     updateSelectizeInput(session, 'PriMatrixInput1',
                          choices = Data_Primatrix_new()$Name_Matrix,
                          selected = "",
@@ -626,19 +589,7 @@ Data_Primatrix_new  <- reactiveValues()
     showNotification(paste("Citation for ", primatrixname2(), ": ",primatrixcite2()), duration = 5, closeButton = TRUE, type = "message")})
   
   # OtherMat ----
-  # Build temp and new data tables for when adding custom data
-  Data_Primatrix_temp  <- reactiveValues()
-  Data_Primatrix_temp  <- eventReactive(input$gomatrix, {
-    matrix.name <- input$matrix_add
-    matrix.Ener <- as.double(input$matrix_add_E)
-    matrix.type <- "Matrix"
-    
-    df <- isolate(Data_Primatrix) %>%
-      add_row(Name_Matrix = matrix.name,
-              Energy_Matrix = matrix.Ener,
-              Type_Matrix = matrix.type)
-  })
-  
+# Build new df for additive and filler if custom
   Data_Additive_temp  <- reactiveValues()
   Data_Additive_temp  <- eventReactive(input$goadditive, {
     add.name <- input$additive_add
@@ -821,26 +772,9 @@ Data_Primatrix_new  <- reactiveValues()
   
   
   # Inserts ----
-    # Make Insert List if no custom data
-  updateSelectizeInput(session, 'InsertsAInput1',
-                       choices = insertsnames,
-                       selected = "Not Used",
-                       server = TRUE)
-  updateSelectizeInput(session, 'InsertsBInput1',
-                       choices = insertsnames,
-                       selected = "Not Used",
-                       server = TRUE)
-  updateSelectizeInput(session, 'InsertsAInput2',
-                       choices = insertsnames,
-                       selected = "Not Used",
-                       server = TRUE)
-  updateSelectizeInput(session, 'InsertsBInput2',
-                       choices = insertsnames,
-                       selected = "Not Used",
-                       server = TRUE)
-  
   # Make Inserts dataframe if custom data
-  Data_Insert_new  <- eventReactive(input$goinsert, {
+  Data_Insert_temp <- reactiveValues()
+  Data_Insert_temp  <- eventReactive(input$goinsert, {
     insert.name <- input$insert_add
     insert.Ener <- as.double(input$insert_add_E)
     
@@ -849,8 +783,11 @@ Data_Primatrix_new  <- reactiveValues()
               Energy_Inserts = insert.Ener)
   })
   
+  Data_Insert_new <- reactiveValues()
+  Data_Insert_new <- reactive(whichone(input$goinsert, Data_Insert_temp(), Data_Insert))
+  
   # Make Inserts list for box if custom data
-  observeEvent(input$goinsert, {
+  observe({
     updateSelectizeInput(session, 'InsertsAInput1',
                          choices = Data_Insert_new()$Name_Inserts,
                          selected = "Not Used",
@@ -871,42 +808,34 @@ Data_Primatrix_new  <- reactiveValues()
   
   # Associate Names To Table
   insertsAnamefetch1  <- eventReactive(input$InsertsAInput1,{
-    ins_name <- whichone(input$goinsert, Data_Insert_new()$Name_Inserts, Data_Insert$Name_Inserts)
-    ins_name[ins_name %in% input$InsertsAInput1]  })
+    Data_Insert_new()$Name_Inserts[Data_Insert_new()$Name_Inserts %in% input$InsertsAInput1]  })
   
   insertsBnamefetch1  <- eventReactive(input$InsertsBInput1,{
-    ins_name <- whichone(input$goinsert, Data_Insert_new()$Name_Inserts, Data_Insert$Name_Inserts)
-    ins_name[ins_name %in% input$InsertsBInput1]  })
+    Data_Insert_new()$Name_Inserts[Data_Insert_new()$Name_Inserts %in% input$InsertsBInput1]  })
   
   insertsAnamefetch2  <- eventReactive(input$InsertsAInput2,{
-    ins_name <- whichone(input$goinsert, Data_Insert_new()$Name_Inserts, Data_Insert$Name_Inserts)
-    ins_name[ins_name %in% input$InsertsAInput2]  })
+    Data_Insert_new()$Name_Inserts[Data_Insert_new()$Name_Inserts %in% input$InsertsAInput2]  })
   
   insertsBnamefetch2  <- eventReactive(input$InsertsBInput2,{
-    ins_name <- whichone(input$goinsert, Data_Insert_new()$Name_Inserts, Data_Insert$Name_Inserts)
-    ins_name[ins_name %in% input$InsertsBInput2]  })
+    Data_Insert_new()$Name_Inserts[Data_Insert_new()$Name_Inserts %in% input$InsertsBInput2]  })
   
   #Associate Energy to Table
   insertsAenergyfetch1 <- eventReactive(input$InsertsAInput1,{
-    ins_name <- whichone(input$goinsert, Data_Insert_new()$Name_Inserts, Data_Insert$Name_Inserts)
-    ins_energy <- whichone(input$goinsert, Data_Insert_new()$Energy_Inserts, Data_Insert$Energy_Inserts)
-    ins_energy[ins_name %in% input$InsertsAInput1]  })
+    Data_Insert_new()$Energy_Inserts[Data_Insert_new()$Name_Inserts %in% input$InsertsAInput1]  })
   
   insertsBenergyfetch1 <- eventReactive(input$InsertsBInput1,{
-    ins_name <- whichone(input$goinsert, Data_Insert_new()$Name_Inserts, Data_Insert$Name_Inserts)
-    ins_energy <- whichone(input$goinsert, Data_Insert_new()$Energy_Inserts, Data_Insert$Energy_Inserts)
-    ins_energy[ins_name %in% input$InsertsBInput1]  })
+    Data_Insert_new()$Energy_Inserts[Data_Insert_new()$Name_Inserts %in% input$InsertsBInput1]  })
   
   
   insertsAenergyfetch2 <- eventReactive(input$InsertsAInput2,{
     ins_name <- whichone(input$goinsert, Data_Insert_new()$Name_Inserts, Data_Insert$Name_Inserts)
     ins_energy <- whichone(input$goinsert, Data_Insert_new()$Energy_Inserts, Data_Insert$Energy_Inserts)
-    ins_energy[ins_name %in% input$InsertsAInput2]  })
+    Data_Insert_new()$Energy_Inserts[Data_Insert_new()$Name_Inserts %in% input$InsertsAInput2]  })
   
   insertsBenergyfetch2 <- eventReactive(input$InsertsBInput2,{
     ins_name <- whichone(input$goinsert, Data_Insert_new()$Name_Inserts, Data_Insert$Name_Inserts)
     ins_energy <- whichone(input$goinsert, Data_Insert_new()$Energy_Inserts, Data_Insert$Energy_Inserts)
-    ins_energy[ins_name %in% input$InsertsBInput2]  })
+    Data_Insert_new()$Energy_Inserts[Data_Insert_new()$Name_Inserts %in% input$InsertsBInput2]  })
   
   #Generate Outputs
   insertsAname1 <- renderText(as.character(insertsAnamefetch1()))
@@ -969,44 +898,9 @@ Data_Primatrix_new  <- reactiveValues()
   
 
   # Cure ----
-  # Make List for Box dependent on molding process choice
-   observeEvent({
-     input$cureYN1
-     input$moldingInput1} ,{
-     curelist1 <- curelistfxn(input$moldingInput1, allcure, onlymoldcure, wetcure, vbcure)
-     if (input$cureYN1 == TRUE) {
-     updateSelectizeInput(session, 'cureInput1',
-                          choices = allcure,
-                          selected = "",
-                          server = TRUE)
-   }
-   else 
-     updateSelectizeInput(session, 'cureInput1',
-                          choices = curelist1,
-                          selected = "",
-                          server = TRUE)
-  })
-  
-  observeEvent({
-    input$cureYN2
-    input$moldingInput2} ,{
-      curelist2 <- curelistfxn(input$moldingInput2, allcure, onlymoldcure, wetcure, vbcure)
-      if (input$cureYN2 == TRUE) {
-        updateSelectizeInput(session, 'cureInput2',
-                             choices = allcure,
-                             selected = "",
-                             server = TRUE)
-      }
-      else 
-        updateSelectizeInput(session, 'cureInput2',
-                             choices = curelist2,
-                             selected = "",
-                             server = TRUE)
-    })
-  
   # Make dataframe for box if custom values used
-  Data_Cure_new  <- reactiveValues()
-  Data_Cure_new  <- eventReactive(input$gocure, {
+  Data_Cure_temp  <- reactiveValues()
+  Data_Cure_temp  <- eventReactive(input$gocure, {
     cure.name <- as.character(input$cure_add)
     cure.E.calc <- calcenergy(input$cure_add_E_m, input$cure_add_E_P_M, input$cure_add_E_per_M, input$cure_add_E_t_M, input$cure_add_E_P_p, input$cure_add_E_per_p, input$cure_add_E_t_p,
                             input$cure_add_E_P_c, input$cure_add_E_per_c, input$cure_add_E_t_c,input$cure_add_E_P_h, input$cure_add_E_per_h, input$cure_add_E_t_h,
@@ -1022,36 +916,63 @@ Data_Primatrix_new  <- reactiveValues()
                           input$cure_add_E_P_o, input$cure_add_E_per_o, input$cure_add_E_t_o))
   output$calcedcureE <- renderText({paste(signif(calccureE(), digits = 3), "MJ/kg")})
   
+  Data_Cure_new  <- reactiveValues()
+  Data_Cure_new <- reactive(whichone(input$gocure, Data_Cure_temp(), Data_Cure))
+  
   # Make list for box if custom values used
-  observeEvent(input$gocure, { 
-    updateSelectizeInput(session, 'cureInput1',
-                         choices = Data_Cure_new()$Name_Cure,
-                         selected = "",
-                         server = TRUE)
-    updateSelectizeInput(session, 'cureInput2',
-                         choices = Data_Cure_new()$Name_Cure,
-                         selected = "",
-                         server = TRUE)
-  })
+  observeEvent({
+    input$cureYN1
+    input$moldingInput1} ,{
+      curelist1 <- curelistfxn(input$moldingInput1, allcure, onlymoldcure, wetcure, vbcure)
+      if (input$cureYN1 == TRUE) {
+        updateSelectizeInput(session, 'cureInput1',
+                             choices = Data_Cure_new()$Name_Cure,
+                             selected = "",
+                             server = TRUE)
+      }
+      else 
+        updateSelectizeInput(session, 'cureInput1',
+                             choices = curelist1,
+                             selected = "",
+                             server = TRUE)
+    })
+  
+  observeEvent({
+    input$cureYN2
+    input$moldingInput2} ,{
+      curelist2 <- curelistfxn(input$moldingInput2, allcure, onlymoldcure, wetcure, vbcure)
+      if (input$cureYN2 == TRUE) {
+        updateSelectizeInput(session, 'cureInput2',
+                             choices = Data_Cure_new()$Name_Cure,
+                             selected = "",
+                             server = TRUE)
+      }
+      else 
+        updateSelectizeInput(session, 'cureInput2',
+                             choices = curelist2,
+                             selected = "",
+                             server = TRUE)
+    })
+  
   
   #Match Names to Table
   curenamefetch1 <- eventReactive(input$cureInput1,{
-    c_name <- whichone(input$gocure, Data_Cure_new()$Name_Cure, Data_Cure$Name_Cure)
+    c_name <- Data_Cure_new()$Name_Cure
     c_name[c_name %in% input$cureInput1]  })
   
   curenamefetch2 <- eventReactive(input$cureInput2,{
-    c_name <- whichone(input$gocure, Data_Cure_new()$Name_Cure, Data_Cure$Name_Cure)
+    c_name <-Data_Cure_new()$Name_Cure
     c_name[c_name %in% input$cureInput2]  })
   
   #Match Energy to Table
   cureenergyfetch1 <- eventReactive(input$cureInput1,{
-    c_name <- whichone(input$gocure, Data_Cure_new()$Name_Cure, Data_Cure$Name_Cure)
-    c_energy <- whichone(input$gocure, Data_Cure_new()$Energy_Cure, Data_Cure$Energy_Cure)
+    c_name <- Data_Cure_new()$Name_Cure
+    c_energy <- Data_Cure_new()$Energy_Cure
     c_energy[c_name %in% input$cureInput1]  })
   
   cureenergyfetch2 <- eventReactive(input$cureInput2,{
-    c_name <- whichone(input$gocure, Data_Cure_new()$Name_Cure, Data_Cure$Name_Cure)
-    c_energy <- whichone(input$gocure, Data_Cure_new()$Energy_Cure, Data_Cure$Energy_Cure)
+    c_name <- Data_Cure_new()$Name_Cure
+    c_energy <- Data_Cure_new()$Energy_Cure
     c_energy[c_name %in% input$cureInput2]  })
   
  # Generate Outputs
@@ -1091,20 +1012,9 @@ Data_Primatrix_new  <- reactiveValues()
   
   
   # Finish ----
-  # Make List for Box
-  updateSelectizeInput(session, 'finishInput1',
-                       choices = finishnames,
-                       selected = "None",
-                       server = TRUE)
-  
-  updateSelectizeInput(session, 'finishInput2',
-                       choices = finishnames,
-                       selected = "None",
-                       server = TRUE)
-  
   #Make Dataframe for box if custom balues used
-  Data_Finish_new  <- reactiveValues()
-  Data_Finish_new  <- eventReactive(input$gofinish, {
+  Data_Finish_temp  <- reactiveValues()
+  Data_Finish_temp  <- eventReactive(input$gofinish, {
     finish.name <- as.character(input$finish_add)
     finish.Ener <- as.double(input$finish_add_E)
     
@@ -1113,8 +1023,11 @@ Data_Primatrix_new  <- reactiveValues()
               Energy_Finishing = finish.Ener)
   })
   
+  Data_Finish_new  <- reactiveValues()
+  Data_Finish_new <- reactive(whichone(input$gofinish, Data_Finish_temp(), Data_Finish))
+  
   #Make list for box if custom balues used
-  observeEvent(input$gofinish, { 
+  observe( { 
     updateSelectizeInput(session, 'finishInput1',
                          choices = Data_Finish_new()$Name_Finishing,
                          selected = "",
@@ -1127,23 +1040,17 @@ Data_Primatrix_new  <- reactiveValues()
   
   #Match Names to Table
   finishnamefetch1 <- eventReactive(input$finishInput1,{
-    fn_name <- whichone(input$gofinish, Data_Finish_new()$Name_Finishing, Data_Finish$Name_Finishing)
-    fn_name[fn_name %in% input$finishInput1]  })
+    Data_Finish_new()$Name_Finishing[Data_Finish_new()$Name_Finishing %in% input$finishInput1]  })
   
   finishnamefetch2 <- eventReactive(input$finishInput2,{
-    fn_name <- whichone(input$gofinish, Data_Finish_new()$Name_Finishing, Data_Finish$Name_Finishing)
-    fn_name[fn_name %in% input$finishInput2]  })
+    Data_Finish_new()$Name_Finishing[Data_Finish_new()$Name_Finishing %in% input$finishInput2]  })
   
   #Match Energy to Table
   finishenergyfetch1 <- eventReactive(input$finishInput1,{
-    fn_name <- whichone(input$gofinish, Data_Finish_new()$Name_Finishing, Data_Finish$Name_Finishing)
-    fn_energy <- whichone(input$gofinish, Data_Finish_new()$Energy_Finishing, Data_Finish$Energy_Finishing)
-    fn_energy[fn_name %in% input$finishInput1]  })
+    Data_Finish_new()$Energy_Finishing[Data_Finish_new()$Name_Finishing %in% input$finishInput1]  })
   
   finishenergyfetch2 <- eventReactive(input$finishInput2,{
-    fn_name <- whichone(input$gofinish, Data_Finish_new()$Name_Finishing, Data_Finish$Name_Finishing)
-    fn_energy <- whichone(input$gofinish, Data_Finish_new()$Energy_Finishing, Data_Finish$Energy_Finishing)
-    fn_energy[fn_name %in% input$finishInput2]  })
+    Data_Finish_new()$Energy_Finishing[Data_Finish_new()$Name_Finishing %in% input$finishInput2]  })
  
   # Generate Outputs 
   output$finishname1d  <- finishname1 <- renderText(as.character(finishnamefetch1()))
@@ -1389,7 +1296,7 @@ Data_Primatrix_new  <- reactiveValues()
     f.ib2 <- reactive(raw.to.actual.fracs2()$mass.frac[7])
 
     # Build Cumulative Yield dataframe ----  
-    yield_data1.df<- reactiveValues()
+     yield_data1.df<- reactiveValues()
     yield_data2.df<- reactiveValues()
     
     yield_data1.df <- reactive(BIGFUNCTION1(partname1e(),
@@ -1404,7 +1311,6 @@ Data_Primatrix_new  <- reactiveValues()
       int.prepregYN2(), finalweight2()
     ))   
 
-    
     
     # Energy Variables ----
     E.fib1 <- reactive(fiberenergyfetch1())
