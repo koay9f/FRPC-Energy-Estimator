@@ -1,0 +1,37 @@
+Row,Page,Variable_Name,Description,User
+1,Initial,finalweight2,Final Part Weight (kg),1
+2,Initial,name2,Part Name,Part 2
+3,Initial,moldingInput2,Molding Technology Options,
+4,Initial,insertsAUSERYN2,YN - use inserts (A),FALSE
+5,Initial,insertsAfrac2,Insert/Core Mass,0
+6,Initial,insertsBUSERYN2,YN - use inserts (B),FALSE
+7,Initial,insertsBfrac2,Additional Insert/Core Mass,0
+8,Fiber,moldfracUSERNum2,Fiber Mass Fraction,NA
+9,Fiber,fiberInput2,Fiber Type,
+10,Matrix,PriMatrixInput2,Choose Primary Matrix Material,
+11,Matrix,primatrixfrac2,Primary Matrix Mass Fraction,NA
+12,Matrix,othermatrixAUSERYN2,YN - use additional materials (A),FALSE
+13,Matrix,types2a,Choose Type of Additional Matrix Material,Not Used
+14,Matrix,OtherMatrixAInput2,Choose Other Matrix Material,Not Used
+15,Matrix,othermatrixAfrac2,Other Material A Mass Fraction,0
+16,Matrix,othermatrixBUSERYN2,YN - use additional materials (C),FALSE
+17,Matrix,types2b,Choose Type of Additional Matrix Material,Not Used
+18,Matrix,OtherMatrixBInput2,Choose Other Matrix Material,Not Used
+19,Matrix,othermatrixBfrac2,Other Material B Mass Fraction,0
+20,Matrix,othermatrixCUSERYN2,YN - use additional materials (B),FALSE
+21,Matrix,types2c,Choose Type of Additional Matrix Material,Not Used
+22,Matrix,OtherMatrixCInput2,Choose Other Matrix Material,Not Used
+23,Matrix,othermatrixCfrac2,Other Material C Mass Fraction,0
+24,Matrix,InsertsAInput2,Choose Insert Type,Not Used
+25,Matrix,InsertsBInput2,Choose Additional Insert Type,Not Used
+26,Intermediate,intYN2,YN - view all intermediate options,FALSE
+27,Intermediate,intInput2,Choose Fiber Intermediate,
+28,Intermediate,intscrapUSERNum2,Layup Scrap Rate,NA
+29,Intermediate,intscraprecycle2,Layp Recycle Rate (% scrap that is recycled),0
+30,Molding,moldyieldUSERNum2,Molding Yield,NA
+31,Molding,moldyieldrecycle2,Molding Recycle Rate (% scrap that is recycled),0
+32,Molding,cureYN2,YN - view all curing options,FALSE
+33,Molding,cureInput2,Curing Technology Options,
+34,Molding,finishInput2,Finishing Level Options,None
+35,Molding,finishscrap2,Finish Scrap Rate,0
+36,Molding,finishscraprecycle2,Finish Recycle Rate (% scrap that is recycled),0

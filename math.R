@@ -364,3 +364,26 @@ finaldf <- function(name1, name2, AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK, YF
   
   displaydf
 }
+
+# inputs df ----
+inputsdf <- function(inputtable, values){
+  in.df <- inputtable
+  in.df[["User"]] <- values
+
+  in.df
+  
+}
+
+# Rerun ----
+whichselect <- function(rer, def, vari){
+  reorde <- if (is.null(rer)) {
+    def
+  } else {
+      rer}
+  rowcall <- dplyr::filter (reorde, Variable_Name == vari) %>% select(5)
+  unname(unlist(rowcall))
+  }
+
+
+
+

@@ -13,26 +13,18 @@ library(DT)
 library(shinyjs)
 
 #Naming variables & data sheets ---- 
-#Molding
 Data_Mold = read_csv("data/Data_Mold.csv")
-
-#Fiber
 Data_Fiber = read_csv("data/Data_Fiber.csv")
 
-#Matrix
 Data_MatrixM = read.csv("data/Data_Matrix.csv") # Error if use read_csv - probably due to spelling a variable name incorrectly somewhere
 Data_Primatrix <- subset(Data_MatrixM, Type_Matrix == "Matrix")
 Data_Additive <- subset(Data_MatrixM, Type_Matrix == "Additive")
 Data_Filler <- subset(Data_MatrixM, Type_Matrix == "Filler")
 Data_Other <- subset(Data_MatrixM, Type_Matrix == "Other")
 
-#Intermediate
 Data_Int = read_csv("data/Data_Int.csv")
-
-#Inserts
 Data_Insert =  read_csv("data/Data_Inserts.csv")
 
-#Curing
 Data_Cure = read_csv("data/Data_Cure.csv")
 allcure <- c("Cures in Mold","Autoclave Curing","Oven Curing","Oven Curing with Vacuum","QuickStep",
              "Microwave Curing","Microwave Curing with Vacuum","Infrared Curing", "Direct Induction Curing","E Beam Curing")
@@ -40,12 +32,15 @@ onlymoldcure <- c("Cures in Mold")
 wetcure <- c("Cures in Mold","Oven Curing","QuickStep","Microwave Curing","Infrared Curing","Direct Induction Curing","E Beam Curing")
 vbcure <- c("Autoclave Curing","QuickStep","Microwave Curing with Vacuum","Infrared Curing","Direct Induction Curing","E Beam Curing")
 
-#Finishing
 Data_Finish = read_csv("data/Data_Finishing.csv")
 
-#Properties & Citations
 Props = read.csv("data/Properties_Mold.csv") # causes error if read_csv due to use of row names
 Data_Cite <- read_csv("data/Data_Citations.csv")
+
+Input_List1 <- read_csv("data/Defaults1.csv")
+Input_List2 <- read_csv("data/Defaults2.csv")
+
+
 
 source("math.R") #ensure Data_Cite has been read first!!
 
@@ -110,6 +105,24 @@ names(Props.df)<- new_col
   
   
   
+  # Upload Previous Run
+  Re_input1.df <- reactiveValues()
+  Re_input1.df <- reactive({
+    if (is.null(input$re_input1)) 
+      return(NULL)
+   data <- read_csv(input$re_input1$datapath)
+   data
+  })
+  Re_input2.df <- reactiveValues()
+  Re_input2.df <- reactive({
+    if (is.null(input$re_input2)) 
+      return(NULL)
+    data <- read_csv(input$re_input2$datapath)
+    data
+  })
+  
+  output$table1e <- renderTable(Re_input1.df())
+  
   # Molding ----
   # Build new dataframe if add new molding process
   Data_Mold_temp  <- reactiveValues()
@@ -137,11 +150,13 @@ names(Props.df)<- new_col
   Data_Mold_new  <- reactiveValues()
   Data_Mold_new  <- reactive(whichone(input$gomold, Data_Mold_temp(), Data_Mold))
   
+  mold1_selected <- reactive(whichselect(Re_input1.df(), Input_List1,"moldingInput1"))
+  output$testre1 <- renderText(mold1_selected())
    # Change Select box if add new molding process
   observe( { 
     updateSelectizeInput(session, 'moldingInput1',
                          choices = Data_Mold_new()$Name_Mold,
-                         selected = "",
+                         selected = mold1_selected(),
                          server = TRUE)
     updateSelectizeInput(session, 'moldingInput2',
                          choices = Data_Mold_new()$Name_Mold,
@@ -1068,7 +1083,30 @@ names(Props.df)<- new_col
     validate(need(finishname2(), ""), need(finishname2() != "None", "")) 
     showNotification(paste("Citation for ", finishname2(), ": ",finishcite2()), duration = 5, closeButton = TRUE, type = "message")})
   
+  # Citation Page ----
+  observeEvent(input$cite_type, {
+    citelist <- citefxn(input$cite_type)
+    updateSelectizeInput(session, 'cite_specific',
+                         choices = citelist,
+                         selected = NULL,
+                         server = TRUE)
+  })
   
+  citationfetch1 <- eventReactive(input$cite_specific,{
+    cite_full1[cite_name %in% input$cite_specific]  })
+  citationfetch2 <- eventReactive(input$cite_specific,{
+    cite_full2[cite_name %in% input$cite_specific]  })
+  citationfetch3 <- eventReactive(input$cite_specific,{
+    cite_full3[cite_name %in% input$cite_specific]  })
+  citationfetch4 <- eventReactive(input$cite_specific,{
+    cite_full4[cite_name %in% input$cite_specific]  })
+  citationfetch5 <- eventReactive(input$cite_specific,{
+    cite_full5[cite_name %in% input$cite_specific]  })
+  output$citation1 <- renderText(as.character(citationfetch1()))
+  output$citation2 <- renderText(as.character(citationfetch2()))
+  output$citation3 <- renderText(as.character(citationfetch3()))
+  output$citation4 <- renderText(as.character(citationfetch4()))
+  output$citation5 <- renderText(as.character(citationfetch5()))
   
   # Return Mass/Massfracs to zero if "Use ..." checkboxes are false ----
  #Set Inserts mass to zero
@@ -1179,7 +1217,15 @@ names(Props.df)<- new_col
                         server = TRUE)
    }})
  
-  # Change User Input --> Variables ----
+ # Set primary matrix mass fraction to 1 - the used fiber fraction (raw) ----
+ observe({
+   rff1 <- input$moldfracUSERNum1
+   rff2 <- input$moldfracUSERNum2
+   updateNumericInput(session, "primatrixfrac1", value = 100-rff1)
+   updateNumericInput(session, "primatrixfrac2", value = 100-rff2)
+ })
+ 
+ # Change User Input --> Variables ----
     # Yield
     layup.yield1 <- reactive(yield_layup(input$intscrapUSERNum1,input$intscraprecycle1))
     layup.yield2 <- reactive(yield_layup(input$intscrapUSERNum2,input$intscraprecycle2))
@@ -1208,40 +1254,6 @@ names(Props.df)<- new_col
     raw.f.mc2 <- reactive({input$othermatrixCfrac2/100})
     m.ia2 <- reactive({input$insertsAfrac2})
     m.ib2 <- reactive({input$insertsBfrac2})
-    
-  # Set primary matrix mass fraction to 1 - the used fiber fraction (raw) ----
-    observe({
-      rff1 <- input$moldfracUSERNum1
-      rff2 <- input$moldfracUSERNum2
-    updateNumericInput(session, "primatrixfrac1", value = 100-rff1)
-    updateNumericInput(session, "primatrixfrac2", value = 100-rff2)
-    })
-    
-  # Build Citation ----
-    observeEvent(input$cite_type, {
-     citelist <- citefxn(input$cite_type)
-    updateSelectizeInput(session, 'cite_specific',
-                         choices = citelist,
-                         selected = NULL,
-                         server = TRUE)
-    })
-
-    citationfetch1 <- eventReactive(input$cite_specific,{
-      cite_full1[cite_name %in% input$cite_specific]  })
-    citationfetch2 <- eventReactive(input$cite_specific,{
-      cite_full2[cite_name %in% input$cite_specific]  })
-    citationfetch3 <- eventReactive(input$cite_specific,{
-      cite_full3[cite_name %in% input$cite_specific]  })
-    citationfetch4 <- eventReactive(input$cite_specific,{
-      cite_full4[cite_name %in% input$cite_specific]  })
-    citationfetch5 <- eventReactive(input$cite_specific,{
-      cite_full5[cite_name %in% input$cite_specific]  })
-    output$citation1 <- renderText(as.character(citationfetch1()))
-    output$citation2 <- renderText(as.character(citationfetch2()))
-    output$citation3 <- renderText(as.character(citationfetch3()))
-    output$citation4 <- renderText(as.character(citationfetch4()))
-    output$citation5 <- renderText(as.character(citationfetch5()))
-    
     
 # Calculations ----
     # Mass Fractions converion (calculations treats inserts as part of sum(mass fractions) = 1 )----  
@@ -1650,10 +1662,6 @@ names(Props.df)<- new_col
                                     E.f.int1(), E.f.mold1(), E.f.cure1(), E.f.fin1(), sum(E.f.int1(), E.f.mold1(), E.f.cure1(), E.f.fin1())), 2)
   ))
   
-   
-   
-   
-   
   RESULTSTABLE2 <-  reactive(data_frame(
     Stage = c("Fiber", "Primary Matrix", "Additional Matrix Material", "Additional Matrix Material","Additional Matrix Material", "Insert", "Insert", "Materials Total",
                          "Intermediate", "Molding", "Curing", "Finishing", "Processes Total"),
@@ -1668,11 +1676,9 @@ names(Props.df)<- new_col
                                     E.f.int2(), E.f.mold2(), E.f.cure2(), E.f.fin2(), sum(E.f.int2(), E.f.mold2(), E.f.cure2(), E.f.fin2())),2)
       ))
   
-   # output$table1a <- renderTable(RESULTSTABLE1())
-   # output$table1b <- renderTable(RESULTSTABLE2())
+   # output$table1c <- renderTable(RESULTSTABLE1())
+   # output$table2c <- renderTable(RESULTSTABLE2())
 
-  
-  
   # Attach tables to download buttons
      output$DL_results1 <- downloadHandler(
      filename = function() {paste(input$results1, ".csv") },
@@ -1685,18 +1691,11 @@ names(Props.df)<- new_col
          write.csv(RESULTSTABLE2(), file)
        }   )
      
-
-     
-     
-     
 # Download Calcs     
 y1table <- isolate(reactive(yield_data1.df()))
 y2table <- isolate(reactive(yield_data2.df()))
 e1table <- isolate(reactive(energy_data1.df()))
 e2table <- isolate(reactive(energy_data2.df()))
-
-
-
 
      output$zipcalcs <- downloadHandler(
          filename = 'CFRP_Tool_Calcualtion_Data.zip',
@@ -1727,11 +1726,53 @@ contentType = "application/zip"
        contentType = "application/zip"
      )
 
+   # Download Input File ----
+     #build lists for easier checking
+     List_Values1 <- reactiveValues()
+     List_Values2 <- reactiveValues()
+     List_Values1 <- reactive(c(input$finalweight1, input$name1, input$moldingInput1, 
+                input$insertsAUSERYN1, input$insertsAfrac1, input$insertsBUSERYN1, input$insertsBfrac1,
+                input$moldfracUSERNum1, input$fiberInput1,
+                input$PriMatrixInput1,input$primatrixfrac1,
+                       input$othermatrixAUSERYN1,input$types1a,input$OtherMatrixAInput1,input$othermatrixAfrac1,
+                       input$othermatrixBUSERYN1,input$types1b,input$OtherMatrixBInput1,input$othermatrixBfrac1,
+                       input$othermatrixCUSERYN1,input$types1c,input$OtherMatrixCInput1,input$othermatrixCfrac1,
+                       input$InsertsAInput1,input$InsertsBInput1,
+                input$intYN1, input$intInput1, input$intscrapUSERNum1, input$intscraprecycle1,
+                input$moldyieldUSERNum1,input$moldyieldrecycle1,input$cureYN1,input$cureInput1,
+                     input$finishInput1,input$finishscrap1,input$finishscraprecycle1))
      
-       
+     List_Values2 <-reactive(c(input$finalweight2, input$name2, input$moldingInput2, 
+                        input$insertsAUSERYN2, input$insertsAfrac2, input$insertsBUSERYN2, input$insertsBfrac2,
+                input$moldfracUSERNum2, input$fiberInput2,
+                input$PriMatrixInput2,input$primatrixfrac2,
+                       input$othermatrixAUSERYN2,input$types2a,input$OtherMatrixAInput2,input$othermatrixAfrac2,
+                       input$othermatrixBUSERYN2,input$types2b,input$OtherMatrixBInput2,input$othermatrixBfrac2,
+                       input$othermatrixCUSERYN2,input$types2c,input$OtherMatrixCInput2,input$othermatrixCfrac2,
+                       input$InsertsAInput2,input$InsertsBInput2,
+                input$intYN2, input$intInput2, input$intscrapUSERNum2, input$intscraprecycle2,
+                input$moldyieldUSERNum2,input$moldyieldrecycle2,input$cureYN2,input$cureInput2,
+                     input$finishInput2,input$finishscrap2,input$finishscraprecycle2) )  
      
+     #add column to data frame
+     Final_Input1 <- reactive(inputsdf(Input_List1, List_Values1()))
+     Final_Input2 <- reactive(inputsdf(Input_List2, List_Values2()))
+     
+      output$table1d <- renderTable(Final_Input1())
+      output$table2d <- renderTable(Final_Input2())
+     
+      #Download     Attach tables to download buttons
+     output$DL_inputs1 <- downloadHandler(
+       filename = "CFRP_Inputs1.csv",
+       content = function(file) {
+         write.csv(Final_Input1(), file)
+       }   )
+     output$DL_inputs2 <- downloadHandler(
+       filename = "CFRP_Inputs2.csv",
+       content = function(file) {
+         write.csv(Final_Input2(), file)
+       }   )
      
      
      #  End ----
-     #session$onSessionEnded(stopApp) 
      })

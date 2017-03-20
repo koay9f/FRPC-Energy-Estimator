@@ -1,0 +1,37 @@
+Row,Page,Variable_Name,Description,User
+1,Initial,finalweight1,Final Part Weight (kg),1
+2,Initial,name1,Part Name,Part 1
+3,Initial,moldingInput1,Molding Technology Options,
+4,Initial,insertsAUSERYN1,YN - use inserts (A),FALSE
+5,Initial,insertsAfrac1,Insert/Core Mass,0
+6,Initial,insertsBUSERYN1,YN - use inserts (B),FALSE
+7,Initial,insertsBfrac1,Additional Insert/Core Mass,0
+8,Fiber,moldfracUSERNum1,Fiber Mass Fraction,NA
+9,Fiber,fiberInput1,Fiber Type,
+10,Matrix,PriMatrixInput1,Choose Primary Matrix Material,
+11,Matrix,primatrixfrac1,Primary Matrix Mass Fraction,NA
+12,Matrix,othermatrixAUSERYN1,YN - use additional materials (A),FALSE
+13,Matrix,types1a,Choose Type of Additional Matrix Material,Not Used
+14,Matrix,OtherMatrixAInput1,Choose Other Matrix Material,Not Used
+15,Matrix,othermatrixAfrac1,Other Material A Mass Fraction,0
+16,Matrix,othermatrixBUSERYN1,YN - use additional materials (C),FALSE
+17,Matrix,types1b,Choose Type of Additional Matrix Material,Not Used
+18,Matrix,OtherMatrixBInput1,Choose Other Matrix Material,Not Used
+19,Matrix,othermatrixBfrac1,Other Material B Mass Fraction,0
+20,Matrix,othermatrixCUSERYN1,YN - use additional materials (B),FALSE
+21,Matrix,types1c,Choose Type of Additional Matrix Material,Not Used
+22,Matrix,OtherMatrixCInput1,Choose Other Matrix Material,
+23,Matrix,othermatrixCfrac1,Other Material C Mass Fraction,0
+24,Matrix,InsertsAInput1,Choose Insert Type,Not Used
+25,Matrix,InsertsBInput1,Choose Additional Insert Type,Not Used
+26,Intermediate,intYN1,YN - view all intermediate options,FALSE
+27,Intermediate,intInput1,Choose Fiber Intermediate,
+28,Intermediate,intscrapUSERNum1,Layup Scrap Rate,NA
+29,Intermediate,intscraprecycle1,Layp Recycle Rate (% scrap that is recycled),0
+30,Molding,moldyieldUSERNum1,Molding Yield,NA
+31,Molding,moldyieldrecycle1,Molding Recycle Rate (% scrap that is recycled),0
+32,Molding,cureYN1,YN - view all curing options,FALSE
+33,Molding,cureInput1,Curing Technology Options,
+34,Molding,finishInput1,Finishing Level Options,None
+35,Molding,finishscrap1,Finish Scrap Rate,0
+36,Molding,finishscraprecycle1,Finish Recycle Rate (% scrap that is recycled),0

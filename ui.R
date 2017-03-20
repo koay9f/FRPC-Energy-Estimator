@@ -47,6 +47,15 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                      , p("If you are unable to download the background zip file, try", span(strong("reloading")), "the application.",  
                          span("Note: you will lose any information you have entered into the app.", style = "color:red"))
                    ),
+            # UploadTab ----
+            tabPanel("Upload", h1("Upload Data")
+                     , p ("This page allows users to upload a previous run from this tool.  If CSV file was changed, errors may occur.")
+                     , fileInput("re_input1", "Choose CSV File",
+                                 accept = ".csv")
+                     , fileInput("re_input2", "Choose CSV File",
+                                 accept = c('csv', 'comma-separated-values','.csv'))
+                     ),
+            
             # Add data tab ----
             tabPanel("Custom Data",h1("Custom Data")
                      #, p("This tool can also incorporate custom data using the form below." )
@@ -273,7 +282,7 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                                 textInput("name1", "Part Name","Part 1")
                                 , numericInput("finalweight1","Final Part Weight (kg)", 1,  min = 0,NA,NA)
                                 , selectizeInput("moldingInput1", label = "Molding Technology Options",
-                                                 choices = NULL, selected = "", multiple = FALSE,
+                                                 choices = NULL, multiple = FALSE,
                                                  options = list(placeholder = 'Choose Molding Technology    '))  )
                               , fluidRow(column (6,strong("Embodied Energy:")),column(6,textOutput("EnergyNum1"), align = "right"))
                               , wellPanel( style = "background-color: #FFCD00;"
@@ -726,17 +735,25 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                                    , h2("Technology Set 2")
                                    , textInput("results2", "Part 2 Results File Name","CFRP_Tool_Results_2")
                                    , downloadButton('DL_results2', "Download Results")
-                          ) )
+                                   ) )
                         , fluidRow(
                           column(12, h2("Calculation Data")
                           ,  p('This allows the user to download the calculation files made by this tool.
                                 It requires both technology sets to be fully rendered.  Check the "Results" Tab, if both
                                    table are displaying with no errors, then this is ready to be downloaded.')
                           ,br()
-                         , downloadButton('zipcalcs', "Download Calculation Zip File"))
-                        )
-
-                     
+                         , downloadButton('zipcalcs', "Download Calculation Zip File")))
+                        , hr() 
+                       , fluidRow(h2("Input files")
+                             , p("EXPLALIN WHAT THESE ARE")
+                           ,column(6
+                                   , h2("Technology Set 1")
+                                   , downloadButton('DL_inputs1', "Download Inputs")
+                           )
+                           , column(6
+                                    , h2("Technology Set 2")
+                                    , downloadButton('DL_inputs2', "Download Inputs")
+                           ) )
             ),
             # Ref TAB ----
              tabPanel ("References", h1("References")
@@ -765,14 +782,20 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
             
             #TEST TAB ----
        # Tab to display test tables or other tests
-         , tabPanel("TEST", h1("TEST")
-        #To use, remove "#' (do not remove from this line) # Currently testing yield & energy calculation data
-          , tableOutput("table1a")
-          , tableOutput("table2a")
-          , tableOutput("table1b")
-          , tableOutput("table2b")
-        # , tableOutput("table1x")
-        )
+        , tabPanel("TEST", h1("TEST")
+       #To use, remove "#' (do not remove from this line) # Currently testing yield & energy calculation data
+         # , tableOutput("table1a")
+         # , tableOutput("table2a")
+         # , tableOutput("table1b")
+         # , tableOutput("table2b")
+         # , tableOutput("table1c")
+         # , tableOutput("table2c")
+          # , tableOutput("table1d")
+          # , tableOutput("table2d")
+       , tableOutput("table1e")
+       , textOutput("testre1")
+       # , tableOutput("table1x")
+       )
                  
             # End ----
             , widths = c(2,10))))
