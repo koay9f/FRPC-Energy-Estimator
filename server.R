@@ -15,32 +15,25 @@ library(shinyjs)
 #Naming variables & data sheets ---- 
 #Molding
 Data_Mold = read_csv("data/Data_Mold.csv")
-moldnames = Data_Mold$Name_Mold
 
 #Fiber
-Data_Fiber = read.csv("data/Data_Fiber.csv")
-fibernames = Data_Fiber$Name_Fiber
+Data_Fiber = read_csv("data/Data_Fiber.csv")
 
 #Matrix
-Data_MatrixM = read.csv("data/Data_Matrix.csv")
-matrixnames = Data_MatrixM$Name_Matrix
+Data_MatrixM = read.csv("data/Data_Matrix.csv") # Error if use read_csv - probably due to spelling a variable name incorrectly somewhere
 Data_Primatrix <- subset(Data_MatrixM, Type_Matrix == "Matrix")
 Data_Additive <- subset(Data_MatrixM, Type_Matrix == "Additive")
 Data_Filler <- subset(Data_MatrixM, Type_Matrix == "Filler")
 Data_Other <- subset(Data_MatrixM, Type_Matrix == "Other")
-primatrixnames = Data_Primatrix$Name_Matrix
 
 #Intermediate
 Data_Int = read_csv("data/Data_Int.csv")
-intnames = Data_Int$Name_Int
 
 #Inserts
-Data_Insert =  read.csv("data/Data_Inserts.csv")
-insertsnames = Data_Insert$Name_Insert
+Data_Insert =  read_csv("data/Data_Inserts.csv")
 
 #Curing
-Data_Cure = read.csv("data/Data_Cure.csv")
-curenames = Data_Cure$Name_Cure
+Data_Cure = read_csv("data/Data_Cure.csv")
 allcure <- c("Cures in Mold","Autoclave Curing","Oven Curing","Oven Curing with Vacuum","QuickStep",
              "Microwave Curing","Microwave Curing with Vacuum","Infrared Curing", "Direct Induction Curing","E Beam Curing")
 onlymoldcure <- c("Cures in Mold")
@@ -48,16 +41,14 @@ wetcure <- c("Cures in Mold","Oven Curing","QuickStep","Microwave Curing","Infra
 vbcure <- c("Autoclave Curing","QuickStep","Microwave Curing with Vacuum","Infrared Curing","Direct Induction Curing","E Beam Curing")
 
 #Finishing
-Data_Finish = read.csv("data/Data_Finishing.csv")
-finishnames = Data_Finish$Name_Finishing
+Data_Finish = read_csv("data/Data_Finishing.csv")
 
 #Properties & Citations
-Props = read.csv("data/Properties_Mold.csv")
-Data_Cite <- read.csv("data/Data_Citations.csv")
-
-
+Props = read.csv("data/Properties_Mold.csv") # causes error if read_csv due to use of row names
+Data_Cite <- read_csv("data/Data_Citations.csv")
 
 source("math.R") #ensure Data_Cite has been read first!!
+
 #Talk to server ----
 shinyServer(function(input, output, session) {
   
@@ -120,16 +111,6 @@ names(Props.df)<- new_col
   
   
   # Molding ----
-  # Make List for Select Box
-  # updateSelectizeInput(session, 'moldingInput1',
-  #                      choices = moldnames,
-  #                      selected = "",
-  #                      server = TRUE)
-  # updateSelectizeInput(session, 'moldingInput2',
-  #                      choices = moldnames,
-  #                      selected = "",
-  #                      server = TRUE)
-  
   # Build new dataframe if add new molding process
   Data_Mold_temp  <- reactiveValues()
   Data_Mold_temp <- eventReactive(input$gomold, {
@@ -1030,11 +1011,11 @@ names(Props.df)<- new_col
   observe( { 
     updateSelectizeInput(session, 'finishInput1',
                          choices = Data_Finish_new()$Name_Finishing,
-                         selected = "",
+                         selected = "None",
                          server = TRUE)
     updateSelectizeInput(session, 'finishInput2',
                          choices = Data_Finish_new()$Name_Finishing,
-                         selected = "",
+                         selected = "None",
                          server = TRUE)
   })
   
@@ -1356,10 +1337,10 @@ names(Props.df)<- new_col
     )) 
     
     #code to test that calculations are preformed correctly
-     # output$table1a <- renderTable(yield_data1.df())
-     # output$table1b <- renderTable(energy_data1.df())
-     # output$table2a <- renderTable(yield_data2.df())
-     # output$table2b <- renderTable(energy_data2.df())
+     output$table1a <- renderTable(yield_data1.df())
+     output$table1b <- renderTable(energy_data1.df())
+     output$table2a <- renderTable(yield_data2.df())
+     output$table2b <- renderTable(energy_data2.df())
 
     
   # Final Display ----
@@ -1687,8 +1668,8 @@ names(Props.df)<- new_col
                                     E.f.int2(), E.f.mold2(), E.f.cure2(), E.f.fin2(), sum(E.f.int2(), E.f.mold2(), E.f.cure2(), E.f.fin2())),2)
       ))
   
-   output$table1a <- renderTable(RESULTSTABLE1())
-   output$table1b <- renderTable(RESULTSTABLE2())
+   # output$table1a <- renderTable(RESULTSTABLE1())
+   # output$table1b <- renderTable(RESULTSTABLE2())
 
   
   

@@ -20,7 +20,7 @@ shinyUI(fluidPage(title = "CFRP Tool",
                     ,   tags$style(HTML(" table tbody tr:last-child {font-weight:bold;}")) 
                     ,   tags$style(HTML(id = "diagram", "table tbody tr:last-child {font-weight:bold;}"))
                   ), 
-  useShinyjs(),
+useShinyjs(), #(shinyjs is used for the custom data check marks)
                   titlePanel(h1("CFRP Energy Use Estimation Tool", style = "color:#007833")),
                   navlistPanel( 
             
@@ -765,14 +765,14 @@ shinyUI(fluidPage(title = "CFRP Tool",
             
             #TEST TAB ----
        # Tab to display test tables or other tests
-        #  , tabPanel("TEST", h1("TEST")
-        # #To use, remove "#' (do not remove from this line) # Currently testing yield & energy calculation data
-        #   # , tableOutput("table1a")
-        #   # , tableOutput("table2a")
-        #   # , tableOutput("table1b")
-        #   # , tableOutput("table2b")
+         , tabPanel("TEST", h1("TEST")
+        #To use, remove "#' (do not remove from this line) # Currently testing yield & energy calculation data
+          , tableOutput("table1a")
+          , tableOutput("table2a")
+          , tableOutput("table1b")
+          , tableOutput("table2b")
         # , tableOutput("table1x")
-        # )
+        )
                  
             # End ----
             , widths = c(2,10))))
