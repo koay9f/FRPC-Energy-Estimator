@@ -380,10 +380,39 @@ whichselect <- function(rer, def, vari){
     def
   } else {
       rer}
-  rowcall <- dplyr::filter (reorde, Variable_Name == vari) %>% select(5)
+  rowcall <- dplyr::filter (reorde, Variable_Name == vari) %>% select(4)
   unname(unlist(rowcall))
   }
 
+YNcheck <- function(rer,vari){
+  rowcall <- dplyr::filter (rer, Variable_Name == vari) %>% select(4)
+  YN <- if (rowcall == "TRUE") {
+    1
+  } else if (rowcall == "FALSE") {
+    0
+  }
+  YN
+}
 
+custommatch_name <- function(recustom,vari){
+  custom_name <- dplyr::filter (recustom, Description == vari) %>% select(2)
+}
+custommatch_energy <- function(recustom,vari){
+  custom_energy <- dplyr::filter (recustom, Description == vari) %>% select(3)
+}
 
-
+customdf <- function(inputtable, names, values){
+  in.df <- inputtable
+  in.df[["Names"]] <- names
+  in.df[["Values"]] <- values
+  in.df
+}
+cYNcheck <- function(rer,vari){
+  rowcall <- dplyr::filter (rer, Description == vari) %>% select(3)
+  YN <- if (rowcall == "TRUE") {
+    1
+  } else if (rowcall == "FALSE") {
+    0
+  }
+  YN
+}

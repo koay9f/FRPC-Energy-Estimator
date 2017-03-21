@@ -33,13 +33,15 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                       , strong('This tool has been developed by ORNL to provide CFRP researchers and manufacturers the ability to quickly estimate 
                          the embodied energy use of their CFRP manufacturing process and compare it to other conventional processes.')  
                      , hr()    
-                     , p(icon("table"),'   A table for comparing molding technologies is also available on the "Molding Properties" Tab.')  
+                     , p(icon("table"),'   A table for comparing molding technologies is also available on the "Molding Properties" Page.')  
                       , p(icon("internet-explorer"),'   Some features of this tool are not fully suppported in Internet Explorer.')
                      , p(icon("envelope-o"), '   If you wish to permanently add a material or process to our database or otherwise wish to comment on this tool, please contact 
                          the developers by', span(strong(" email:")), 'Kristina Armstrong (', span('armstrongko@ornl.gov', style = "text-decoration: underline"),  ') or Sujit Das (', span('dass@ornl.gov', style = "text-decoration: underline"),').')
                      , helpText(a("Or connect with us on GitHub", href = "https://github.com/koay9f/CFRP-Energy-Estimator", target= "_blank"))
                      , p(icon("save"), span("At this time, when you exit the application, all data is lost and there is no way to save data for 
-                                               reuse at a later time. We will be working on a way to save and reuse data.", style = "color: red"))
+                                               reuse at a later time.", style = "color: red"), 'If you wish, you can download the "Input" files from
+                         the "Download" Page at the end of your session.  In later session you can upload this on the "Upload" Page, and the forms will
+                         autopopulate.')
                      , hr()
                      , p(icon("file-zip-o"),'   For more help or information,', span(strong( "download" )), 'the Tool Documentation. This includes includes energy data,
                          molding process properties, references and details of tool computations' ) 
@@ -50,10 +52,18 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
             # UploadTab ----
             tabPanel("Upload", h1("Upload Data")
                      , p ("This page allows users to upload a previous run from this tool.  If CSV file was changed, errors may occur.")
-                     , fileInput("re_input1", "Choose CSV File",
-                                 accept = ".csv")
-                     , fileInput("re_input2", "Choose CSV File",
+                     , fileInput("re_input1", "Choose CSV File for Technology Set 1",
                                  accept = c('csv', 'comma-separated-values','.csv'))
+                     , fileInput("re_input2", "Choose CSV File for Technology Set 2",
+                                 accept = c('csv', 'comma-separated-values','.csv'))
+                     , fileInput("Re_Custom", "Choose CSV File for Custom Data",
+                                 accept = c('csv', 'comma-separated-values','.csv'))
+                     , p( 'If upload custom data, there are a few additional steps that must be taken at this point.')
+                      , p(    '1 - Go to the "Custom Data" Page')
+                       , p(   '2 - Choose which type of data is being added from the custom upload')
+                     , p(   '3 - Click the Add button')
+                     , p(   '4 - Repeat for each data point')
+                     , p ("We apologize for the inconvenience and we are working on having these steps become automated.")
                      ),
             
             # Add data tab ----
@@ -65,8 +75,9 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                      
                      , conditionalPanel(
                        condition = 'input.add_data_which == "Instructions"'
-                       , p("Presently, the user can only add", span("one", style = "text-decoration: underline"), "data point per process segment (in other words, you can only add one custom molding process).  
-                           Additionally, the custom process segment is only available for the current session.")
+                       , p('Presently, the user can only add', span("one", style = "text-decoration: underline"), 'data point per process segment (in other words, you can only add one custom molding process).  
+                           Additionally, the custom process segment is only available for the current session. At the end of your session, you can download a .csv file with 
+                           all of the custom data that has been added this session.  You will be able to upload this in future sessions to save time (see the "Upload" and "Download" Pages for more details)')
                        , p ("If you require adding several custom process segments or plan to run multiple scenarios with the same custom segments, 
                             it is recommended that you", span(strong("download")), "R studio and a copy of this app from GitHub and edit the data personally. ")
                       ,p(' Alternatively, you can contact Kristina Armstrong (', span('armstrongko@ornl.gov', style = "text-decoration: underline"),  
@@ -290,11 +301,11 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                                               , conditionalPanel(
                                                 condition = "input.insertsAUSERYN1 == true"
                                                 , p("The final mass of the part should include the mass of the inserts or cores.")
-                                                , numericInput("insertsAfrac1","Insert/Core Mass", 0.0,  min = 0.0, NA, NA)
+                                                , numericInput("insertsAfrac1","Insert/Core Mass", 0.0,  min = 0.0, NA, 0.1)
                                            , checkboxInput("insertsBUSERYN1", strong("Use Additional Insert/Core Material?", style = "font-size:120%"),FALSE)
                                                , conditionalPanel(
                                                  condition = "input.insertsBUSERYN1 == true"
-                                                 , numericInput("insertsBfrac1","Additional Insert/Core Mass", 0.0,  min = 0.0, NA, NA))))
+                                                 , numericInput("insertsBfrac1","Additional Insert/Core Mass", 0.0,  min = 0.0, NA, 0.1))))
                               )
                  #TechSet2
                        , column(6
@@ -723,38 +734,38 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
             ),
             # DownloadTab ----
             tabPanel("Downloads", h1("Downloads")
-                        , fluidRow(             
-                          p('This allows the user download Results of the tool.  Choose a file name then click "Download Results"')
+                        , fluidRow(  
+                            column(6, h2("Technology Set 1")), column(6, h2("Technology Set 2"))
                           
-                          ,column(6 
-                                 , h2("Technology Set 1")
-                                 , textInput("results1", "Part 1 Results File Name","CFRP_Tool_Results_1")
-                                 , downloadButton('DL_results1', "Download Results")
-                          )
-                          , column(6 
-                                   , h2("Technology Set 2")
-                                   , textInput("results2", "Part 2 Results File Name","CFRP_Tool_Results_2")
-                                   , downloadButton('DL_results2', "Download Results")
-                                   ) )
-                        , fluidRow(
-                          column(12, h2("Calculation Data")
-                          ,  p('This allows the user to download the calculation files made by this tool.
-                                It requires both technology sets to be fully rendered.  Check the "Results" Tab, if both
-                                   table are displaying with no errors, then this is ready to be downloaded.')
-                          ,br()
-                         , downloadButton('zipcalcs', "Download Calculation Zip File")))
+                          , column(12, h2("Results")
+                                    , p('This allows the user download Results of the tool, including chosen materials/processes,
+                                      mass fraction or yield, specific and embodied energy for each stage and mass evaluated at each stage.'))
+                          
+                          , column(6 , downloadButton('DL_results1', "Download Results"))
+                          , column(6 , downloadButton('DL_results2', "Download Results")) )
+
                         , hr() 
-                       , fluidRow(h2("Input files")
-                             , p("EXPLALIN WHAT THESE ARE")
-                           ,column(6
-                                   , h2("Technology Set 1")
-                                   , downloadButton('DL_inputs1', "Download Inputs")
-                           )
-                           , column(6
-                                    , h2("Technology Set 2")
-                                    , downloadButton('DL_inputs2', "Download Inputs")
-                           ) )
-            ),
+                       , fluidRow(
+                          column(12, h2("Input files")
+                                    , p("This allows the user to download a file with all the options chosen in the current session.  
+                                         This file can then be uploaded in a later session instead of manual data entry.  It is recommended
+                                     that users not change these files manually."))
+                         , column(6, downloadButton('DL_inputs1', "Download Inputs"))
+                         , column(6, downloadButton('DL_inputs2', "Download Inputs")) )
+                         , hr()
+                         , fluidRow(
+                           column(12, h2("Calculation Data")
+                                  ,  p('This allows the user to download the calculation files made by this tool.
+                                       It requires both technology sets to be fully rendered.  Check the "Results" Page, if both
+                                       table are displaying with no errors, then this is ready to be downloaded.')
+                                  ,br()
+                                  , downloadButton('zipcalcs', "Download Calculation Zip File")))
+                                  , h2("Custom Data")
+                                  , p("This allows the user to download the custom data add in the current session.
+                                      This file can then be uploaded in a later session instead of manual data entry.  It is recommended
+                                      that users not change these files manually.")
+                                  , downloadButton('DL_custom', "Download Custom Data")
+                                          ),
             # Ref TAB ----
              tabPanel ("References", h1("References")
                 , p("To view citations for process and material embodied energy, choose Type and then the specific process/material")
@@ -781,21 +792,22 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
            
             
             #TEST TAB ----
-       # Tab to display test tables or other tests
-        , tabPanel("TEST", h1("TEST")
-       #To use, remove "#' (do not remove from this line) # Currently testing yield & energy calculation data
-         # , tableOutput("table1a")
-         # , tableOutput("table2a")
-         # , tableOutput("table1b")
-         # , tableOutput("table2b")
-         # , tableOutput("table1c")
-         # , tableOutput("table2c")
-          # , tableOutput("table1d")
-          # , tableOutput("table2d")
-       , tableOutput("table1e")
-       , textOutput("testre1")
-       # , tableOutput("table1x")
-       )
+      # Tab to display test tables or other tests
+       # , tabPanel("TEST", h1("TEST")
+      #To use, remove "#' (do not remove from this line) # Currently testing yield & energy calculation data
+        # , tableOutput("table1a")
+        # , tableOutput("table2a")
+        # , tableOutput("table1b")
+        # , tableOutput("table2b")
+        # , tableOutput("table1c")
+        # , tableOutput("table2c")
+         # , tableOutput("table1d")
+         # , tableOutput("table2d")
+      #, tableOutput("table1e")
+      #, textOutput("testre1")
+      # , tableOutput("table1f")
+      #  , tableOutput("table1x")
+      # )
                  
             # End ----
             , widths = c(2,10))))

@@ -1,0 +1,45 @@
+"Description","Names","Values"
+"Fiber","Custom Fiber Type",0
+"Matrix","Custom Matrix",0
+"Additive","Custom Additive",0
+"Filler","Custom Filler",0
+"Insert","Custom Insert/Core",0
+"Intermediate","Custom Intermediate",0
+"Mold","Custom Mold Tech",0
+"Cure","Custom Cure Tech",0
+"Finish","Custom Finish",0
+"IntYN","NA",0
+"MoldYN","NA",0
+"CureYN","NA",0
+"Moldmass","NA",1
+"MoldP1","NA",0
+"MoldR1","NA",100
+"Moldt1","NA",0
+"MoldP2","NA",0
+"MoldR2","NA",100
+"Moldt2","NA",0
+"MoldP3","NA",0
+"MoldR3","NA",100
+"Moldt3","NA",0
+"MoldP4","NA",0
+"MoldR4","NA",100
+"Moldt4","NA",0
+"MoldP5","NA",0
+"MoldR5","NA",100
+"Moldt5","NA",0
+"Curemass","NA",1
+"CureP1","NA",0
+"CureR1","NA",100
+"Curet1","NA",0
+"CureP2","NA",0
+"CureR2","NA",100
+"Curet2","NA",0
+"CureP3","NA",0
+"CureR3","NA",100
+"Curet3","NA",0
+"CureP4","NA",0
+"CureR4","NA",100
+"Curet4","NA",0
+"CureP5","NA",0
+"CureR5","NA",100
+"Curet5","NA",0
