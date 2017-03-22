@@ -56,14 +56,14 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                                  accept = c('csv', 'comma-separated-values','.csv'))
                      , fileInput("re_input2", "Choose CSV File for Technology Set 2",
                                  accept = c('csv', 'comma-separated-values','.csv'))
-                     , fileInput("Re_Custom", "Choose CSV File for Custom Data",
+                     , fileInput("Re_Custom", "Choose CSV File to Upload Custom Data",
                                  accept = c('csv', 'comma-separated-values','.csv'))
-                     , p( 'If upload custom data, there are a few additional steps that must be taken at this point.')
-                      , p(    '1 - Go to the "Custom Data" Page')
-                       , p(   '2 - Choose which type of data is being added from the custom upload')
-                     , p(   '3 - Click the Add button')
-                     , p(   '4 - Repeat for each data point')
-                     , p ("We apologize for the inconvenience and we are working on having these steps become automated.")
+                     # , p( 'If upload custom data, there are a few additional steps that must be taken at this point.')
+                     #  , p(    '1 - Go to the "Custom Data" Page')
+                     #   , p(   '2 - Choose which type of data is being added from the custom upload')
+                     # , p(   '3 - Click the Add button')
+                     # , p(   '4 - Repeat for each data point')
+                     # , p ("We apologize for the inconvenience and we are working on having these steps become automated.")
                      ),
             
             # Add data tab ----
@@ -741,8 +741,12 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                                     , p('This allows the user download Results of the tool, including chosen materials/processes,
                                       mass fraction or yield, specific and embodied energy for each stage and mass evaluated at each stage.'))
                           
-                          , column(6 , downloadButton('DL_results1', "Download Results"))
-                          , column(6 , downloadButton('DL_results2', "Download Results")) )
+                          , column(6 
+                                   , textInput("DLR1_name", "Name Set 1 Results File", value = "CFRP_Results1")
+                                   , downloadButton('DL_results1', "Download Results"))
+                          , column(6 
+                                   , textInput("DLR2_name", "Name Set 2 Results File", value = "CFRP_Results2")
+                                   , downloadButton('DL_results2', "Download Results")) )
 
                         , hr() 
                        , fluidRow(
@@ -750,8 +754,12 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                                     , p("This allows the user to download a file with all the options chosen in the current session.  
                                          This file can then be uploaded in a later session instead of manual data entry.  It is recommended
                                      that users not change these files manually."))
-                         , column(6, downloadButton('DL_inputs1', "Download Inputs"))
-                         , column(6, downloadButton('DL_inputs2', "Download Inputs")) )
+                         , column(6
+                                  , textInput("DLI1_name", "Name Set 1 Input File", value = "CFRP_Inputs1")
+                                  , downloadButton('DL_inputs1', "Download Inputs"))
+                         , column(6
+                                  , textInput("DLI2_name", "Name Set 2 Input File", value = "CFRP_Inputs2")
+                                  , downloadButton('DL_inputs2', "Download Inputs")) )
                          , hr()
                          , fluidRow(
                            column(12, h2("Calculation Data")
@@ -759,11 +767,13 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                                        It requires both technology sets to be fully rendered.  Check the "Results" Page, if both
                                        table are displaying with no errors, then this is ready to be downloaded.')
                                   ,br()
+                                  , textInput("DLC_name", "Name Calculation Files", value = 'CFRP_Tool_Calcualtion_Data')
                                   , downloadButton('zipcalcs', "Download Calculation Zip File")))
                                   , h2("Custom Data")
                                   , p("This allows the user to download the custom data add in the current session.
                                       This file can then be uploaded in a later session instead of manual data entry.  It is recommended
                                       that users not change these files manually.")
+                                  , textInput("DLCustom_name", "Name Custom Data File", value = "CFRP_Add_Custom")
                                   , downloadButton('DL_custom', "Download Custom Data")
                                           ),
             # Ref TAB ----
@@ -789,8 +799,6 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                 , textOutput("citation5")
                  )
           
-           
-            
             #TEST TAB ----
       # Tab to display test tables or other tests
        # , tabPanel("TEST", h1("TEST")
@@ -804,9 +812,10 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
          # , tableOutput("table1d")
          # , tableOutput("table2d")
       #, tableOutput("table1e")
-      #, textOutput("testre1")
+      # , textOutput("testre1")
       # , tableOutput("table1f")
       #  , tableOutput("table1x")
+      #     , textOutput("testadd")  
       # )
                  
             # End ----

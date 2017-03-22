@@ -125,7 +125,7 @@ shinyServer(function(input, output, session) {
     updateNumericInput(session, "insert_add_E", value = as.double(custommatch_energy(Re_custom.df(), "Insert")))
     
     updateTextInput(session, "int_add", value = as.character(custommatch_name(Re_custom.df(), "Intermediate")))
-    updateCheckboxInput(session, "int_add_YN", value = as.logical(custommatch_energy(Re_custom.df(), "IntYN")))
+    updateCheckboxInput(session, "int_add_PP", value =  as.logical(custommatch_energy(Re_custom.df(), "IntYN")))
     updateNumericInput(session, "int_add_E", value = as.double(custommatch_energy(Re_custom.df(), "Intermediate")))
     
     updateTextInput(session, "mold_add", value = as.character(custommatch_name(Re_custom.df(), "Mold")))
@@ -139,7 +139,6 @@ shinyServer(function(input, output, session) {
     updateTextInput(session, "finish_add", value = as.character(custommatch_name(Re_custom.df(), "Finish")))
     updateNumericInput(session, "finish_add_E", value = as.double(custommatch_energy(Re_custom.df(), "Finish")))
   })
-  
   #output$table1e <- renderTable(Re_input1.df())
   
   # Initial Page (not molding) ----
@@ -172,17 +171,19 @@ shinyServer(function(input, output, session) {
 
   # Molding ----
   # Build new dataframe if add new molding process
-  Data_Mold_temp  <- reactiveValues()
-  # addmold <- reactiveValues()
-  # addmold <- observe(
-  #             if (is.null(input$Re_Custom)){
-  #                 if (!input$gomold) {
-  #                 0
-  #                   }  else {1}
-  #             } else if (is.null(custommatch_energy(Re_custom.df, "Mold"))) {
-  #               0} else {1})
+  calcmoldE <- reactive(calcenergy(input$mold_add_E_m, input$mold_add_E_P_M, input$mold_add_E_per_M, input$mold_add_E_t_M, input$mold_add_E_P_p, input$mold_add_E_per_p, input$mold_add_E_t_p,
+                                   input$mold_add_E_P_c, input$mold_add_E_per_c, input$mold_add_E_t_c,input$mold_add_E_P_h, input$mold_add_E_per_h, input$mold_add_E_t_h,
+                                   input$mold_add_E_P_o, input$mold_add_E_per_o, input$mold_add_E_t_o))
+  mold.Ener <- reactive(whichenergy(input$mold_add_EYN, calcmoldE(), input$mold_add_E_Y))
   
-  Data_Mold_temp <- eventReactive(input$gomold, {
+  
+  Data_Mold_temp  <- reactiveValues()
+  addmold <- reactiveValues()
+  addmold <- reactive(gobutton(mold.Ener(), input$gomold, input$Re_Custom))
+
+  # output$testadd <- renderText(as.logical(addmold()))
+  
+  Data_Mold_temp <- eventReactive( c(input$gomold, input$Re_Custom, addmold()), {
     mold.name <- as.character(input$mold_add)
     mold.E.calc <- calcenergy(input$mold_add_E_m, input$mold_add_E_P_M, input$mold_add_E_per_M, input$mold_add_E_t_M, input$mold_add_E_P_p, input$mold_add_E_per_p, input$mold_add_E_t_p,
                               input$mold_add_E_P_c, input$mold_add_E_per_c, input$mold_add_E_t_c,input$mold_add_E_P_h, input$mold_add_E_per_h, input$mold_add_E_t_h,
@@ -197,14 +198,12 @@ shinyServer(function(input, output, session) {
               Yield_Mold = 1)
   })
   
-  calcmoldE <- reactive(calcenergy(input$mold_add_E_m, input$mold_add_E_P_M, input$mold_add_E_per_M, input$mold_add_E_t_M, input$mold_add_E_P_p, input$mold_add_E_per_p, input$mold_add_E_t_p,
-                                   input$mold_add_E_P_c, input$mold_add_E_per_c, input$mold_add_E_t_c,input$mold_add_E_P_h, input$mold_add_E_per_h, input$mold_add_E_t_h,
-                                   input$mold_add_E_P_o, input$mold_add_E_per_o, input$mold_add_E_t_o))
+
   output$calcedmoldE <- renderText({paste(signif(calcmoldE(), digits = 3), "MJ/kg")})
   
   
   Data_Mold_new  <- reactiveValues()
-  Data_Mold_new  <- reactive(whichone(input$gomold, Data_Mold_temp(), Data_Mold))
+  Data_Mold_new  <- reactive(whichone(addmold(), Data_Mold_temp(), Data_Mold))
   
   mold1_selected <- reactive(whichselect(Re_input1.df(), Input_List1,"moldingInput"))
   mold2_selected <- reactive(whichselect(Re_input2.df(), Input_List2,"moldingInput"))
@@ -225,14 +224,12 @@ shinyServer(function(input, output, session) {
   #Match Names to Table
   moldnamefetch1 <- eventReactive(input$moldingInput1,{
     Data_Mold_new()$Name_Mold[Data_Mold_new()$Name_Mold %in% input$moldingInput1]  })
-  
   moldnamefetch2 <- eventReactive(input$moldingInput2,{
     Data_Mold_new()$Name_Mold[Data_Mold_new()$Name_Mold %in% input$moldingInput2]  })
   
   #Match Energy to Name
   moldenergyfetch1 <- eventReactive(input$moldingInput1,{
     Data_Mold_new()$Energy_Mold[Data_Mold_new()$Name_Mold %in% input$moldingInput1]  })
-  
   moldenergyfetch2 <- eventReactive(input$moldingInput2,{
     Data_Mold_new()$Energy_Mold[Data_Mold_new()$Name_Mold %in% input$moldingInput2]  })
   
@@ -240,22 +237,18 @@ shinyServer(function(input, output, session) {
   
   moldshortfetch1 <-  eventReactive(input$moldingInput1,{
     Data_Mold_new()$ShortName_Mold[Data_Mold_new()$Name_Mold  %in% input$moldingInput1]  })
-  
   moldshortfetch2 <- eventReactive(input$moldingInput2, {
    Data_Mold_new()$ShortName_Mold[Data_Mold_new()$Name_Mold %in% input$moldingInput2]})
   
   # Match Fraction to Name
   moldfracfetch1 <- eventReactive(input$moldingInput1,{
     Data_Mold_new()$Frac_Fiber[Data_Mold_new()$Name_Mold %in% input$moldingInput1]  })
-  
   moldfracfetch2 <- eventReactive(input$moldingInput2,{ 
     Data_Mold_new()$Frac_Fiber[Data_Mold_new()$Name_Mold %in% input$moldingInput2]  })
   
   # Match Yield to Name
   moldyieldfetch1 <- eventReactive(input$moldingInput1,{ 
    Data_Mold_new()$Yield_Mold[Data_Mold_new()$Name_Mold %in% input$moldingInput1]  })
-  
-  
   moldyieldfetch2 <- eventReactive(input$moldingInput2,{
     Data_Mold_new()$Yield_Mold[Data_Mold_new()$Name_Mold %in% input$moldingInput2]  })
   
@@ -325,16 +318,20 @@ shinyServer(function(input, output, session) {
   
   #If adding custom molding process make all int & cure options available
   
-  observeEvent(input$gomold, {
-    updateCheckboxInput(session, "intYN1", value = 1)
-    updateCheckboxInput(session, "intYN2", value = 1)
-    updateCheckboxInput(session, "cureYN1", value = 1)
-    updateCheckboxInput(session, "cureYN2", value = 1)
+  observeEvent(c(input$gomold, input$Re_Custom, addmold()), {
+    checkx <- if (addmold() == 0) {0} else {1}
+    updateCheckboxInput(session, "intYN1", value = as.logical(checkx))
+    updateCheckboxInput(session, "intYN2", value = as.logical(checkx))
+    updateCheckboxInput(session, "cureYN1", value = as.logical(checkx))
+    updateCheckboxInput(session, "cureYN2", value = as.logical(checkx))
   })
   # Fiber ----
   # Make dataframe for Box if  custom data
+  addfiber <- reactiveValues()
+  addfiber <- reactive(gobutton(input$fiber_add_E, input$gofiber, input$Re_Custom))
+  
   Data_Fiber_temp  <- reactiveValues()
-  Data_Fiber_temp <- eventReactive(input$gofiber, {
+  Data_Fiber_temp <- eventReactive(c(input$gofiber, input$Re_Custom, addfiber()), {
     fiber.name <- input$fiber_add
     fiber.Ener <- as.double(input$fiber_add_E)
     
@@ -344,7 +341,7 @@ shinyServer(function(input, output, session) {
   })
   
   Data_Fiber_new  <- reactiveValues()
-  Data_Fiber_new  <- reactive(whichone(input$gofiber, Data_Fiber_temp(), Data_Fiber))
+  Data_Fiber_new  <- reactive(whichone(addfiber(), Data_Fiber_temp(), Data_Fiber))
   
   fiber1_selected <- reactive(whichselect(Re_input1.df(), Input_List1,"fiberInput"))
   fiber2_selected <- reactive(whichselect(Re_input2.df(), Input_List2,"fiberInput"))
@@ -420,8 +417,11 @@ shinyServer(function(input, output, session) {
   
    # Matrix ----
   # Make dataframe for Box if  custom data
+  addmatrix <- reactiveValues()
+  addmatrix <- reactive(gobutton(input$matrix_add_E, input$gomatrix, input$Re_Custom))
+  
   Data_Primatrix_temp  <- reactiveValues()
-  Data_Primatrix_temp  <- eventReactive(input$gomatrix, {
+  Data_Primatrix_temp  <- eventReactive(c(input$gomatrix, input$Re_Custom, addmatrix()), {
     matrix.name <- input$matrix_add
     matrix.Ener <- as.double(input$matrix_add_E)
     matrix.type <- "Matrix"
@@ -432,9 +432,8 @@ shinyServer(function(input, output, session) {
               Type_Matrix = matrix.type)
   })
   
-  
   Data_Primatrix_new  <- reactiveValues()
-  Data_Primatrix_new  <- reactive(whichone(input$gomatrix, Data_Primatrix_temp, Data_Primatrix))
+  Data_Primatrix_new  <- reactive(whichone(addmatrix(), Data_Primatrix_temp, Data_Primatrix))
   
   PM1_selected <- reactive(whichselect(Re_input1.df(), Input_List1,"PriMatrixInput"))
   PM2_selected <- reactive(whichselect(Re_input2.df(), Input_List2,"PriMatrixInput"))
@@ -524,8 +523,11 @@ shinyServer(function(input, output, session) {
   
   # OtherMat ----
 # Build new df for additive and filler if custom
+  addadditive <- reactiveValues()
+  addadditive <- reactive(gobutton(input$additive_add_E, input$goadditive, input$Re_Custom))
+  
   Data_Additive_temp  <- reactiveValues()
-  Data_Additive_temp  <- eventReactive(input$goadditive, {
+  Data_Additive_temp  <- eventReactive(c(input$goadditive, input$Re_Custom, addadditive()), {
     add.name <- input$additive_add
     add.Ener <- as.double(input$additive_add_E)
     add.type <- "Additive"
@@ -536,8 +538,11 @@ shinyServer(function(input, output, session) {
               Type_Matrix = add.type)
   })
   
+  addfiller <- reactiveValues()
+  addfiller <- reactive(gobutton(input$filler_add_E, input$gofiller, input$Re_Custom))
+  
   Data_Filler_temp  <- reactiveValues()
-  Data_Filler_temp  <- eventReactive(input$gofiller, {
+  Data_Filler_temp  <- eventReactive(c(input$gofiller, input$Re_Custom, addfiller()), {
     filler.name <- input$filler_add
     filler.Ener <- as.double(input$filler_add_E)
     filler.type <- "Filler"
@@ -548,7 +553,7 @@ shinyServer(function(input, output, session) {
               Type_Matrix = filler.type)
   })
   
- Data_MatrixM_new <- reactive(BuildnewMatrix.df(input$gomatrix, input$goadditive, input$gofiller, Data_Primatrix_temp() , Data_Primatrix, Data_Additive_temp(), Data_Additive, Data_Filler_temp(), Data_Filler, Data_Other))
+ Data_MatrixM_new <- reactive(BuildnewMatrix.df(addmatrix(), addadditive(), addfiller(), Data_Primatrix_temp() , Data_Primatrix, Data_Additive_temp(), Data_Additive, Data_Filler_temp(), Data_Filler, Data_Other))
   
  Data_Primatrix_new <- reactive(subset(Data_MatrixM_new(), Type_Matrix == "Matrix"))
  Data_Additive_new <- reactive(subset(Data_MatrixM_new(), Type_Matrix == "Additive"))
@@ -754,8 +759,11 @@ shinyServer(function(input, output, session) {
   
   # Inserts ----
   # Make Inserts dataframe if custom data
+  addinsert <- reactiveValues()
+  addinsert <- reactive(gobutton(input$insert_add_E, input$goinsert, input$Re_Custom))
+  
   Data_Insert_temp <- reactiveValues()
-  Data_Insert_temp  <- eventReactive(input$goinsert, {
+  Data_Insert_temp  <- eventReactive(c(input$goinsert, input$Re_Custom, addinsert()), {
     insert.name <- input$insert_add
     insert.Ener <- as.double(input$insert_add_E)
     
@@ -765,7 +773,7 @@ shinyServer(function(input, output, session) {
   })
   
   Data_Insert_new <- reactiveValues()
-  Data_Insert_new <- reactive(whichone(input$goinsert, Data_Insert_temp(), Data_Insert))
+  Data_Insert_new <- reactive(whichone(addinsert(), Data_Insert_temp(), Data_Insert))
   
   # Make Inserts list for box if custom data
   ins1a_selected <- reactive(whichselect(Re_input1.df(), Input_List1,"InsertsAInput"))
@@ -896,8 +904,11 @@ shinyServer(function(input, output, session) {
   })
 
   # Make dataframe Box if  custom data
+  addint <- reactiveValues()
+  addint <- reactive(gobutton(input$int_add_E, input$goint, input$Re_Custom))
+  
   Data_Int_temp  <- reactiveValues()
-  Data_Int_temp  <- eventReactive(input$goint, {
+  Data_Int_temp  <- eventReactive(c(input$goint, input$Re_Custom, addint()), {
     int.name <- input$int_add
     int.Ener <- as.double(input$int_add_E)
     int.Scrap <- 0
@@ -913,7 +924,7 @@ shinyServer(function(input, output, session) {
   
   # dataframe for if custom data or not
   Data_Int_new <- reactiveValues()
-  Data_Int_new <- reactive(whichone(input$goint, Data_Int_temp(), Data_Int))
+  Data_Int_new <- reactive(whichone(addint(), Data_Int_temp(), Data_Int))
   
   # Make list Box : choose if check box is selected
   
@@ -1066,8 +1077,18 @@ shinyServer(function(input, output, session) {
   })
     
   # Make dataframe for box if custom values used
+  calccureE <- reactive(calcenergy(input$cure_add_E_m, input$cure_add_E_P_M, input$cure_add_E_per_M, input$cure_add_E_t_M, input$cure_add_E_P_p, input$cure_add_E_per_p, input$cure_add_E_t_p,
+                                   input$cure_add_E_P_c, input$cure_add_E_per_c, input$cure_add_E_t_c,input$cure_add_E_P_h, input$cure_add_E_per_h, input$cure_add_E_t_h,
+                                   input$cure_add_E_P_o, input$cure_add_E_per_o, input$cure_add_E_t_o))
+  output$calcedcureE <- renderText({paste(signif(calccureE(), digits = 3), "MJ/kg")})
+  
+  cure.Ener <- reactive(whichenergy(input$cure_add_EYN, calccureE(), input$cure_add_E_Y))
+  addcure <- reactiveValues()
+  addcure <- reactive(gobutton(cure.Ener(), input$gocure, input$Re_Custom))
+  
+  
   Data_Cure_temp  <- reactiveValues()
-  Data_Cure_temp  <- eventReactive(input$gocure, {
+  Data_Cure_temp  <- eventReactive(c(input$gocure, input$Re_Custom, addcure()), {
     cure.name <- as.character(input$cure_add)
     cure.E.calc <- calcenergy(input$cure_add_E_m, input$cure_add_E_P_M, input$cure_add_E_per_M, input$cure_add_E_t_M, input$cure_add_E_P_p, input$cure_add_E_per_p, input$cure_add_E_t_p,
                             input$cure_add_E_P_c, input$cure_add_E_per_c, input$cure_add_E_t_c,input$cure_add_E_P_h, input$cure_add_E_per_h, input$cure_add_E_t_h,
@@ -1078,13 +1099,9 @@ shinyServer(function(input, output, session) {
       add_row(Name_Cure = cure.name,
               Energy_Cure = cure.Ener)
   })
-  calccureE <- reactive(calcenergy(input$cure_add_E_m, input$cure_add_E_P_M, input$cure_add_E_per_M, input$cure_add_E_t_M, input$cure_add_E_P_p, input$cure_add_E_per_p, input$cure_add_E_t_p,
-                          input$cure_add_E_P_c, input$cure_add_E_per_c, input$cure_add_E_t_c,input$cure_add_E_P_h, input$cure_add_E_per_h, input$cure_add_E_t_h,
-                          input$cure_add_E_P_o, input$cure_add_E_per_o, input$cure_add_E_t_o))
-  output$calcedcureE <- renderText({paste(signif(calccureE(), digits = 3), "MJ/kg")})
-  
+ 
   Data_Cure_new  <- reactiveValues()
-  Data_Cure_new <- reactive(whichone(input$gocure, Data_Cure_temp(), Data_Cure))
+  Data_Cure_new <- reactive(whichone(addcure(), Data_Cure_temp(), Data_Cure))
   
   # Make list for box if custom values used
   cure1_selected <- reactive(whichselect(Re_input1.df(), Input_List1,"cureInput"))
@@ -1154,14 +1171,14 @@ shinyServer(function(input, output, session) {
     validate(
       need(curenamefetch1(), "Choose Curing Technology"),
       need(input$moldyieldUSERNum1 >=0, "Yield cannot be negative"),
-      need(input$moldyieldUSERNum1 <100, "Yield cannot be greater than 100%")      ) 
+      need(input$moldyieldUSERNum1 <=100, "Yield cannot be greater than 100%")      ) 
     ({paste(cureenergyfetch1(), "MJ/kg")}                   )})
   
   output$cureEnergyNum2 <- renderText({
     validate(
       need(curenamefetch2(), "Choose Curing Technology"),
       need(input$moldyieldUSERNum2 >=0, "Yield cannot be negative"),
-      need(input$moldyieldUSERNum2 <100, "Yield cannot be greater than 100%")      ) 
+      need(input$moldyieldUSERNum2 <=100, "Yield cannot be greater than 100%")      ) 
     ({paste(cureenergyfetch2(), "MJ/kg")}                   )})
   
   #Citations
@@ -1183,8 +1200,11 @@ shinyServer(function(input, output, session) {
   
   # Finish ----
   #Make Dataframe for box if custom balues used
+  addfinish <- reactiveValues()
+  addfinish <- reactive(gobutton(input$finish_add_E, input$gofinish, input$Re_Custom))
+  
   Data_Finish_temp  <- reactiveValues()
-  Data_Finish_temp  <- eventReactive(input$gofinish, {
+  Data_Finish_temp  <- eventReactive(c(input$gofinish, input$Re_Custom, addfinish()), {
     finish.name <- as.character(input$finish_add)
     finish.Ener <- as.double(input$finish_add_E)
     
@@ -1194,7 +1214,7 @@ shinyServer(function(input, output, session) {
   })
   
   Data_Finish_new  <- reactiveValues()
-  Data_Finish_new <- reactive(whichone(input$gofinish, Data_Finish_temp(), Data_Finish))
+  Data_Finish_new <- reactive(whichone(addfinish(), Data_Finish_temp(), Data_Finish))
   
   observeEvent(input$re_input1, {
     updateNumericInput(session, "finishscrap1", value = whichselect(Re_input1.df(), Input_List1, "finishscrap"))
@@ -1861,12 +1881,12 @@ shinyServer(function(input, output, session) {
 
   # Attach tables to download buttons
      output$DL_results1 <- downloadHandler(
-     filename = "CFRP_Results1.csv",
+     filename = function() {paste(input$DLR1_name, ".csv")},
      content = function(file) {
        write.csv(RESULTSTABLE1(), file)
      }   )
      output$DL_results2 <- downloadHandler(
-       filename = "CFRP_Results2.csv",
+       filename = function() {paste(input$DLR2_name, ".csv")},
        content = function(file) {
          write.csv(RESULTSTABLE2(), file)
        }   )
@@ -1878,8 +1898,8 @@ e1table <- isolate(reactive(energy_data1.df()))
 e2table <- isolate(reactive(energy_data2.df()))
 
      output$zipcalcs <- downloadHandler(
-         filename = 'CFRP_Tool_Calcualtion_Data.zip',
-         content = function(fname){
+       filename = function() {paste(input$DLC_name, ".zip")},
+       content = function(fname){
            Sys.setenv(R_CMDZIP = 'C:/Rtools/bin/zip')
     tmpdir <- tempdir()
     setwd(tempdir())
@@ -1943,21 +1963,16 @@ contentType = "application/zip"
      
       #Download     Attach tables to download buttons
      output$DL_inputs1 <- downloadHandler(
-       filename = "CFRP_Inputs1.csv",
+       filename = function() {paste(input$DLI1_name, ".csv")},
        content = function(file) {
          write.csv(Final_Input1(), file, row.names = FALSE)
        }   )
      output$DL_inputs2 <- downloadHandler(
-       filename = "CFRP_Inputs2.csv",
+       filename = function() {paste(input$DLI2_name, ".csv")},
        content = function(file) {
          write.csv(Final_Input2(), file, row.names = FALSE)
        }   )
       #Download custom data
-     
-     mold.Ener <- reactive(whichenergy(input$mold_add_EYN, calcmoldE(), input$mold_add_E_Y))
-     cure.Ener <- reactive(whichenergy(input$cure_add_EYN, calccureE(), input$cure_add_E_Y))
-     
-     
      Name_List <- reactive(c(input$fiber_add, input$matrix_add, input$additive_add, input$filler_add,
                               input$insert_add, input$int_add, input$mold_add, input$cure_add, input$finish_add, rep("NA", 35)))
      Energy_List <- reactive(c(input$fiber_add_E,input$matrix_add_E,input$additive_add_E,input$filler_add_E,
@@ -1980,8 +1995,8 @@ contentType = "application/zip"
     
      output$table1f <- renderTable(Custom_Input())
       output$DL_custom <- downloadHandler(
-       filename = "CFRP_Add_Custom.csv",
-       content = function(file) {
+        filename = function() {paste(input$DLCustom_name, ".csv")},
+        content = function(file) {
          write.csv(Custom_Input(), file, row.names = FALSE)
        }   )
      

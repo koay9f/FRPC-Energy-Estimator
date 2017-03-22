@@ -1,7 +1,7 @@
 library(tidyverse)
 
 
-#  FUNCTIONS TO MAKE SERVER.R WORK ----
+#  FUNCTIONS TO MAKE SERVER.R WORK 
 # Citations ----
 Data_Cite <- read.csv("data/Data_Citations.csv")
 cite_name = Data_Cite$Name
@@ -62,6 +62,25 @@ whichenergy <-  function(addYN, calced, user){
     calced
   }
 }
+
+# substitute for actionbutton clicking
+gobutton <- function(AddEV, go, Re) {
+  if (is.double(AddEV)){
+  if (AddEV == 0) {
+    0
+  } else if (go > 0 ) {
+    1
+  } else if (!is.null(Re)) {
+    1
+  } else {0}
+} else   if (is.integer(AddEV)){
+  if (AddEV == 0) {
+    0
+  } else if (go > 0 ) {
+    1
+  } else if (!is.null(Re)) {
+    1
+  } else {0}} else {0}}
 
 # Specific Additional materials given type ----
 othermatfxn <- function(typeother, matrix, additive, filler){
@@ -352,15 +371,17 @@ finaldf <- function(name1, name2, AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK, YF
   tempdf <- data_frame(
     Part1 = c(AA, BB, sum(CC, DD,EE, FF, GG), HH, II, JJ, KK, sum(AA, BB, CC, DD,EE, FF, GG, HH, II, JJ, KK), YF1*100, YM1*100, YT1*100),
     Part2 = c(AA2, BB2, sum(CC2, DD2, EE2, FF2, GG2), HH2, II2, JJ2, KK2, sum(AA2, BB2, CC2, DD2, EE2, FF2, GG2, HH2, II2, JJ2, KK2), YF2*100, YM2*100, YT2*100)
-  )
+        )
   
   tempdf <- tempdf %>%
     rowwise() %>%
     mutate(Percent_change = pd(Part1, Part2))
   
   displaydf <- t(tempdf)
-  suppressWarnings( rownames(displaydf) <- c(name1,name2, "Percent Change (%)"))
-  suppressWarnings( colnames(displaydf) <- c("Fiber", "Primary Matrix Material", "Other Materials", "Intermediate", "Molding", "Curing", "Finishing", "Total", "Fiber Yield", "Matrix Yield", "Process Yield"))
+  suppressWarnings( rownames(displaydf) <- c(name1, name2, "Percent Change (%)"))
+  suppressWarnings( colnames(displaydf) <- c("Fiber (MJ)", "Primary Matrix Material (MJ)", "Other Materials (MJ)", "Intermediate (MJ)",
+                                             "Molding (MJ)", "Curing (MJ)", "Finishing (MJ)", "Total (MJ)",
+                                             "Fiber Yield (%)", "Matrix Yield (%)", "Process Yield (%)"))
   
   displaydf
 }
@@ -370,9 +391,7 @@ inputsdf <- function(inputtable, values){
   in.df <- inputtable
   in.df[["User"]] <- values
 
-  in.df
-  
-}
+  in.df}
 
 # Rerun ----
 whichselect <- function(rer, def, vari){
@@ -407,12 +426,4 @@ customdf <- function(inputtable, names, values){
   in.df[["Values"]] <- values
   in.df
 }
-cYNcheck <- function(rer,vari){
-  rowcall <- dplyr::filter (rer, Description == vari) %>% select(3)
-  YN <- if (rowcall == "TRUE") {
-    1
-  } else if (rowcall == "FALSE") {
-    0
-  }
-  YN
-}
+
