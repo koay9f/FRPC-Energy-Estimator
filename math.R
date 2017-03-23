@@ -82,6 +82,7 @@ gobutton <- function(AddEV, go, Re) {
     1
   } else {0}} else {0}}
 
+
 # Specific Additional materials given type ----
 othermatfxn <- function(typeother, matrix, additive, filler){
   if (typeother == "Not Used" ) {
@@ -163,7 +164,41 @@ intlistfxn <- function(moldtype) {
       c("Chopped", "Dry Weave", "Dry Knit", "Powdered P4")
   }  else {
       c("Prepregs, Manual, Fabric (TS)", "Prepregs, Auto, Tape (TS)", "Prepregs, Auto, Fiber (TS)", "Prepregs, Manual, Fabric (TP)", "Prepregs, Auto, Tape (TP)", "Prepregs, Auto, Fiber (TP)", "Powdered P4", "Dry Weave", "Dry Braid", "Dry Knit", "Not Used")
-          }}
+  }}
+
+#If all int  should be yes or no
+
+checkallYN <- function(moldin, molddf, reload, add, IC){
+  vari <- if (IC == "Int") {    
+    "intYN"  
+  } else {    
+      "cureYN"    
+  }
+  
+  YN <- function(x,y){
+    rowcall <- dplyr::filter (x, Variable_Name == y) %>% select(4)
+    YN <- if (rowcall == "TRUE") {
+      1
+    } else if (rowcall == "FALSE") {
+      0
+    }
+    YN
+  }
+  
+  x <- if (!is.null(reload)) {
+    YN(reload, vari)
+  } else if (as.character(molddf[17,1]) == as.character(moldin)) {
+    1  
+  } else  if (add > 0 ) {
+    1
+  } else {0}
+    }
+
+togglebutton <- function(button){
+  one <- if (button == 0){ 1} else {0}
+  two <- if (one == 0) {1} else {0}
+  two
+}
 
 # FUNCTIONS USED FOR FINAL CALCULATIONS ----
 # Calculate yield from scrap
@@ -362,15 +397,15 @@ BIGFUNCTION2 <- function(Data_yield, partname,
 }
 
 # Results DataTable ----
-finaldf <- function(name1, name2, AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK, YF1, YM1, YT1,
+finaldf <- function(name1, name2, w1, w2, AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK, YF1, YM1, YT1,
                                   AA2, BB2, CC2, DD2, EE2, FF2, GG2, HH2, II2, JJ2, KK2, YF2, YM2, YT2){
   pd <- function (n1, n2){
     pd <- abs(n1-n2)*100/n1
     }
   
   tempdf <- data_frame(
-    Part1 = c(AA, BB, sum(CC, DD,EE, FF, GG), HH, II, JJ, KK, sum(AA, BB, CC, DD,EE, FF, GG, HH, II, JJ, KK), YF1*100, YM1*100, YT1*100),
-    Part2 = c(AA2, BB2, sum(CC2, DD2, EE2, FF2, GG2), HH2, II2, JJ2, KK2, sum(AA2, BB2, CC2, DD2, EE2, FF2, GG2, HH2, II2, JJ2, KK2), YF2*100, YM2*100, YT2*100)
+    Part1 = c(w1, AA, BB, sum(CC, DD,EE, FF, GG), HH, II, JJ, KK, sum(AA, BB, CC, DD,EE, FF, GG, HH, II, JJ, KK), YF1*100, YM1*100, YT1*100),
+    Part2 = c(w2, AA2, BB2, sum(CC2, DD2, EE2, FF2, GG2), HH2, II2, JJ2, KK2, sum(AA2, BB2, CC2, DD2, EE2, FF2, GG2, HH2, II2, JJ2, KK2), YF2*100, YM2*100, YT2*100)
         )
   
   tempdf <- tempdf %>%
@@ -379,9 +414,10 @@ finaldf <- function(name1, name2, AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK, YF
   
   displaydf <- t(tempdf)
   suppressWarnings( rownames(displaydf) <- c(name1, name2, "Percent Change (%)"))
-  suppressWarnings( colnames(displaydf) <- c("Fiber (MJ)", "Primary Matrix Material (MJ)", "Other Materials (MJ)", "Intermediate (MJ)",
+  suppressWarnings( colnames(displaydf) <- c("Part Weight (kg)", "Fiber (MJ)", "Primary Matrix Material (MJ)", "Other Materials (MJ)", "Intermediate (MJ)",
                                              "Molding (MJ)", "Curing (MJ)", "Finishing (MJ)", "Total (MJ)",
                                              "Fiber Yield (%)", "Matrix Yield (%)", "Process Yield (%)"))
+  
   
   displaydf
 }

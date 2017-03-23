@@ -181,8 +181,6 @@ shinyServer(function(input, output, session) {
   addmold <- reactiveValues()
   addmold <- reactive(gobutton(mold.Ener(), input$gomold, input$Re_Custom))
 
-  # output$testadd <- renderText(as.logical(addmold()))
-  
   Data_Mold_temp <- eventReactive( c(input$gomold, input$Re_Custom, addmold()), {
     mold.name <- as.character(input$mold_add)
     mold.E.calc <- calcenergy(input$mold_add_E_m, input$mold_add_E_P_M, input$mold_add_E_per_M, input$mold_add_E_t_M, input$mold_add_E_P_p, input$mold_add_E_per_p, input$mold_add_E_t_p,
@@ -198,28 +196,29 @@ shinyServer(function(input, output, session) {
               Yield_Mold = 1)
   })
   
-
   output$calcedmoldE <- renderText({paste(signif(calcmoldE(), digits = 3), "MJ/kg")})
-  
   
   Data_Mold_new  <- reactiveValues()
   Data_Mold_new  <- reactive(whichone(addmold(), Data_Mold_temp(), Data_Mold))
   
   mold1_selected <- reactive(whichselect(Re_input1.df(), Input_List1,"moldingInput"))
   mold2_selected <- reactive(whichselect(Re_input2.df(), Input_List2,"moldingInput"))
-   # output$testre1 <- renderText(mold1_selected())
-  
+
    # Change Select box if add new molding process
   observe( { 
     updateSelectizeInput(session, 'moldingInput1',
                          choices = Data_Mold_new()$Name_Mold,
-                         selected = mold1_selected(),
+                         selected = "",
                          server = TRUE)
     updateSelectizeInput(session, 'moldingInput2',
                          choices = Data_Mold_new()$Name_Mold,
-                         selected = mold2_selected(),
+                         selected = "",
                          server = TRUE)
   })
+  
+  observeEvent(input$re_input1, {updateSelectizeInput(session, 'moldingInput1', selected = mold1_selected())  })
+  observeEvent(input$re_input2, {updateSelectizeInput(session, 'moldingInput2', selected = mold2_selected())  })
+  
   
   #Match Names to Table
   moldnamefetch1 <- eventReactive(input$moldingInput1,{
@@ -315,16 +314,7 @@ shinyServer(function(input, output, session) {
       updateNumericInput(session, "moldfracUSERNum2", value = whichselect(Re_input2.df(), Input_List2, "moldfracUSERNum"))
       updateNumericInput(session, "moldyieldUSERNum2", value = whichselect(Re_input1.df(), Input_List1, "moldyieldUSERNum"))
           } })
-  
-  #If adding custom molding process make all int & cure options available
-  
-  observeEvent(c(input$gomold, input$Re_Custom, addmold()), {
-    checkx <- if (addmold() == 0) {0} else {1}
-    updateCheckboxInput(session, "intYN1", value = as.logical(checkx))
-    updateCheckboxInput(session, "intYN2", value = as.logical(checkx))
-    updateCheckboxInput(session, "cureYN1", value = as.logical(checkx))
-    updateCheckboxInput(session, "cureYN2", value = as.logical(checkx))
-  })
+
   # Fiber ----
   # Make dataframe for Box if  custom data
   addfiber <- reactiveValues()
@@ -350,14 +340,17 @@ shinyServer(function(input, output, session) {
   observe({ 
     updateSelectizeInput(session, 'fiberInput1',
                          choices = Data_Fiber_new()$Name_Fiber,
-                         selected = fiber1_selected(),
+                         selected = "",
                          server = TRUE)
     updateSelectizeInput(session, 'fiberInput2',
                          choices = Data_Fiber_new()$Name_Fiber,
-                         selected = fiber2_selected(),
+                         selected = "",
                          server = TRUE)
   })
-
+  
+  observeEvent(input$re_input1, {updateSelectizeInput(session, 'fiberInput1', selected = fiber1_selected())})
+  observeEvent(input$re_input2, {updateSelectizeInput(session, 'fiberInput2', selected = fiber2_selected())})
+  
   #Match Names to Table
   fibernamefetch1 <- eventReactive(input$fiberInput1,{
     Data_Fiber_new()$Name_Fiber[Data_Fiber_new()$Name_Fiber %in% input$fiberInput1]  })
@@ -442,13 +435,16 @@ shinyServer(function(input, output, session) {
   observe({ 
     updateSelectizeInput(session, 'PriMatrixInput1',
                          choices = Data_Primatrix_new()$Name_Matrix,
-                         selected = PM1_selected(),
+                         selected = "",
                          server = TRUE)
     updateSelectizeInput(session, 'PriMatrixInput2',
                          choices = Data_Primatrix_new()$Name_Matrix,
-                         selected = PM2_selected(),
+                         selected = "",
                          server = TRUE)
   })
+  
+  observeEvent(input$re_input1, {updateSelectizeInput(session, 'PriMatrixInput1', selected = PM1_selected())})
+  observeEvent(input$re_input2, {updateSelectizeInput(session, 'PriMatrixInput2', selected = PM2_selected())})
 
   # Matrix mass fraction = 1 - fiber or from upload
   observe({
@@ -785,21 +781,28 @@ shinyServer(function(input, output, session) {
   observe({
     updateSelectizeInput(session, 'InsertsAInput1',
                          choices = Data_Insert_new()$Name_Inserts,
-                         selected = ins1a_selected(),
+                         selected = "Not Used",
                          server = TRUE)
     updateSelectizeInput(session, 'InsertsBInput1',
                          choices = Data_Insert_new()$Name_Inserts,
-                         selected =ins1b_selected(),
+                         selected ="Not Used",
                          server = TRUE)
     updateSelectizeInput(session, 'InsertsAInput2',
                          choices = Data_Insert_new()$Name_Inserts,
-                         selected = ins2a_selected(),
+                         selected = "Not Used",
                          server = TRUE)
     updateSelectizeInput(session, 'InsertsBInput2',
                          choices = Data_Insert_new()$Name_Inserts,
-                         selected = ins2b_selected(),
+                         selected = "Not Used",
                          server = TRUE)
   })
+  
+  
+  observeEvent(input$re_input1, {updateSelectizeInput(session, 'InsertsAInput1', selected = ins1a_selected())})
+  observeEvent(input$re_input1, {updateSelectizeInput(session, 'InsertsBInput1', selected = ins1b_selected())})
+  
+  observeEvent(input$re_input2, {updateSelectizeInput(session, 'InsertsAInput2', selected = ins2a_selected())})
+  observeEvent(input$re_input2, {updateSelectizeInput(session, 'InsertsBInput2', selected = ins2b_selected())})
   
   # Associate Names To Table
   insertsAnamefetch1  <- eventReactive(input$InsertsAInput1,{
@@ -895,17 +898,22 @@ shinyServer(function(input, output, session) {
   # Intermediate ----
   #Update if REload
   observeEvent(input$re_input1, {
-    updateCheckboxInput(session, "intYN1", value = as.logical(YNcheck(Re_input1.df(), "intYN")))
+    #why isn't scrap rate listed here?
     updateNumericInput(session, "intscraprecycle1", value = whichselect(Re_input1.df(), Input_List1, "intscraprecycle"))
   })
   observeEvent(input$re_input2, {
-    updateCheckboxInput(session, "intYN2", value = as.logical(YNcheck(Re_input2.df(), "intYN")))
     updateNumericInput(session, "intscraprecycle2", value = whichselect(Re_input2.df(), Input_List2, "intscraprecycle"))
   })
-
+  
   # Make dataframe Box if  custom data
   addint <- reactiveValues()
   addint <- reactive(gobutton(input$int_add_E, input$goint, input$Re_Custom))
+  
+  qintyn1 <- reactive(as.logical(checkallYN(input$moldingInput1, Data_Mold_temp(), Re_input1.df(), addint(), "Int")))
+  qintyn2 <- reactive(as.logical(checkallYN(input$moldingInput2, Data_Mold_temp(), Re_input2.df(), addint(), "Int")))
+  
+  observe(updateCheckboxInput(session, "intYN1", value = qintyn1()))
+  observe(updateCheckboxInput(session, "intYN2", value = qintyn2()))
   
   Data_Int_temp  <- reactiveValues()
   Data_Int_temp  <- eventReactive(c(input$goint, input$Re_Custom, addint()), {
@@ -924,47 +932,40 @@ shinyServer(function(input, output, session) {
   
   # dataframe for if custom data or not
   Data_Int_new <- reactiveValues()
-  Data_Int_new <- reactive(whichone(addint(), Data_Int_temp(), Data_Int))
+  Data_Int_new <- eventReactive(addint(), {whichone(addint(), Data_Int_temp(), Data_Int)})
   
   # Make list Box : choose if check box is selected
-  
   int1_selected <- reactive(whichselect(Re_input1.df(), Input_List1,"intInput"))
   int2_selected <- reactive(whichselect(Re_input2.df(), Input_List2,"intInput"))
   
-  observeEvent({
-    input$intYN1
-    input$moldingInput1} ,{
+  observeEvent(c(input$intYN1, input$moldingInput1, addint()) , {
       intlist1 <- intlistfxn(input$moldingInput1)
-      if (input$intYN1 == TRUE) {
-        updateSelectizeInput(session, 'intInput1',
-                             choices = Data_Int_new()$Name_Int,
-                             selected = int1_selected(),
-                             server = TRUE)
-      }
-      else 
-        updateSelectizeInput(session, 'intInput1',
-                             choices = intlist1,
-                             selected = int1_selected(),
-                             server = TRUE)
-    })
+     if (input$intYN1 == 0) {
+       updateSelectizeInput(session, 'intInput1',
+                            choices = intlist1,
+                            selected = int1_selected(),
+                            server = TRUE)
+     } else {
+       updateSelectizeInput(session, 'intInput1',
+                            choices = Data_Int_new()$Name_Int,
+                            selected = int1_selected(),
+                            server = TRUE)
+     }      })
   
-  observeEvent({
-    input$intYN2
-    input$moldingInput2} ,{
-      intlist2 <- intlistfxn(input$moldingInput2)
-      if (input$intYN2 == TRUE) {
-        updateSelectizeInput(session, 'intInput2',
-                             choices = Data_Int_new()$Name_Int,
-                             selected = int2_selected(),
-                             server = TRUE)
-      }
-      else 
+  observeEvent(c(input$intYN2, input$moldingInput2, addint()) , {
+    intlist2 <- intlistfxn(input$moldingInput2)
+      if (input$intYN2 == 0) {
         updateSelectizeInput(session, 'intInput2',
                              choices = intlist2,
                              selected = int2_selected(),
                              server = TRUE)
-    })
-  
+      } else {
+        updateSelectizeInput(session, 'intInput2',
+                             choices = Data_Int_new()$Name_Int,
+                             selected = int2_selected(),
+                             server = TRUE)
+      }    })
+
   #Match Names to Table
   intnamefetch1 <- eventReactive(input$intInput1,{
     int_name <- Data_Int_new()$Name_Int
@@ -1068,13 +1069,18 @@ shinyServer(function(input, output, session) {
   observeEvent(input$re_input1, {
     updateNumericInput(session, "moldyieldUSERNum1", value = whichselect(Re_input1.df(), Input_List1, "moldyieldUSERNum"))
     updateNumericInput(session, "moldyieldrecycle1", value = whichselect(Re_input1.df(), Input_List1, "moldyieldrecycle"))
-    updateCheckboxInput(session, "cureYN1", value = as.logical(YNcheck(Re_input1.df(), "cureYN")))
   })
   observeEvent(input$re_input2, {
     updateNumericInput(session, "moldyieldUSERNum2", value = whichselect(Re_input2.df(), Input_List2, "moldyieldUSERNum"))
     updateNumericInput(session, "moldyieldrecycle2", value = whichselect(Re_input2.df(), Input_List2, "moldyieldrecycle"))
-    updateCheckboxInput(session, "cureYN2", value = as.logical(YNcheck(Re_input2.df(), "cureYN")))
   })
+  
+  qcureyn1 <- reactive(as.logical(checkallYN(input$moldingInput1, Data_Mold_temp(), Re_input1.df(), addcure(), "Cure")))
+  qcureyn2 <- reactive(as.logical(checkallYN(input$moldingInput2, Data_Mold_temp(), Re_input2.df(), addcure(), "Cure")))
+  
+  observe(updateCheckboxInput(session, "cureYN1", value = qcureyn1()))
+  observe(updateCheckboxInput(session, "cureYN2", value = qcureyn2()))
+  
     
   # Make dataframe for box if custom values used
   calccureE <- reactive(calcenergy(input$cure_add_E_m, input$cure_add_E_P_M, input$cure_add_E_per_M, input$cure_add_E_t_M, input$cure_add_E_P_p, input$cure_add_E_per_p, input$cure_add_E_t_p,
@@ -1107,41 +1113,34 @@ shinyServer(function(input, output, session) {
   cure1_selected <- reactive(whichselect(Re_input1.df(), Input_List1,"cureInput"))
   cure2_selected <- reactive(whichselect(Re_input2.df(), Input_List2,"cureInput"))
   
-  observeEvent({
-    input$cureYN1
-    input$moldingInput1} ,{
-      curelist1 <- curelistfxn(input$moldingInput1, allcure, onlymoldcure, wetcure, vbcure)
-      if (input$cureYN1 == TRUE) {
-        updateSelectizeInput(session, 'cureInput1',
-                             choices = Data_Cure_new()$Name_Cure,
-                             selected = cure1_selected(),
-                             server = TRUE)
-      }
-      else 
+  observeEvent(c(input$cureYN1, input$moldingInput1, addcure()) , {
+    curelist1 <- curelistfxn(input$moldingInput1, allcure, onlymoldcure, wetcure, vbcure)
+      if (input$cureYN1 == 0) {
         updateSelectizeInput(session, 'cureInput1',
                              choices = curelist1,
                              selected = cure1_selected(),
                              server = TRUE)
-    })
-  
-  observeEvent({
-    input$cureYN2
-    input$moldingInput2} ,{
-      curelist2 <- curelistfxn(input$moldingInput2, allcure, onlymoldcure, wetcure, vbcure)
-      if (input$cureYN2 == TRUE) {
-        updateSelectizeInput(session, 'cureInput2',
+      } else {
+        updateSelectizeInput(session, 'cureInput1',
                              choices = Data_Cure_new()$Name_Cure,
-                             selected = cure2_selected(),
+                             selected = cure1_selected(),
                              server = TRUE)
-      }
-      else 
+      } })
+  
+  observeEvent(c(input$cureYN2, input$moldingInput2, addcure()) , {
+    curelist2 <- curelistfxn(input$moldingInput2, allcure, onlymoldcure, wetcure, vbcure)
+      if (input$cureYN2 == 0) {
         updateSelectizeInput(session, 'cureInput2',
                              choices = curelist2,
                              selected = cure2_selected(),
                              server = TRUE)
-    })
-  
-  
+      } else {
+        updateSelectizeInput(session, 'cureInput2',
+                             choices = Data_Cure_new()$Name_Cure,
+                             selected = cure2_selected(),
+                             server = TRUE)
+      } })
+
   #Match Names to Table
   curenamefetch1 <- eventReactive(input$cureInput1,{
     c_name <- Data_Cure_new()$Name_Cure
@@ -1231,15 +1230,17 @@ shinyServer(function(input, output, session) {
   observe( { 
     updateSelectizeInput(session, 'finishInput1',
                          choices = Data_Finish_new()$Name_Finishing,
-                         selected =  fin1_selected(),
+                         selected =  "",
                          server = TRUE)
     updateSelectizeInput(session, 'finishInput2',
                          choices = Data_Finish_new()$Name_Finishing,
-                         selected =  fin1_selected(),
+                         selected =  "",
                          server = TRUE)
   })
   
-
+  observeEvent(input$re_input1, {updateSelectizeInput(session, 'cureInput1', selected = fin1_selected())})
+  observeEvent(input$re_input2, {updateSelectizeInput(session, 'cureInput2', selected = fin2_selected())})
+  
   #Match Names to Table
   finishnamefetch1 <- eventReactive(input$finishInput1,{
     Data_Finish_new()$Name_Finishing[Data_Finish_new()$Name_Finishing %in% input$finishInput1]  })
@@ -1739,8 +1740,7 @@ shinyServer(function(input, output, session) {
   
     
     # Final Graph ----
-    
-   energy_plot.df <- reactive({
+    energy_plot.df <- reactive({
      validate(
        need(sum(input$moldfracUSERNum1, input$primatrixfrac1, input$othermatrixAfrac1, 
                 input$othermatrixBfrac1, input$othermatrixCfrac1) == 100,      "Sum of Mass Fractions should add to 100% (1)")
@@ -1778,8 +1778,6 @@ shinyServer(function(input, output, session) {
      , order = rep(c(1, 2, 3, 4, 5, 6, 7), 2)
        )})
 
-    
-    
    fill <- c("Fiber" = "#2960A8", "Intermediate"  = "#74A138", "Primary Matrix Material" = "#C46827",
              "Other Materials"= "#24A7C1", "Molding" = "#8D2A1E", "Curing" = "#E2B500", "Finishing" = "#8A9FCF")
    
@@ -1802,8 +1800,6 @@ shinyServer(function(input, output, session) {
          })
    
   # display table
-
-     
    Resultsdf <- reactive({
      validate(
          need(sum(input$moldfracUSERNum2, input$primatrixfrac2, input$othermatrixAfrac2, input$othermatrixBfrac2, input$othermatrixCfrac2) == 100,      "")       
@@ -1838,7 +1834,7 @@ shinyServer(function(input, output, session) {
      y.m2 <- reactive(as.double(yield_data2.df()$yield_cumulative[6]))
      
      
-     finaldf(partname1e(), partname2e(), 
+     finaldf(partname1e(), partname2e(), finalweight1(), finalweight2(),
                                  E.f.fib1(), E.f.pm1(), E.f.ma1(), E.f.mb1(), E.f.mc1(), E.f.ia1(), E.f.ib1(), E.f.int1(), E.f.mold1(), E.f.cure1(), E.f.fin1(), y.f1(), y.m1(), y.f1(),
                                  E.f.fib2(), E.f.pm2(), E.f.ma2(), E.f.mb2(), E.f.mc2(), E.f.ia2(), E.f.ib2(), E.f.int2(), E.f.mold2(), E.f.cure2(), E.f.fin2(), y.f2(), y.m2(), y.f2())
      })
