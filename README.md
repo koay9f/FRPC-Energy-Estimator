@@ -1,4 +1,4 @@
-# CFRP Energy Estimation Tool
+# FRPC Energy Estimation Tool
 This tool will allow users to estimate the embodied energy of CFRP manufacturing including: 
 - materials (fiber & matrix) manufacturing
 - intermediate manufacturing
