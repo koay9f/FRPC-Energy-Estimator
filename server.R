@@ -41,8 +41,6 @@ Input_List1 <- read_csv("data/Defaults1.csv")
 Input_List2 <- read_csv("data/Defaults2.csv")
 Custom_List <- read_csv("data/DefaultsC.csv")
 
-
-
 source("math.R") #ensure Data_Cite has been read first!!
 
 #Talk to server ----
@@ -139,8 +137,7 @@ shinyServer(function(input, output, session) {
     updateTextInput(session, "finish_add", value = as.character(custommatch_name(Re_custom.df(), "Finish")))
     updateNumericInput(session, "finish_add_E", value = as.double(custommatch_energy(Re_custom.df(), "Finish")))
   })
-  #output$table1e <- renderTable(Re_input1.df())
-  
+
   # Initial Page (not molding) ----
   # (none) = first use; a = int; b = matrix; c = mold; d= summary;  e or z = calcs
   observeEvent(input$re_input1, {
@@ -168,14 +165,13 @@ shinyServer(function(input, output, session) {
   partname2e<- reactive(input$name2)
   output$partweight2d <- output$partweight2c <- output$partweight2b <- output$partweight2a <- output$partweight2 <- renderText({paste(input$finalweight2, "kg")})
   
-
   # Molding ----
-  # Build new dataframe if add new molding process
-  calcmoldE <- reactive(calcenergy(input$mold_add_E_m, input$mold_add_E_P_M, input$mold_add_E_per_M, input$mold_add_E_t_M, input$mold_add_E_P_p, input$mold_add_E_per_p, input$mold_add_E_t_p,
-                                   input$mold_add_E_P_c, input$mold_add_E_per_c, input$mold_add_E_t_c,input$mold_add_E_P_h, input$mold_add_E_per_h, input$mold_add_E_t_h,
-                                   input$mold_add_E_P_o, input$mold_add_E_per_o, input$mold_add_E_t_o))
-  mold.Ener <- reactive(whichenergy(input$mold_add_EYN, calcmoldE(), input$mold_add_E_Y))
-  
+  {
+   # Build dataframe for Box----
+  calcmoldE <-  reactive(calcenergy(input$mold_add_E_m, input$mold_add_E_P_M, input$mold_add_E_per_M, input$mold_add_E_t_M, input$mold_add_E_P_p, input$mold_add_E_per_p, input$mold_add_E_t_p,
+                                   input$mold_add_E_P_c, input$mold_add_E_per_c, input$mold_add_E_t_c,input$mold_add_E_P_h, input$mold_add_E_u_h, input$mold_add_E_per_h, input$mold_add_E_t_h,
+                                   input$mold_add_E_P_o, input$mold_add_E_u_o, input$mold_add_E_per_o, input$mold_add_E_t_o))
+  mold.Ener <- eventReactive(input$gomold,whichenergy(input$mold_add_EYN, calcmoldE(), input$mold_add_E_Y))
   
   Data_Mold_temp  <- reactiveValues()
   addmold <- reactiveValues()
@@ -184,8 +180,8 @@ shinyServer(function(input, output, session) {
   Data_Mold_temp <- eventReactive( c(input$gomold, input$Re_Custom, addmold()), {
     mold.name <- as.character(input$mold_add)
     mold.E.calc <- calcenergy(input$mold_add_E_m, input$mold_add_E_P_M, input$mold_add_E_per_M, input$mold_add_E_t_M, input$mold_add_E_P_p, input$mold_add_E_per_p, input$mold_add_E_t_p,
-                              input$mold_add_E_P_c, input$mold_add_E_per_c, input$mold_add_E_t_c,input$mold_add_E_P_h, input$mold_add_E_per_h, input$mold_add_E_t_h,
-                              input$mold_add_E_P_o, input$mold_add_E_per_o, input$mold_add_E_t_o)
+                              input$mold_add_E_P_c, input$mold_add_E_per_c, input$mold_add_E_t_c,input$mold_add_E_P_h, input$mold_add_E_u_h, input$mold_add_E_per_h, input$mold_add_E_t_h,
+                              input$mold_add_E_P_o, input$mold_add_E_u_o, input$mold_add_E_per_o, input$mold_add_E_t_o)
     mold.Ener <- whichenergy(input$mold_add_EYN, mold.E.calc, input$mold_add_E_Y)
     
     df <- isolate(Data_Mold) %>%
@@ -204,7 +200,7 @@ shinyServer(function(input, output, session) {
   mold1_selected <- reactive(whichselect(Re_input1.df(), Input_List1,"moldingInput"))
   mold2_selected <- reactive(whichselect(Re_input2.df(), Input_List2,"moldingInput"))
 
-   # Change Select box if add new molding process
+   # Make List for Box----
   observe( { 
     updateSelectizeInput(session, 'moldingInput1',
                          choices = Data_Mold_new()$Name_Mold,
@@ -220,43 +216,43 @@ shinyServer(function(input, output, session) {
   observeEvent(input$re_input2, {updateSelectizeInput(session, 'moldingInput2', selected = mold2_selected())  })
   
   
-  #Match Names to Table
+   # Match Names to Table----
   moldnamefetch1 <- eventReactive(input$moldingInput1,{
     Data_Mold_new()$Name_Mold[Data_Mold_new()$Name_Mold %in% input$moldingInput1]  })
   moldnamefetch2 <- eventReactive(input$moldingInput2,{
     Data_Mold_new()$Name_Mold[Data_Mold_new()$Name_Mold %in% input$moldingInput2]  })
   
-  #Match Energy to Name
+   # Match Energy to Name----
   moldenergyfetch1 <- eventReactive(input$moldingInput1,{
     Data_Mold_new()$Energy_Mold[Data_Mold_new()$Name_Mold %in% input$moldingInput1]  })
   moldenergyfetch2 <- eventReactive(input$moldingInput2,{
     Data_Mold_new()$Energy_Mold[Data_Mold_new()$Name_Mold %in% input$moldingInput2]  })
   
-  #Match ShortName to Name
-  
+   # Match ShortName to Name----
   moldshortfetch1 <-  eventReactive(input$moldingInput1,{
     Data_Mold_new()$ShortName_Mold[Data_Mold_new()$Name_Mold  %in% input$moldingInput1]  })
   moldshortfetch2 <- eventReactive(input$moldingInput2, {
    Data_Mold_new()$ShortName_Mold[Data_Mold_new()$Name_Mold %in% input$moldingInput2]})
   
-  # Match Fraction to Name
+   # Match Fraction to Name----
   moldfracfetch1 <- eventReactive(input$moldingInput1,{
     Data_Mold_new()$Frac_Fiber[Data_Mold_new()$Name_Mold %in% input$moldingInput1]  })
   moldfracfetch2 <- eventReactive(input$moldingInput2,{ 
     Data_Mold_new()$Frac_Fiber[Data_Mold_new()$Name_Mold %in% input$moldingInput2]  })
   
-  # Match Yield to Name
+   # Match Yield to Name----
   moldyieldfetch1 <- eventReactive(input$moldingInput1,{ 
    Data_Mold_new()$Yield_Mold[Data_Mold_new()$Name_Mold %in% input$moldingInput1]  })
   moldyieldfetch2 <- eventReactive(input$moldingInput2,{
     Data_Mold_new()$Yield_Mold[Data_Mold_new()$Name_Mold %in% input$moldingInput2]  })
   
+   # Match Citations to Name----
   moldcitefetch1 <- eventReactive(input$moldingInput1,{
     cite_source[cite_name %in% input$moldingInput1]  })
   moldcitefetch2 <- eventReactive(input$moldingInput2,{
     cite_source[cite_name %in% input$moldingInput2]  })
   
-  # Generate outputs
+   # Generate Outputs----
   moldname1 <- output$moldname1d <- output$moldname1c <- output$moldname1b <- output$moldname1a <- output$moldname1 <- renderText(moldnamefetch1())
   output$moldshort1d <- output$moldshort1c <- output$moldshort1b <- output$moldshort1a <- output$moldshort1 <- renderText(moldshortfetch1())
   output$moldfracNum1 <- renderText({paste(moldfracfetch1() *100, "%" )})
@@ -267,8 +263,7 @@ shinyServer(function(input, output, session) {
   output$moldfracNum2 <- renderText({paste(moldfracfetch2() *100, "%" )})
   output$moldyieldNum2 <- renderText({paste(moldyieldfetch2() *100, "%" )})
   
-  
-  #Display error message instead of blank energy number
+   # Generate error or energy number----
   output$EnergyNum1 <-  renderText({
     validate(
       need(moldnamefetch1(), "Choose Molding Technology"),   
@@ -281,7 +276,7 @@ shinyServer(function(input, output, session) {
       need(input$finalweight2 > 0, "Part Weight cannot be negative")       ) 
     ({paste(moldenergyfetch2(), "MJ/kg")}                   )})
   
-  #build citations
+   # Citations----
   moldcite1 <- renderText(as.character(moldcitefetch1()))
   observeEvent(input$moldingInput1, {
     validate(need(moldname1(), "")) 
@@ -292,7 +287,7 @@ shinyServer(function(input, output, session) {
     validate(need(moldname2(), "")) 
     showNotification(paste("Citation for ", moldname2(), ": ",moldcite2()), duration = 5, closeButton = TRUE, type = "message")})
   
-  # Update Fiber fractions & mold yield based on mold process choice
+   # Update Fiber fractions & mold yield based on mold process choice----
   observeEvent(input$moldingInput1,{
     if (is.null(input$re_input1)) {
     ff1 <- moldfracfetch1()
@@ -314,9 +309,10 @@ shinyServer(function(input, output, session) {
       updateNumericInput(session, "moldfracUSERNum2", value = whichselect(Re_input2.df(), Input_List2, "moldfracUSERNum"))
       updateNumericInput(session, "moldyieldUSERNum2", value = whichselect(Re_input1.df(), Input_List1, "moldyieldUSERNum"))
           } })
-
+}
   # Fiber ----
-  # Make dataframe for Box if  custom data
+  {
+   # Build dataframe for Box----
   addfiber <- reactiveValues()
   addfiber <- reactive(gobutton(input$fiber_add_E, input$gofiber, input$Re_Custom))
   
@@ -336,7 +332,7 @@ shinyServer(function(input, output, session) {
   fiber1_selected <- reactive(whichselect(Re_input1.df(), Input_List1,"fiberInput"))
   fiber2_selected <- reactive(whichselect(Re_input2.df(), Input_List2,"fiberInput"))
   
-  # Make List for Box if  custom data
+   # Make List for Box----
   observe({ 
     updateSelectizeInput(session, 'fiberInput1',
                          choices = Data_Fiber_new()$Name_Fiber,
@@ -351,14 +347,14 @@ shinyServer(function(input, output, session) {
   observeEvent(input$re_input1, {updateSelectizeInput(session, 'fiberInput1', selected = fiber1_selected())})
   observeEvent(input$re_input2, {updateSelectizeInput(session, 'fiberInput2', selected = fiber2_selected())})
   
-  #Match Names to Table
+   # Match Names to Table----
   fibernamefetch1 <- eventReactive(input$fiberInput1,{
     Data_Fiber_new()$Name_Fiber[Data_Fiber_new()$Name_Fiber %in% input$fiberInput1]  })
   
   fibernamefetch2 <- eventReactive(input$fiberInput2,{
     Data_Fiber_new()$Name_Fiber[Data_Fiber_new()$Name_Fiber %in% input$fiberInput2]  })
   
-  #Match Energy to Name
+   # Match Energy to Name----
   fiberenergyfetch1 <- eventReactive(input$fiberInput1,{
     f_name <- whichone(input$gofiber, Data_Fiber_new()$Name_Fiber, Data_Fiber$Name_Fiber)
     Data_Fiber_new()$Energy_Fiber[Data_Fiber_new()$Name_Fiber %in% input$fiberInput1]  })
@@ -367,17 +363,17 @@ shinyServer(function(input, output, session) {
     f_name <- whichone(input$gofiber, Data_Fiber_new()$Name_Fiber, Data_Fiber$Name_Fiber)
     Data_Fiber_new()$Energy_Fiber[Data_Fiber_new()$Name_Fiber %in% input$fiberInput2]  })
   
- # Generate Outputs
+   # Generate Outputs----
   fibername1 <- output$fibername1d  <-  output$fibername1c <- output$fibername1b <- output$fibername1a <- output$fibername1 <- renderText(as.character(fibernamefetch1()))
   fibername2 <- output$fibername2d  <- output$fibername2c <-output$fibername2b <-output$fibername2a <-output$fibername2 <- renderText(as.character(fibernamefetch2()))
   
-  # Pull used fiber fractions for use in matrix tab and calculations
+   # Pull used fiber fractions for use in matrix tab and calculations----
   output$fiberfrac1c <-output$fiberfrac1a <-output$fiberfrac1b <- renderText({paste(input$moldfracUSERNum1, "%")})
   output$fiberfrac1z <-output$fiberfrac1e <-output$fiberfrac1d <- renderText(input$moldfracUSERNum1)
   output$fiberfrac2c <-output$fiberfrac2a <-output$fiberfrac2b <- renderText({paste(input$moldfracUSERNum2, "%")})
   output$fiberfrac2z <-output$fiberfrac2e <-output$fiberfrac2d  <- renderText(input$moldfracUSERNum2)
   
-  #Display error message instead of blank energy number
+   # Generate error or energy number----
   output$fiberEnergyNum1 <- renderText({
     validate(
       need(fibernamefetch1(), "Choose Fiber Technology"),
@@ -392,7 +388,7 @@ shinyServer(function(input, output, session) {
       need(input$moldfracUSERNum2 <100, "Mass Fraction cannot be greater than 100%")      ) 
     ({paste(fiberenergyfetch2(), "MJ/kg")}                   )})
   
-  #Citations
+   # Citations----
   fibercitefetch1 <- eventReactive(input$fiberInput1,{
     cite_source[cite_name %in% input$fiberInput1]  })
   fibercitefetch2 <- eventReactive(input$fiberInput2,{
@@ -407,9 +403,10 @@ shinyServer(function(input, output, session) {
   observeEvent(input$fiberInput2, {
     validate(need(fibername2(), "")) 
     showNotification(paste("Citation for ", fibername2(), ": ",fibercite2()), duration = 5, closeButton = TRUE, type = "message")})
-  
-   # Matrix ----
-  # Make dataframe for Box if  custom data
+  }
+  # Matrix ----
+  {
+   # Build dataframe for Box----
   addmatrix <- reactiveValues()
   addmatrix <- reactive(gobutton(input$matrix_add_E, input$gomatrix, input$Re_Custom))
   
@@ -431,7 +428,7 @@ shinyServer(function(input, output, session) {
   PM1_selected <- reactive(whichselect(Re_input1.df(), Input_List1,"PriMatrixInput"))
   PM2_selected <- reactive(whichselect(Re_input2.df(), Input_List2,"PriMatrixInput"))
 
-  # Make List for Box 
+   # Make List for Box ----
   observe({ 
     updateSelectizeInput(session, 'PriMatrixInput1',
                          choices = Data_Primatrix_new()$Name_Matrix,
@@ -446,7 +443,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$re_input1, {updateSelectizeInput(session, 'PriMatrixInput1', selected = PM1_selected())})
   observeEvent(input$re_input2, {updateSelectizeInput(session, 'PriMatrixInput2', selected = PM2_selected())})
 
-  # Matrix mass fraction = 1 - fiber or from upload
+   # Matrix mass fraction = 1 - fiber or from upload----
   observe({
     if (is.null(input$re_input1)) {
       rff1 <- input$moldfracUSERNum1
@@ -463,27 +460,27 @@ shinyServer(function(input, output, session) {
       updateTextInput(session, "primatrixfrac2", value = whichselect(Re_input2.df(), Input_List2, "primatrixfrac"))
     } })
     
-  #Match Names to Table
+   # Match Names to Table----
   primatrixnamefetch1 <- eventReactive(input$PriMatrixInput1,{
     matrixnames_new()[matrixnames_new() %in% input$PriMatrixInput1]  })
   
   primatrixnamefetch2 <- eventReactive(input$PriMatrixInput2,{
     matrixnames_new()[matrixnames_new()  %in% input$PriMatrixInput2]  })
   
-  #Match Energy to Name
+   # Match Energy to Name----
   primatrixenergyfetch1 <- eventReactive(input$PriMatrixInput1,{
     matrixenergy_new()[matrixnames_new()  %in% input$PriMatrixInput1]  })
   
   primatrixenergyfetch2 <- eventReactive(input$PriMatrixInput2,{
     matrixenergy_new()[matrixnames_new()  %in% input$PriMatrixInput2]  })
   
-  # Generate Outputs
+   # Generate Outputs----
   primatrixname1 <- output$primatrixname1c <-output$primatrixname1a <- renderText(as.character(primatrixnamefetch1()))
   primatrixname2 <- output$primatrixname2c <-output$primatrixname2a <- renderText(as.character(primatrixnamefetch2()))
   output$primatrixfrac1c <-output$primatrixfrac1a <- renderText({paste(input$primatrixfrac1, "%")})
   output$primatrixfrac2c <-output$primatrixfrac2a <- renderText({paste(input$primatrixfrac2, "%")})
   
-  # Generate Error message if no choice
+   # Generate error or energy number----
     output$primatrixEnergyNum1 <-renderText({
     validate(
       need(primatrixnamefetch1(), "Choose Primary Matrix"),
@@ -501,7 +498,7 @@ shinyServer(function(input, output, session) {
      ({ paste(primatrixenergyfetch2(), "MJ/kg")}               )})
     
   
-  #Citations
+   # Citations----
   primatrixcitefetch1 <- eventReactive(input$PriMatrixInput1,{
     cite_source[cite_name %in% input$PriMatrixInput1]  })
   primatrixcitefetch2 <- eventReactive(input$PriMatrixInput2,{
@@ -516,9 +513,10 @@ shinyServer(function(input, output, session) {
   observeEvent(input$PriMatrixInput2, {
     validate(need(primatrixname2(), "")) 
     showNotification(paste("Citation for ", primatrixname2(), ": ",primatrixcite2()), duration = 5, closeButton = TRUE, type = "message")})
-  
+  }
   # OtherMat ----
-# Build new df for additive and filler if custom
+  {
+   # Build additive and filler dataframes for Box ----
   addadditive <- reactiveValues()
   addadditive <- reactive(gobutton(input$additive_add_E, input$goadditive, input$Re_Custom))
   
@@ -558,7 +556,7 @@ shinyServer(function(input, output, session) {
  matrixnames_new <- reactive(Data_MatrixM_new()[,1])
  matrixenergy_new <- reactive(Data_MatrixM_new()[,2])
 
- #Recall from upload
+   # Recall from upload ----
   observeEvent(input$re_input1, {
     types1a_selected <- whichselect(Re_input1.df(), Input_List1,"typesa")
     types1b_selected <- whichselect(Re_input1.df(), Input_List1,"typesb")
@@ -597,6 +595,7 @@ shinyServer(function(input, output, session) {
                          selected = types2c_selected, server = TRUE)
   })
 
+   # Make Lists for boxes----
   other1a_selected <- reactive(whichselect(Re_input1.df(), Input_List1,"OtherMatrixAInput"))
   other1b_selected <- reactive(whichselect(Re_input1.df(), Input_List1,"OtherMatrixBInput"))
   other1c_selected <- reactive(whichselect(Re_input1.df(), Input_List1,"OtherMatrixCInput"))
@@ -605,7 +604,6 @@ shinyServer(function(input, output, session) {
   other2b_selected <- reactive(whichselect(Re_input2.df(), Input_List2,"OtherMatrixBInput"))
   other2c_selected <- reactive(whichselect(Re_input2.df(), Input_List2,"OtherMatrixCInput"))
   
- # Build selection boxes
   observeEvent(input$types1a, {
    list1a <- othermatfxn(input$types1a, Data_Primatrix_new()[,1], Data_Additive_new()[,1], Data_Filler_new()[,1])
    updateSelectizeInput(session, 'OtherMatrixAInput1',
@@ -648,7 +646,7 @@ shinyServer(function(input, output, session) {
                          selected = other2c_selected(),
                          server = TRUE)})
   
-  # Associate Name with Table
+   # Match Name with Table----
   othermatrixAnamefetch1 <- eventReactive(input$OtherMatrixAInput1, {matrixnames_new()[matrixnames_new() %in% input$OtherMatrixAInput1]})
   othermatrixBnamefetch1 <- eventReactive(input$OtherMatrixBInput1, {matrixnames_new()[matrixnames_new() %in% input$OtherMatrixBInput1]})
   othermatrixCnamefetch1 <- eventReactive(input$OtherMatrixCInput1, {matrixnames_new()[matrixnames_new() %in% input$OtherMatrixCInput1]})
@@ -656,7 +654,7 @@ shinyServer(function(input, output, session) {
   othermatrixBnamefetch2 <- eventReactive(input$OtherMatrixBInput2, {matrixnames_new()[matrixnames_new() %in% input$OtherMatrixBInput2]})
   othermatrixCnamefetch2 <- eventReactive(input$OtherMatrixCInput2, {matrixnames_new()[matrixnames_new() %in% input$OtherMatrixCInput2]})
   
- # Associate Energy with Name
+   # Match Energy with Name----
   othermatrixAenergyfetch1 <- eventReactive(input$OtherMatrixAInput1, {matrixenergy_new()[matrixnames_new() %in% input$OtherMatrixAInput1] })
   othermatrixBenergyfetch1 <- eventReactive(input$OtherMatrixBInput1, { matrixenergy_new()[matrixnames_new() %in% input$OtherMatrixBInput1] })
   othermatrixCenergyfetch1 <- eventReactive(input$OtherMatrixCInput1, { matrixenergy_new()[matrixnames_new() %in% input$OtherMatrixCInput1] })
@@ -664,7 +662,7 @@ shinyServer(function(input, output, session) {
   othermatrixBenergyfetch2 <- eventReactive(input$OtherMatrixBInput2, { matrixenergy_new()[matrixnames_new() %in% input$OtherMatrixBInput2] })
   othermatrixCenergyfetch2 <- eventReactive(input$OtherMatrixCInput2, { matrixenergy_new()[matrixnames_new() %in% input$OtherMatrixCInput2] })
   
-  # Generate  Outputs
+   # Generate  Outputs----
   othermatrixAname1 <- renderText(as.character(othermatrixAnamefetch1()))
   othermatrixBname1 <- renderText(as.character(othermatrixBnamefetch1()))
   othermatrixCname1 <- renderText(as.character(othermatrixCnamefetch1()))
@@ -672,8 +670,7 @@ shinyServer(function(input, output, session) {
   othermatrixBname2 <- renderText(as.character(othermatrixBnamefetch2()))
   othermatrixCname2 <- renderText(as.character(othermatrixCnamefetch2()))
   
-  
-  # Generate Error message if no choice
+   # Generate Error message if no choice ----
   output$othermatrixAEnergyNum1 <-renderText({
     validate(
       need(input$othermatrixAfrac1 >=0, "Mass Fraction cannot be negative"),
@@ -710,7 +707,7 @@ shinyServer(function(input, output, session) {
       need(input$othermatrixCfrac2 <100, "Mass Fraction cannot be greater than 100%")      ) 
     ({ paste(othermatrixCenergyfetch2(), "MJ/kg")}               )})
   
-  #Citations a
+   # Citations a----
   othermatrixAcitefetch1 <- eventReactive(input$OtherMatrixAInput1,{cite_source[cite_name %in% input$OtherMatrixAInput1]  })
   othermatrixAcitefetch2 <- eventReactive(input$OtherMatrixAInput2,{cite_source[cite_name %in% input$OtherMatrixAInput2]  })
   
@@ -724,7 +721,6 @@ shinyServer(function(input, output, session) {
     validate(need(othermatrixAname2()!= "Not Used", ""), need(othermatrixAname2(), "")) 
     showNotification(paste("Citation for ", othermatrixAname2(), ": ",othermatrixAcite2()), duration = 5, closeButton = TRUE, type = "message")})
  
-   #Citations b
   othermatrixBcitefetch1 <- eventReactive(input$OtherMatrixBInput1,{cite_source[cite_name %in% input$OtherMatrixBInput1]  })
   othermatrixBcitefetch2 <- eventReactive(input$OtherMatrixBInput2,{cite_source[cite_name %in% input$OtherMatrixBInput2]  })
   
@@ -738,7 +734,6 @@ shinyServer(function(input, output, session) {
     validate(need(othermatrixBname2() != "Not Used", ""), need(othermatrixBname2(), "")) 
     showNotification(paste("Citation for ", othermatrixBname2(), ": ",othermatrixBcite2()), duration = 5, closeButton = TRUE, type = "message")})
   
-  #Citations c
   othermatrixCcitefetch1 <- eventReactive(input$OtherMatrixCInput1,{cite_source[cite_name %in% input$OtherMatrixCInput1]  })
   othermatrixCcitefetch2 <- eventReactive(input$OtherMatrixCInput2,{cite_source[cite_name %in% input$OtherMatrixCInput2]  })
   
@@ -751,10 +746,10 @@ shinyServer(function(input, output, session) {
   observeEvent(input$OtherMatrixCInput2, {
     validate(need(othermatrixCname2() != "Not Used", ""), need(othermatrixCname2(), "")) 
     showNotification(paste("Citation for ", othermatrixCname2(), ": ",othermatrixCcite2()), duration = 5, closeButton = TRUE, type = "message")})
-  
-  
+  }
   # Inserts ----
-  # Make Inserts dataframe if custom data
+  {
+   # Build Dataframe for Box----
   addinsert <- reactiveValues()
   addinsert <- reactive(gobutton(input$insert_add_E, input$goinsert, input$Re_Custom))
   
@@ -771,7 +766,7 @@ shinyServer(function(input, output, session) {
   Data_Insert_new <- reactiveValues()
   Data_Insert_new <- reactive(whichone(addinsert(), Data_Insert_temp(), Data_Insert))
   
-  # Make Inserts list for box if custom data
+   # Make List for Box ----
   ins1a_selected <- reactive(whichselect(Re_input1.df(), Input_List1,"InsertsAInput"))
   ins2a_selected <- reactive(whichselect(Re_input2.df(), Input_List2,"InsertsAInput"))
   
@@ -797,14 +792,13 @@ shinyServer(function(input, output, session) {
                          server = TRUE)
   })
   
-  
   observeEvent(input$re_input1, {updateSelectizeInput(session, 'InsertsAInput1', selected = ins1a_selected())})
   observeEvent(input$re_input1, {updateSelectizeInput(session, 'InsertsBInput1', selected = ins1b_selected())})
   
   observeEvent(input$re_input2, {updateSelectizeInput(session, 'InsertsAInput2', selected = ins2a_selected())})
   observeEvent(input$re_input2, {updateSelectizeInput(session, 'InsertsBInput2', selected = ins2b_selected())})
   
-  # Associate Names To Table
+   # Associate Names To Table----
   insertsAnamefetch1  <- eventReactive(input$InsertsAInput1,{
     Data_Insert_new()$Name_Inserts[Data_Insert_new()$Name_Inserts %in% input$InsertsAInput1]  })
   
@@ -817,7 +811,7 @@ shinyServer(function(input, output, session) {
   insertsBnamefetch2  <- eventReactive(input$InsertsBInput2,{
     Data_Insert_new()$Name_Inserts[Data_Insert_new()$Name_Inserts %in% input$InsertsBInput2]  })
   
-  #Associate Energy to Table
+   # Associate Energy to Table----
   insertsAenergyfetch1 <- eventReactive(input$InsertsAInput1,{
     Data_Insert_new()$Energy_Inserts[Data_Insert_new()$Name_Inserts %in% input$InsertsAInput1]  })
   
@@ -835,12 +829,13 @@ shinyServer(function(input, output, session) {
     ins_energy <- whichone(input$goinsert, Data_Insert_new()$Energy_Inserts, Data_Insert$Energy_Inserts)
     Data_Insert_new()$Energy_Inserts[Data_Insert_new()$Name_Inserts %in% input$InsertsBInput2]  })
   
-  #Generate Outputs
+   # Generate Outputs----
   insertsAname1 <- renderText(as.character(insertsAnamefetch1()))
   insertsBname1 <- renderText(as.character(insertsBnamefetch1()))
   insertsAname2 <- renderText(as.character(insertsAnamefetch2()))
   insertsBname2 <- renderText(as.character(insertsBnamefetch2()))
   
+   # Generate error or energy number ----
   output$insertsAEnergyNum1 <-renderText({
     validate(
       need(input$insertsAfrac1 >= 0, "Mass of inserts cannot be negative (Go to Initial Page)"),
@@ -865,8 +860,7 @@ shinyServer(function(input, output, session) {
       need(sum(input$insertsAfrac2,input$insertsBfrac2) < finalweight2(), "Mass of inserts cannot be greater than part mass (Go to Initial Page)")      ) 
     ({ paste(insertsBenergyfetch2(), "MJ/kg")}               )})
   
-  
-  #Citations
+   # Citations----
   insertAcitefetch1 <- eventReactive(input$InsertsAInput1,{cite_source[cite_name %in% input$InsertsAInput1]  })
   insertAcitefetch2 <- eventReactive(input$InsertsAInput2,{cite_source[cite_name %in% input$InsertsAInput2]  })
   
@@ -892,20 +886,18 @@ shinyServer(function(input, output, session) {
   observeEvent(input$InsertsBInput2, {
     validate(need(insertsBname2(), ""), need(insertsBname2() != "Not Used", "")) 
     showNotification(paste("Citation for ", insertsBname2(), ": ",insertBcite2()), duration = 5, closeButton = TRUE, type = "message")})
-  
-  
-
+  }
   # Intermediate ----
-  #Update if REload
+  {
+   # Recall from upload #update scrap is lower----
   observeEvent(input$re_input1, {
-    #why isn't scrap rate listed here?
     updateNumericInput(session, "intscraprecycle1", value = whichselect(Re_input1.df(), Input_List1, "intscraprecycle"))
   })
   observeEvent(input$re_input2, {
     updateNumericInput(session, "intscraprecycle2", value = whichselect(Re_input2.df(), Input_List2, "intscraprecycle"))
   })
   
-  # Make dataframe Box if  custom data
+   # Build dataframe for Box ----
   addint <- reactiveValues()
   addint <- reactive(gobutton(input$int_add_E, input$goint, input$Re_Custom))
   
@@ -930,11 +922,10 @@ shinyServer(function(input, output, session) {
       )
   })
   
-  # dataframe for if custom data or not
   Data_Int_new <- reactiveValues()
   Data_Int_new <- eventReactive(addint(), {whichone(addint(), Data_Int_temp(), Data_Int)})
   
-  # Make list Box : choose if check box is selected
+   # Make List for Box: choose if check box is selected----
   int1_selected <- reactive(whichselect(Re_input1.df(), Input_List1,"intInput"))
   int2_selected <- reactive(whichselect(Re_input2.df(), Input_List2,"intInput"))
   
@@ -966,7 +957,7 @@ shinyServer(function(input, output, session) {
                              server = TRUE)
       }    })
 
-  #Match Names to Table
+   # Match Names to Table----
   intnamefetch1 <- eventReactive(input$intInput1,{
     int_name <- Data_Int_new()$Name_Int
     int_name[int_name %in% input$intInput1]  })
@@ -975,7 +966,7 @@ shinyServer(function(input, output, session) {
     int_name <- Data_Int_new()$Name_Int
     int_name[int_name %in% input$intInput2]  })
   
-  #Match Energy to Name
+   # Match Energy to Name----
   intenergyfetch1 <- eventReactive(input$intInput1,{
     int_name <- Data_Int_new()$Name_Int
     int_energy <- Data_Int_new()$Energy_Int
@@ -986,7 +977,7 @@ shinyServer(function(input, output, session) {
     int_energy <- Data_Int_new()$Energy_Int
     int_energy[int_name %in% input$intInput2]  })
   
-  #Match Scrap to Name
+   # Match Scrap to Name----
   intscrapfetch1 <- eventReactive(input$intInput1,{
     int_name <- Data_Int_new()$Name_Int
     int_scrap <- Data_Int_new()$Scrap_Int
@@ -997,7 +988,7 @@ shinyServer(function(input, output, session) {
     int_scrap <- Data_Int_new()$Scrap_Int
     int_scrap[int_name %in% input$intInput2]  })
   
-  #Match PrepregYN to Name (for determining if matrix material needs to be included in intermediate scrap)
+   # Match PrepregYN to Name (for determining if matrix material needs to be included in intermediate scrap)----
   intprepregfetch1 <- eventReactive(input$intInput1,{
     int_name <- Data_Int_new()$Name_Int
     int_preg <- Data_Int_new()$Prepreg_Int
@@ -1008,7 +999,7 @@ shinyServer(function(input, output, session) {
     int_preg <- Data_Int_new()$Prepreg_Int
     int_preg[int_name %in% input$intInput2]  })
   
-  #Generate Outputs
+   # Generate Outputs----
   intname1 <- output$intname1d  <- output$intname1c <-output$intname1 <- renderText(as.character(intnamefetch1()))
   intname2 <- output$intname2d  <- output$intname2c <-output$intname2 <- renderText(as.character(intnamefetch2()))
   output$intscrapNum1c <-output$intscrapNum1 <- renderText({paste(intscrapfetch1()*100, "%")})
@@ -1016,7 +1007,7 @@ shinyServer(function(input, output, session) {
   int.prepregYN1 <-renderText(intprepregfetch1())
   int.prepregYN2<-renderText(intprepregfetch2())
   
-  #Update scrap to match int choice
+   # Update scrap to match int choice----
   observeEvent(input$intInput1,{
     if (is.null(input$re_input1)) {
       ints1 <-  intscrapfetch1()
@@ -1033,7 +1024,7 @@ shinyServer(function(input, output, session) {
       updateNumericInput(session, "intscrapUSERNum2", value = whichselect(Re_input2.df(), Input_List2, "intscrapUSERNum"))
     } })
   
-  #Display error instead of energy number
+   # Generate error or energy number----
   output$intEnergyNum1 <-renderText({
     validate(
       need(intnamefetch1(), "Choose Intermediate Technology"),
@@ -1048,7 +1039,7 @@ shinyServer(function(input, output, session) {
       need(input$intscrapUSERNum2 <100, "Scrap cannot be greater than 100%")      ) 
     ({paste(intenergyfetch2(), "MJ/kg")}                   )})
   
-  #Citations
+   # Citations----
   intcitefetch1 <- eventReactive(input$intInput1,{
     cite_source[cite_name %in% input$intInput1]  })
   intcitefetch2 <- eventReactive(input$intInput2,{
@@ -1063,9 +1054,10 @@ shinyServer(function(input, output, session) {
   observeEvent(input$intInput2, {
     validate(need(intname2(), "")) 
     showNotification(paste("Citation for ", intname2(), ": ",intcite2()), duration = 5, closeButton = TRUE, type = "message")})
-  
-   # Cure ----
-  #Update if reload
+  }
+  # Cure ----
+  {
+   # Recall from Upload-----
   observeEvent(input$re_input1, {
     updateNumericInput(session, "moldyieldUSERNum1", value = whichselect(Re_input1.df(), Input_List1, "moldyieldUSERNum"))
     updateNumericInput(session, "moldyieldrecycle1", value = whichselect(Re_input1.df(), Input_List1, "moldyieldrecycle"))
@@ -1082,13 +1074,13 @@ shinyServer(function(input, output, session) {
   observe(updateCheckboxInput(session, "cureYN2", value = qcureyn2()))
   
     
-  # Make dataframe for box if custom values used
+   # Make dataframe for box if custom values used----
   calccureE <- reactive(calcenergy(input$cure_add_E_m, input$cure_add_E_P_M, input$cure_add_E_per_M, input$cure_add_E_t_M, input$cure_add_E_P_p, input$cure_add_E_per_p, input$cure_add_E_t_p,
-                                   input$cure_add_E_P_c, input$cure_add_E_per_c, input$cure_add_E_t_c,input$cure_add_E_P_h, input$cure_add_E_per_h, input$cure_add_E_t_h,
-                                   input$cure_add_E_P_o, input$cure_add_E_per_o, input$cure_add_E_t_o))
+                                   input$cure_add_E_P_c, input$cure_add_E_per_c, input$cure_add_E_t_c,input$cure_add_E_P_h, input$cure_add_E_u_h, input$cure_add_E_per_h, input$cure_add_E_t_h,
+                                   input$cure_add_E_P_o, input$cure_add_E_u_o, input$cure_add_E_per_o, input$cure_add_E_t_o))
   output$calcedcureE <- renderText({paste(signif(calccureE(), digits = 3), "MJ/kg")})
   
-  cure.Ener <- reactive(whichenergy(input$cure_add_EYN, calccureE(), input$cure_add_E_Y))
+  cure.Ener <- eventReactive(input$gocure, whichenergy(input$cure_add_EYN, calccureE(), input$cure_add_E_Y))
   addcure <- reactiveValues()
   addcure <- reactive(gobutton(cure.Ener(), input$gocure, input$Re_Custom))
   
@@ -1097,8 +1089,8 @@ shinyServer(function(input, output, session) {
   Data_Cure_temp  <- eventReactive(c(input$gocure, input$Re_Custom, addcure()), {
     cure.name <- as.character(input$cure_add)
     cure.E.calc <- calcenergy(input$cure_add_E_m, input$cure_add_E_P_M, input$cure_add_E_per_M, input$cure_add_E_t_M, input$cure_add_E_P_p, input$cure_add_E_per_p, input$cure_add_E_t_p,
-                            input$cure_add_E_P_c, input$cure_add_E_per_c, input$cure_add_E_t_c,input$cure_add_E_P_h, input$cure_add_E_per_h, input$cure_add_E_t_h,
-                            input$cure_add_E_P_o, input$cure_add_E_per_o, input$cure_add_E_t_o)
+                              input$cure_add_E_P_c, input$cure_add_E_per_c, input$cure_add_E_t_c,input$cure_add_E_P_h, input$cure_add_E_u_h, input$cure_add_E_per_h, input$cure_add_E_t_h,
+                              input$cure_add_E_P_o, input$cure_add_E_u_o, input$cure_add_E_per_o, input$cure_add_E_t_o)
     cure.Ener <- whichenergy(input$cure_add_EYN, cure.E.calc, input$cure_add_E_Y)
     
     df <- isolate(Data_Cure) %>%
@@ -1109,7 +1101,7 @@ shinyServer(function(input, output, session) {
   Data_Cure_new  <- reactiveValues()
   Data_Cure_new <- reactive(whichone(addcure(), Data_Cure_temp(), Data_Cure))
   
-  # Make list for box if custom values used
+   # Make list for box ----
   cure1_selected <- reactive(whichselect(Re_input1.df(), Input_List1,"cureInput"))
   cure2_selected <- reactive(whichselect(Re_input2.df(), Input_List2,"cureInput"))
   
@@ -1141,7 +1133,7 @@ shinyServer(function(input, output, session) {
                              server = TRUE)
       } })
 
-  #Match Names to Table
+   # Match Names to Table----
   curenamefetch1 <- eventReactive(input$cureInput1,{
     c_name <- Data_Cure_new()$Name_Cure
     c_name[c_name %in% input$cureInput1]  })
@@ -1150,7 +1142,7 @@ shinyServer(function(input, output, session) {
     c_name <-Data_Cure_new()$Name_Cure
     c_name[c_name %in% input$cureInput2]  })
   
-  #Match Energy to Table
+   # Match Energy to Table----
   cureenergyfetch1 <- eventReactive(input$cureInput1,{
     c_name <- Data_Cure_new()$Name_Cure
     c_energy <- Data_Cure_new()$Energy_Cure
@@ -1161,11 +1153,11 @@ shinyServer(function(input, output, session) {
     c_energy <- Data_Cure_new()$Energy_Cure
     c_energy[c_name %in% input$cureInput2]  })
   
- # Generate Outputs
+   # Generate Outputs----
   output$curename1d  <- curename1 <- renderText(as.character(curenamefetch1()))
   output$curename2d  <- curename2 <- renderText(as.character(curenamefetch2()))
 
-  #Display error instead of energy number
+   # Generate error or energy number----
   output$cureEnergyNum1 <-renderText({
     validate(
       need(curenamefetch1(), "Choose Curing Technology"),
@@ -1180,7 +1172,7 @@ shinyServer(function(input, output, session) {
       need(input$moldyieldUSERNum2 <=100, "Yield cannot be greater than 100%")      ) 
     ({paste(cureenergyfetch2(), "MJ/kg")}                   )})
   
-  #Citations
+   # Citations----
   curecitefetch1 <- eventReactive(input$cureInput1,{
     cite_source[cite_name %in% input$cureInput1]  })
   curecitefetch2 <- eventReactive(input$cureInput2,{
@@ -1195,10 +1187,10 @@ shinyServer(function(input, output, session) {
   observeEvent(input$cureInput2, {
     validate(need(curename2(), "")) 
     showNotification(paste("Citation for ", curename2(), ": ",curecite2()), duration = 5, closeButton = TRUE, type = "message")})
-  
-  
+  }
   # Finish ----
-  #Make Dataframe for box if custom balues used
+  {
+   # Build Dataframe for Box ----
   addfinish <- reactiveValues()
   addfinish <- reactive(gobutton(input$finish_add_E, input$gofinish, input$Re_Custom))
   
@@ -1224,38 +1216,38 @@ shinyServer(function(input, output, session) {
     updateNumericInput(session, "finishscraprecycle2", value = whichselect(Re_input2.df(), Input_List2, "finishscraprecycle"))
   })
   
-  #Make list for box if custom balues used
+   # Make List for Box ----
   fin1_selected <- reactive(whichselect(Re_input1.df(), Input_List1,"finishInput"))
   fin2_selected <- reactive(whichselect(Re_input2.df(), Input_List2,"finishInput"))
   observe( { 
     updateSelectizeInput(session, 'finishInput1',
                          choices = Data_Finish_new()$Name_Finishing,
-                         selected =  "",
+                         selected =  "None",
                          server = TRUE)
     updateSelectizeInput(session, 'finishInput2',
                          choices = Data_Finish_new()$Name_Finishing,
-                         selected =  "",
+                         selected =  "None",
                          server = TRUE)
   })
   
-  observeEvent(input$re_input1, {updateSelectizeInput(session, 'cureInput1', selected = fin1_selected())})
-  observeEvent(input$re_input2, {updateSelectizeInput(session, 'cureInput2', selected = fin2_selected())})
+  observeEvent(input$re_input1, {updateSelectizeInput(session, 'finishInput1', selected = fin1_selected())})
+  observeEvent(input$re_input2, {updateSelectizeInput(session, 'finishInput2', selected = fin2_selected())})
   
-  #Match Names to Table
+   # Match Names to Table----
   finishnamefetch1 <- eventReactive(input$finishInput1,{
     Data_Finish_new()$Name_Finishing[Data_Finish_new()$Name_Finishing %in% input$finishInput1]  })
   
   finishnamefetch2 <- eventReactive(input$finishInput2,{
     Data_Finish_new()$Name_Finishing[Data_Finish_new()$Name_Finishing %in% input$finishInput2]  })
   
-  #Match Energy to Table
+   # Match Energy to Table-----
   finishenergyfetch1 <- eventReactive(input$finishInput1,{
     Data_Finish_new()$Energy_Finishing[Data_Finish_new()$Name_Finishing %in% input$finishInput1]  })
   
   finishenergyfetch2 <- eventReactive(input$finishInput2,{
     Data_Finish_new()$Energy_Finishing[Data_Finish_new()$Name_Finishing %in% input$finishInput2]  })
  
-  # Generate Outputs 
+   # Generate Outputs ----
   output$finishname1d  <- finishname1 <- renderText(as.character(finishnamefetch1()))
   output$finishname2d  <- finishname2 <- renderText(as.character(finishnamefetch2()))
 
@@ -1271,10 +1263,7 @@ shinyServer(function(input, output, session) {
       need(input$finishscrap2 <100, "Scrap cannot be greater than 100%")      ) 
     ({paste(finishenergyfetch2(), "MJ/kg")}                   )})
   
-  
-  
-  
-  #Citations
+   # Citations----
   finishcitefetch1 <- eventReactive(input$finishInput1,{
     cite_source[cite_name %in% input$finishInput1]  })
   finishcitefetch2 <- eventReactive(input$finishInput2,{
@@ -1289,7 +1278,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$finishInput2, {
     validate(need(finishname2(), ""), need(finishname2() != "None", "")) 
     showNotification(paste("Citation for ", finishname2(), ": ",finishcite2()), duration = 5, closeButton = TRUE, type = "message")})
-  
+  }
   # Citation Page ----
   observeEvent(input$cite_type, {
     citelist <- citefxn(input$cite_type)
@@ -1316,7 +1305,8 @@ shinyServer(function(input, output, session) {
   output$citation5 <- renderText(as.character(citationfetch5()))
   
   # Return Mass/Massfracs to zero if "Use ..." checkboxes are false ----
- #Set Inserts mass to zero
+  {
+ #Set Inserts mass to zero----
  observeEvent(input$insertsAUSERYN1, {
    if (!input$insertsAUSERYN1){
      updateNumericInput(session, "insertsAfrac1", value = (0)) 
@@ -1341,7 +1331,7 @@ shinyServer(function(input, output, session) {
      updateNumericInput(session, "insertsBfrac2", value = (0)) }
   })
  
- # set Additional Matrix fractions to zero, choices to "Not Used" and other "Use Additional Matrix" to false
+ # set Additional Matrix fractions to zero, choices to "Not Used" and other "Use Additional Matrix" to false ----
  observeEvent(input$othermatrixAUSERYN1, {
    if (!input$othermatrixAUSERYN1){
    updateNumericInput(session, "othermatrixAfrac1", value = (0)) 
@@ -1425,38 +1415,39 @@ shinyServer(function(input, output, session) {
                         selected = "Not Used",
                         server = TRUE)
    }})
- 
- # Change User Input --> Variables ----
-    # Yield
-    layup.yield1 <- reactive(yield_layup(input$intscrapUSERNum1,input$intscraprecycle1))
-    layup.yield2 <- reactive(yield_layup(input$intscrapUSERNum2,input$intscraprecycle2))
-    mold.yield1 <- reactive(yield_mold(input$moldyieldUSERNum1, input$moldyieldrecycle1))
-    mold.yield2 <- reactive(yield_mold(input$moldyieldUSERNum2, input$moldyieldrecycle2))
-    finish.yield1 <- reactive(yield_finish(input$finishscrap1, input$finishscraprecycle1))
-    finish.yield2 <- reactive(yield_finish(input$finishscrap2, input$finishscraprecycle2))
-    
-    #mass fracs
-    finalweight1 <- reactive({input$finalweight1})
-    
-    raw.f.f1 <- reactive({input$moldfracUSERNum1/100})
-    raw.f.pm1 <- reactive({input$primatrixfrac1/100})
-    raw.f.ma1 <- reactive({input$othermatrixAfrac1/100})
-    raw.f.mb1 <- reactive({input$othermatrixBfrac1/100})
-    raw.f.mc1 <- reactive({input$othermatrixCfrac1/100})
-    m.ia1 <- reactive({input$insertsAfrac1})
-    m.ib1 <- reactive({input$insertsBfrac1})
-    
-    finalweight2 <- reactive({input$finalweight2})
-    
-    raw.f.f2 <- reactive({input$moldfracUSERNum2/100})
-    raw.f.pm2 <- reactive({input$primatrixfrac2/100})
-    raw.f.ma2 <- reactive({input$othermatrixAfrac2/100})
-    raw.f.mb2 <- reactive({input$othermatrixBfrac2/100})
-    raw.f.mc2 <- reactive({input$othermatrixCfrac2/100})
-    m.ia2 <- reactive({input$insertsAfrac2})
-    m.ib2 <- reactive({input$insertsBfrac2})
-    
-# Calculations ----
+  }
+  # Calculations ----
+    {
+    # Change User Input --> Variables (Yield & Mass Fracs) ----
+      # Yield
+      layup.yield1 <- reactive(yield_layup(input$intscrapUSERNum1,input$intscraprecycle1))
+      layup.yield2 <- reactive(yield_layup(input$intscrapUSERNum2,input$intscraprecycle2))
+      mold.yield1 <- reactive(yield_mold(input$moldyieldUSERNum1, input$moldyieldrecycle1))
+      mold.yield2 <- reactive(yield_mold(input$moldyieldUSERNum2, input$moldyieldrecycle2))
+      finish.yield1 <- reactive(yield_finish(input$finishscrap1, input$finishscraprecycle1))
+      finish.yield2 <- reactive(yield_finish(input$finishscrap2, input$finishscraprecycle2))
+      
+      #mass fracs
+      finalweight1 <- reactive({input$finalweight1})
+      
+      raw.f.f1 <- reactive({input$moldfracUSERNum1/100})
+      raw.f.pm1 <- reactive({input$primatrixfrac1/100})
+      raw.f.ma1 <- reactive({input$othermatrixAfrac1/100})
+      raw.f.mb1 <- reactive({input$othermatrixBfrac1/100})
+      raw.f.mc1 <- reactive({input$othermatrixCfrac1/100})
+      m.ia1 <- reactive({input$insertsAfrac1})
+      m.ib1 <- reactive({input$insertsBfrac1})
+      
+      finalweight2 <- reactive({input$finalweight2})
+      
+      raw.f.f2 <- reactive({input$moldfracUSERNum2/100})
+      raw.f.pm2 <- reactive({input$primatrixfrac2/100})
+      raw.f.ma2 <- reactive({input$othermatrixAfrac2/100})
+      raw.f.mb2 <- reactive({input$othermatrixBfrac2/100})
+      raw.f.mc2 <- reactive({input$othermatrixCfrac2/100})
+      m.ia2 <- reactive({input$insertsAfrac2})
+      m.ib2 <- reactive({input$insertsBfrac2})
+      
     # Mass Fractions converion (calculations treats inserts as part of sum(mass fractions) = 1 )----  
     raw.to.actual.fracs1 <- reactive(Data_mass_fxn(finalweight1(), raw.f.f1(), raw.f.pm1(), raw.f.ma1(), raw.f.mb1(), raw.f.mc1(), m.ia1(), m.ib1()))
     raw.to.actual.fracs2 <- reactive(Data_mass_fxn(finalweight2(), raw.f.f2(), raw.f.pm2(), raw.f.ma2(), raw.f.mb2(), raw.f.mc2(), m.ia2(), m.ib2()))
@@ -1556,7 +1547,9 @@ shinyServer(function(input, output, session) {
      output$table2b <- renderTable(energy_data2.df())
 
     
+    }
   # Final Display ----
+    {
     # Reactive Names for display table ----
     n.mold1 <- reactive(as.character(moldshortfetch1()))
     n.mold2 <- reactive(as.character(moldshortfetch2()))
@@ -1633,7 +1626,7 @@ shinyServer(function(input, output, session) {
     E.f.cure2 <- reactive(energy_data2.df()$finalenergy[10])
     E.f.fin2 <- reactive(energy_data2.df()$finalenergy[11])
     
-    # Final Tables ----
+    # Summary Tables ----
     Mat1.E.df <- reactive({  
       validate(
         need(sum(input$moldfracUSERNum1, input$primatrixfrac1, input$othermatrixAfrac1, 
@@ -1738,8 +1731,7 @@ shinyServer(function(input, output, session) {
     output$Table.mat.2 <- renderTable(Mat2.E.df(), signif = 2)
     output$Table.pro.2 <- renderTable(Process2.E.df(), signif = 2)
   
-    
-    # Final Graph ----
+    # Results Graph ----
     energy_plot.df <- reactive({
      validate(
        need(sum(input$moldfracUSERNum1, input$primatrixfrac1, input$othermatrixAfrac1, 
@@ -1795,11 +1787,10 @@ shinyServer(function(input, output, session) {
        scale_fill_manual(values = fill, name = "") +
      
        theme_bw() + theme(  legend.title = element_blank(), legend.text = element_text(size = 12), legend.background = element_rect(color = "black")
-                        , axis.text = element_text(size = 14), axis.title.x = element_text(size = 18)
-                           ) 
+                        , axis.text = element_text(size = 14), axis.title.x = element_text(size = 18) ) 
          })
    
-  # display table
+    # Results Display Table ----
    Resultsdf <- reactive({
      validate(
          need(sum(input$moldfracUSERNum2, input$primatrixfrac2, input$othermatrixAfrac2, input$othermatrixBfrac2, input$othermatrixCfrac2) == 100,      "")       
@@ -1840,9 +1831,10 @@ shinyServer(function(input, output, session) {
      })
    
    output$ResultsTable <- renderTable(Resultsdf(), digits = 0, include.rownames = TRUE, na = "0")
-     
-   
-  # Download Results ----
+      }
+  # Downloads ----
+    {
+    # Download Results ----
    #Build tables for download
   RESULTSTABLE1 <-  reactive(data_frame(
     Stage = c("Fiber", "Primary Matrix", "Additional Matrix Material", "Additional Matrix Material","Additional Matrix Material", "Insert", "Insert", "Materials Total",
@@ -1970,7 +1962,7 @@ contentType = "application/zip"
        }   )
       #Download custom data
      Name_List <- reactive(c(input$fiber_add, input$matrix_add, input$additive_add, input$filler_add,
-                              input$insert_add, input$int_add, input$mold_add, input$cure_add, input$finish_add, rep("NA", 35)))
+                              input$insert_add, input$int_add, input$mold_add, input$cure_add, input$finish_add, rep("NA", 39)))
      Energy_List <- reactive(c(input$fiber_add_E,input$matrix_add_E,input$additive_add_E,input$filler_add_E,
                                input$insert_add_E,input$int_add_E, mold.Ener(),cure.Ener(),input$finish_add_E,
                                input$int_add_PP,input$mold_add_EYN,input$cure_add_EYN,
@@ -1978,14 +1970,14 @@ contentType = "application/zip"
                                input$mold_add_E_P_M,input$mold_add_E_per_M,input$mold_add_E_t_M,
                                input$mold_add_E_P_p,input$mold_add_E_per_p,input$mold_add_E_t_p,
                                input$mold_add_E_P_c,input$mold_add_E_per_c,input$mold_add_E_t_c,
-                               input$mold_add_E_P_h,input$mold_add_E_per_h,input$mold_add_E_t_h,
-                               input$mold_add_E_P_o,input$mold_add_E_per_o,input$mold_add_E_t_o,
+                               input$mold_add_E_P_h,input$mold_add_E_u_h, input$mold_add_E_per_h,input$mold_add_E_t_h,
+                               input$mold_add_E_P_o,input$mold_add_E_u_o,input$mold_add_E_per_o,input$mold_add_E_t_o,
                                input$cure_add_E_m,
                                input$ cure_add_E_P_M,input$cure_add_E_per_M,input$cure_add_E_t_M,
                                input$cure_add_E_P_p,input$cure_add_E_per_p,input$cure_add_E_t_p,
                                input$cure_add_E_P_c,input$cure_add_E_per_c,input$cure_add_E_t_c,
-                               input$cure_add_E_P_h,input$cure_add_E_per_h,input$cure_add_E_t_h,
-                               input$ cure_add_E_P_o,input$cure_add_E_per_o,input$cure_add_E_t_o))
+                               input$cure_add_E_P_h,input$cure_add_E_u_h, input$cure_add_E_per_h,input$cure_add_E_t_h,
+                               input$ cure_add_E_P_o,input$cure_add_E_u_o,input$cure_add_E_per_o,input$cure_add_E_t_o))
 
      Custom_Input <- reactive(customdf(Custom_List, Name_List(), Energy_List()))
     
@@ -1997,5 +1989,6 @@ contentType = "application/zip"
        }   )
      
      
-     #  End ----
+    }
+  #  End ----
      })

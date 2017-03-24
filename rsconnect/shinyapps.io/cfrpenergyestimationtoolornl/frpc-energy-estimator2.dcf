@@ -1,0 +1,11 @@
+name: frpc-energy-estimator2
+title: FRPC-Energy-Estimator
+account: cfrpenergyestimationtoolornl
+server: shinyapps.io
+appId: 166821
+bundleId: 761954
+url: https://ornlenergyestimatortools.shinyapps.io/frpc-energy-estimator2/
+when: 1490377748.54621
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: .RData|www/ToolScope.emf

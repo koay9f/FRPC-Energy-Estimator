@@ -39,17 +39,37 @@ whichone <- function(go, new, old){
 }
 
 # Calculate custom molding or curing energy
-calcenergy <- function(mass, power.m, rate.m, time.m, 
-                       power.p, rate.p, time.p,
-                       power.c, rate.c, time.c,
-                       power.h, rate.h, time.h,
-                       power.o, rate.o, time.o){
-  motor <- power.m* rate.m * time.m
-  pump <- power.p* rate.p * time.p
-  compress <- power.c* rate.c * time.c
-  heat <- power.h* rate.h * time.h
-  other <- power.o* rate.o * time.o
-    #Convert from kW to MW, convert min to s, convert % to frac
+calcenergy <- function(mass, pm, rm, tm, 
+                       pp, rp, tp,  pc, rc, tc,
+                       ph, uh, rh, th,
+                       po, uo, ro, to){
+  Errc <- function (val){if (is.null(val)){0}else{val}}
+  power.m <- Errc(pm)
+  rate.m <- Errc(rm)
+  time.m <- Errc(tm)
+  power.p <- Errc(pp)
+  rate.p <- Errc(rp)
+  time.p <- Errc(tp)
+  power.c <- Errc(pc)
+  rate.c <- Errc(rc)
+  time.c <- Errc(tc)
+  power.h <- Errc(ph)
+  unit.h <- Errc(uh)
+  rate.h <- Errc(rh)
+  time.h <- Errc(th)
+  power.o <- Errc(po)
+  unit.o <- Errc(uo)
+  rate.o <- Errc(ro)
+  time.o <- Errc(to)
+
+  motor <- power.m* rate.m * time.m * 3.1 # convert to embodied
+  pump <- power.p* rate.p * time.p * 3.1
+  compress <- power.c* rate.c * time.c * 3.1
+  u.h <- if (unit.h == "kW (electricity)") {3.1} else {(1/3412.142)} # either *3 for embodied electricity or divide by 3412 for BTU/h --> kW & emboided =1 
+  heat <- power.h* rate.h * time.h * u.h
+  u.o <- if (unit.o == "kW (electricity)") {3.1} else {(1/3412.142)} 
+  other <- power.o* rate.o * time.o * u.o
+    #Convert from kW to MW, convert min to s, convert % to frac, / mass
   specificenergy <- sum(motor, pump, compress, heat, other)*(60/(1000*100))/mass
   specificenergy
 }
