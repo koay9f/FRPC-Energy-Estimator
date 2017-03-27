@@ -12,7 +12,7 @@
    height="300"
    version="1.1"
    id="svg2"
-   inkscape:version="0.92.0 r15299"
+   inkscape:version="0.91 r13725"
    sodipodi:docname="ToolScope.svg"
    viewBox="0 0 1196 461">
   <metadata
@@ -36,14 +36,14 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1366"
-     inkscape:window-height="745"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
      id="namedview171"
      showgrid="false"
      inkscape:zoom="1.3621856"
-     inkscape:cx="733.09907"
+     inkscape:cx="598.75614"
      inkscape:cy="109.63309"
-     inkscape:window-x="-8"
+     inkscape:window-x="1912"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
      inkscape:current-layer="g21" />
@@ -697,15 +697,15 @@
          id="tspan4673"
          x="1093.6073"
          y="289.07092"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:22.5px;font-family:Raleway;-inkscape-font-specification:Raleway;text-align:center;text-anchor:middle;stroke-width:0.9375px">CFRP</tspan><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:22.5px;font-family:Raleway;-inkscape-font-specification:Raleway;text-align:center;text-anchor:middle;stroke-width:0.9375px">FRPC</tspan><tspan
          sodipodi:role="line"
          x="1093.6073"
-         y="315.52374"
+         y="312.50842"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:22.5px;font-family:Raleway;-inkscape-font-specification:Raleway;text-align:center;text-anchor:middle;stroke-width:0.9375px"
          id="tspan4677">Part Embodied</tspan><tspan
          sodipodi:role="line"
          x="1093.6073"
-         y="341.97659"
+         y="335.94592"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:22.5px;font-family:Raleway;-inkscape-font-specification:Raleway;text-align:center;text-anchor:middle;stroke-width:0.9375px"
          id="tspan4679">Energy</tspan></text>
     <text
@@ -739,10 +739,10 @@
          id="tspan4689"
          x="94.729767"
          y="306.20602"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:30px;font-family:Raleway;-inkscape-font-specification:Raleway;text-align:center;text-anchor:middle;stroke-width:0.9375px">CF</tspan><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:30px;font-family:Raleway;-inkscape-font-specification:Raleway;text-align:center;text-anchor:middle;stroke-width:0.9375px">Fiber</tspan><tspan
          sodipodi:role="line"
          x="94.729767"
-         y="334.91397"
+         y="329.64352"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:30px;font-family:Raleway;-inkscape-font-specification:Raleway;text-align:center;text-anchor:middle;stroke-width:0.9375px"
          id="tspan4693">Production</tspan></text>
     <text
