@@ -43,7 +43,7 @@ calcenergy <- function(mass, pm, rm, tm,
                        pp, rp, tp,  pc, rc, tc,
                        ph, uh, rh, th,
                        po, uo, ro, to){
-  Errc <- function (val){if (is.null(val)){0}else{val}}
+  Errc <- function (val){if (is.na(val)) {0}else{val}}
   power.m <- Errc(pm)
   rate.m <- Errc(rm)
   time.m <- Errc(tm)
@@ -78,7 +78,7 @@ calcenergy <- function(mass, pm, rm, tm,
 whichenergy <-  function(addYN, calced, user){
   if (addYN) {
     user
-  } else {
+  } else  {
     calced
   }
 }

@@ -807,8 +807,8 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
         # , tableOutput("table2a")
         # , tableOutput("table1b")
         # , tableOutput("table2b")
-      # , tableOutput("testre")
-        # , textOutput("testre2")
+      # , tableOutput("test")
+        # , textOutput("testtext")
       # )
                  
             # End ----

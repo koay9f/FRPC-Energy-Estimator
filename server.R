@@ -171,13 +171,14 @@ shinyServer(function(input, output, session) {
   calcmoldE <-  reactive(calcenergy(input$mold_add_E_m, input$mold_add_E_P_M, input$mold_add_E_per_M, input$mold_add_E_t_M, input$mold_add_E_P_p, input$mold_add_E_per_p, input$mold_add_E_t_p,
                                    input$mold_add_E_P_c, input$mold_add_E_per_c, input$mold_add_E_t_c,input$mold_add_E_P_h, input$mold_add_E_u_h, input$mold_add_E_per_h, input$mold_add_E_t_h,
                                    input$mold_add_E_P_o, input$mold_add_E_u_o, input$mold_add_E_per_o, input$mold_add_E_t_o))
-  mold.Ener <- eventReactive(input$gomold,whichenergy(input$mold_add_EYN, calcmoldE(), input$mold_add_E_Y))
-  
+mold.Ener <- reactiveValues()
+   mold.Ener <- reactive(whichenergy(input$mold_add_EYN, calcmoldE(), input$mold_add_E_Y))
+
   Data_Mold_temp  <- reactiveValues()
   addmold <- reactiveValues()
   addmold <- reactive(gobutton(mold.Ener(), input$gomold, input$Re_Custom))
 
-  Data_Mold_temp <- eventReactive( c(input$gomold, input$Re_Custom, addmold()), {
+  Data_Mold_temp <- eventReactive(c(input$gomold, input$Re_Custom,  addmold()),    {
     mold.name <- as.character(input$mold_add)
     mold.E.calc <- calcenergy(input$mold_add_E_m, input$mold_add_E_P_M, input$mold_add_E_per_M, input$mold_add_E_t_M, input$mold_add_E_P_p, input$mold_add_E_per_p, input$mold_add_E_t_p,
                               input$mold_add_E_P_c, input$mold_add_E_per_c, input$mold_add_E_t_c,input$mold_add_E_P_h, input$mold_add_E_u_h, input$mold_add_E_per_h, input$mold_add_E_t_h,
@@ -196,6 +197,8 @@ shinyServer(function(input, output, session) {
   
   Data_Mold_new  <- reactiveValues()
   Data_Mold_new  <- reactive(whichone(addmold(), Data_Mold_temp(), Data_Mold))
+  output$test <- renderTable(Data_Mold_new())
+  output$testtext <- renderText(mold.Ener())
   
   mold1_selected <- reactive(whichselect(Re_input1.df(), Input_List1,"moldingInput"))
   mold2_selected <- reactive(whichselect(Re_input2.df(), Input_List2,"moldingInput"))
@@ -1080,7 +1083,8 @@ shinyServer(function(input, output, session) {
                                    input$cure_add_E_P_o, input$cure_add_E_u_o, input$cure_add_E_per_o, input$cure_add_E_t_o))
   output$calcedcureE <- renderText({paste(signif(calccureE(), digits = 3), "MJ/kg")})
   
-  cure.Ener <- eventReactive(input$gocure, whichenergy(input$cure_add_EYN, calccureE(), input$cure_add_E_Y))
+  cure.Ener <- reactiveValues()
+  cure.Ener <- reactive(whichenergy(input$cure_add_EYN, calccureE(), input$cure_add_E_Y))
   addcure <- reactiveValues()
   addcure <- reactive(gobutton(cure.Ener(), input$gocure, input$Re_Custom))
   
