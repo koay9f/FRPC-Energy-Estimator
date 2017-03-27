@@ -33,15 +33,14 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                       , strong('This tool has been developed by ORNL to provide composite researchers and manufacturers the ability to quickly estimate 
                          the embodied energy use of their composite manufacturing process and compare it to other conventional processes.')  
                      , hr()    
-                     , p(icon("table"),'   A table for comparing molding technologies is also available on the "Molding Properties" Page.')  
+                     , p(icon("table"),'   A table for comparing molding technologies is available on the "Molding Properties" Page.')  
                       , p(icon("internet-explorer"),'   Some features of this tool are not fully suppported in Internet Explorer.')
                      , p(icon("envelope-o"), '   If you wish to permanently add a material or process to our database or otherwise wish to comment on this tool, please contact 
                          the developers by', span(strong(" email:")), 'Kristina Armstrong (', span('armstrongko@ornl.gov', style = "text-decoration: underline"),  ') or Sujit Das (', span('dass@ornl.gov', style = "text-decoration: underline"),').')
                      , helpText(a("Or connect with us on GitHub", href = "https://github.com/koay9f/FRPC-Energy-Estimator", target= "_blank"))
-                     , p(icon("save"), span("At this time, when you exit the application, all data is lost and there is no way to save data for 
-                                               reuse at a later time.", style = "color: red"), 'If you wish, you can download the "Input" files from
-                         the "Download" Page at the end of your session.  In later session you can upload this on the "Upload" Page, and the forms will
-                         autopopulate.')
+                     , p(icon("save"),strong("Saving:"), "When you exit the application, all data is lost.", style = "color: red")
+                      ,p(icon("download"),'To rerun in future sessions, download the "Input" files from the Download Page at the end of your session.')
+                     , p(icon("upload"), 'In later sessions, you can upload this on the Upload Page, and the forms will autopopulate.')
                      , hr()
                      , p(icon("file-zip-o"),'   For more help or information,', span(strong( "download" )), 'the Tool Documentation. This includes includes energy data,
                          molding process properties, references and details of tool computations' ) 
@@ -51,7 +50,7 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                    ),
             # Upload Tab ----
             tabPanel("Upload", h1("Upload Data")
-                     , p ("This page allows users to upload a previous run from this tool.  If CSV file was changed, errors may occur.")
+                     , p ("Upload a previous run from this tool.  If CSV file was changed, errors may occur.")
                      , fileInput("Re_Custom", "Choose CSV File to Upload Custom Data",
                                  accept = c('csv', 'comma-separated-values','.csv'))
                      , fileInput("re_input1", "Choose CSV File for Technology Set 1",
@@ -67,15 +66,12 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                      , selectizeInput("add_data_which", label = "What type of custom data would you like to add?",
                                       choices = c("Instructions", "Fiber Type", "Matrix", "Filler", "Additive", "Insert/Core Material", "Intermediate", "Molding Technology", "Curing Technology", "Finish")
                                       , selected = "Instructions", multiple = FALSE)
-                     
                      , conditionalPanel(
                        condition = 'input.add_data_which == "Instructions"'
-                       , p('Presently, the user can only add', span("one", style = "text-decoration: underline"), 'data point per process segment (in other words, you can only add one custom molding process).  
-                           Additionally, the custom process segment is only available for the current session. At the end of your session, you can download a .csv file with 
-                           all of the custom data that has been added this session.  You will be able to upload this in future sessions to save time (see the "Upload" and "Download" Pages for more details)')
-                       , p ("If you require adding several custom process segments or plan to run multiple scenarios with the same custom segments, 
-                            it is recommended that you", span(strong("download")), "R studio and a copy of this app from GitHub and edit the data personally. ")
-                      ,p(' Alternatively, you can contact Kristina Armstrong (', span('armstrongko@ornl.gov', style = "text-decoration: underline"),  
+                       , tags$li('Only', span("one", style = "text-decoration: underline; color: red"), 'custom data point can be added for each process segment.', style = "font-size:20px")
+                       ,tags$li('Download the .csv file with all of the custom data from this session for future use.')
+                       , p (icon('github'), "If you need multiple custom data for a segment, we recommended that you", span(strong("download R studio ")), "and a copy of this app from GitHub. ")
+                      ,p(icon('envelope-open-o'),' Alternatively, contact Kristina Armstrong (', span('armstrongko@ornl.gov', style = "text-decoration: underline"),  
                             ') or Sujit Das (', span('dass@ornl.gov', style = "text-decoration: underline"),'). and 
                             we can work with you to add your technology to our tool and grow our database of composite manufacturing technologies.')
                        , helpText(a("Click here to view this app on GitHub", href = "https://github.com/koay9f/FRPC-Energy-Estimator", target= "_blank"))
@@ -155,7 +151,7 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                        , h4("Custom Molding Process")
                        , br()
                        , p("Normally the options available for fiber intermediate and curing process are dependent on the user's choice for molding technology.  
-                           If a custom molding process has been added and then chosen, this is overridden and all options for these will be available.")
+                           If a custom molding process has been added and chosen, this is overridden and all options for these will be available.")
                        , fluidRow(
                          column(4, textInput("mold_add", "Name", "Custom Mold Tech"))
                          , column(4, checkboxInput("mold_add_EYN", "Is the specific embodied Energy of the molding process known?",FALSE), style = "padding:15px;")
@@ -738,44 +734,49 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                             column(6, h2("Technology Set 1")), column(6, h2("Technology Set 2"))
                           
                           , column(12, h2("Results")
-                                    , p('This allows the user download Results of the tool, including chosen materials/processes,
+                                   , tags$li('Download the results of the tool, including chosen materials/processes,
                                       mass fraction or yield, specific and embodied energy for each stage and mass evaluated at each stage.'))
-                          
                           , column(6 
-                                   , textInput("DLR1_name", "Name Set 1 Results File", value = "Results1")
+                                   , br()
+                                   , textInput("DLR1_name", "Name Results File 1", value = paste("Results1", Sys.Date()))
                                    , downloadButton('DL_results1', "Download Results"))
                           , column(6 
-                                   , textInput("DLR2_name", "Name Set 2 Results File", value = "Results2")
+                                   , br()
+                                   , textInput("DLR2_name", "Name Results File 2", value = paste("Results2", Sys.Date()))
                                    , downloadButton('DL_results2', "Download Results")) )
 
                         , hr() 
+                     , fluidRow(
+                       column(12 , h2("Custom Data")
+                              , tags$li("Download the custom data added in the current session.")
+                                  , tags$li("This file can be uploaded in a later session instead of manual data entry.")
+                              , tags$li(strong("We recommend that users not change the data in these files manually."), style = "color: red")
+                              , br()
+                               , textInput("DLCustom_name", "Name Custom Data File", value = paste("Add_Custom", Sys.Date()))
+                               , downloadButton('DL_custom', "Download Custom Data")))
                        , fluidRow(
                           column(12, h2("Input files")
-                                    , p("This allows the user to download a file with all the options chosen in the current session.  
-                                         This file can then be uploaded in a later session instead of manual data entry.  It is recommended
-                                     that users not change these files manually."))
+                                 , tags$li("Download files with all the options chosen in the current session")
+                                 , tags$li("This file can be uploaded in a later session instead of manual data entry.")
+                                 , tags$li(strong("We recommend that users not change the data in these files manually."), style = "color: red"))
                          , column(6
-                                  , textInput("DLI1_name", "Name Set 1 Input File", value = "Inputs1")
+                                  , br()
+                                  , textInput("DLI1_name", "Name Set 1 Input File", value = paste("Inputs1", Sys.Date()))
                                   , downloadButton('DL_inputs1', "Download Inputs"))
                          , column(6
-                                  , textInput("DLI2_name", "Name Set 2 Input File", value = "Inputs2")
+                                  , br()
+                                  , textInput("DLI2_name", "Name Set 2 Input File", value = paste("Inputs2", Sys.Date()))
                                   , downloadButton('DL_inputs2', "Download Inputs")) )
                          , hr()
                          , fluidRow(
                            column(12, h2("Calculation Data")
-                                  ,  p('This allows the user to download the calculation files made by this tool.
-                                       It requires both technology sets to be fully rendered.  Check the "Results" Page, if both
+                                  , tags$li('Download the calculation files made by this tool.')
+                                  , tags$li('Requires both technology sets.  Check the "Results" Page, if both
                                        table are displaying with no errors, then this is ready to be downloaded.')
                                   ,br()
-                                  , textInput("DLC_name", "Name Calculation Files", value = 'Tool_Calcualtion_Data')
+                                  , textInput("DLC_name", "Name Calculation Files", value = paste("Tool_Calculations", Sys.Date()))
                                   , downloadButton('zipcalcs', "Download Calculation Zip File")))
-                                  , h2("Custom Data")
-                                  , p("This allows the user to download the custom data add in the current session.
-                                      This file can then be uploaded in a later session instead of manual data entry.  It is recommended
-                                      that users not change these files manually.")
-                                  , textInput("DLCustom_name", "Name Custom Data File", value = "Add_Custom")
-                                  , downloadButton('DL_custom', "Download Custom Data")
-                                          ),
+                               ),
             # Ref Tab ----
              tabPanel ("References", h1("References")
                 , p("To view citations for process and material embodied energy, choose Type and then the specific process/material")
