@@ -4,7 +4,7 @@ This tool will allow users to estimate the embodied energy of CFRP manufacturing
 - intermediate manufacturing
 - molding
 - curing
-- finishing of the CFRP part 
+- finishing of the FCPC part 
 - layup
 - molding
 - finishing yields/scrap rate
