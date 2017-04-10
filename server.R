@@ -35,11 +35,11 @@ vbcure <- c("Autoclave Curing","QuickStep","Microwave Curing with Vacuum","Infra
 Data_Finish = read_csv("data/Data_Finishing.csv")
 
 Props = read.csv("data/Properties_Mold.csv") # causes error if read_csv due to use of row names
-Data_Cite <- read_csv("data/Data_Citations.csv")
+Data_Cite = read_csv("data/Data_Citations.csv")
 
-Input_List1 <- read_csv("data/Defaults1.csv")
-Input_List2 <- read_csv("data/Defaults2.csv")
-Custom_List <- read_csv("data/DefaultsC.csv")
+Input_List1 = read_csv("data/Defaults1.csv")
+Input_List2 = read_csv("data/Defaults2.csv")
+Custom_List = read_csv("data/DefaultsC.csv")
 
 source("math.R") #ensure Data_Cite has been read first!!
 
@@ -1545,10 +1545,10 @@ mold.Ener <- reactiveValues()
     )) 
     
     #code to test that calculations are preformed correctly
-     output$table1a <- renderTable(yield_data1.df())
-     output$table1b <- renderTable(energy_data1.df())
-     output$table2a <- renderTable(yield_data2.df())
-     output$table2b <- renderTable(energy_data2.df())
+     output$yieldtab1 <- renderTable(yield_data1.df())
+     output$energytab1 <- renderTable(energy_data1.df())
+     output$yieldtab2 <- renderTable(yield_data2.df())
+     output$energytab2 <- renderTable(energy_data2.df())
 
     
     }
@@ -1736,7 +1736,7 @@ mold.Ener <- reactiveValues()
     output$Table.pro.2 <- renderTable(Process2.E.df(), signif = 2)
   
     # Results Graph ----
-    energy_plot.df <- reactive({
+    energy_plot.df1 <- reactive({
      validate(
        need(sum(input$moldfracUSERNum1, input$primatrixfrac1, input$othermatrixAfrac1, 
                 input$othermatrixBfrac1, input$othermatrixCfrac1) == 100,      "Sum of Mass Fractions should add to 100% (1)")
@@ -1751,30 +1751,54 @@ mold.Ener <- reactiveValues()
        , need(E.int1(),                      'Please chose a fiber intermediate (1) ("Not Used" is an option)')    
        , need(E.mold1(),                     "Please chose a molding option (1)") 
        , need(E.cure1(),                     'Please chose a curing option (1) ("Cures in mold" is an option)')
-       , need(sum(input$moldfracUSERNum2, input$primatrixfrac2, input$othermatrixAfrac2, 
-                input$othermatrixBfrac2, input$othermatrixCfrac2) == 100,      "Sum of Mass Fractions should add to 100% (2)")       
-       , need(m.inserts2() < finalweight2(), "Inserts (2) should not weigh more than the final part")
-       , need(raw.f.f2() >= 0,               "Mass Fractions (Fiber - 2) must not be negative")
-       , need(raw.f.pm2() >= 0,              "Mass Fractions (Primary Matrix - 2) must not be negative")
-       , need(raw.f.ma2() >= 0,              "Mass Fractions (Matrix 2A) must not be negative")
-       , need(raw.f.mb2() >= 0,              "Mass Fractions (Matrix 2B) must not be negative")
-       , need(raw.f.mc2() >= 0,              "Mass Fractions (Matrix 2C) must not be negative")
-       , need(E.fib2(),                      "Please chose a fiber type (2)")  
-       , need(E.pm2(),                       "Please chose a primary matrix material (2)")   
-       , need(E.int2(),                      'Please chose a fiber intermediate (2) ("Not Used" is an option)')    
-       , need(E.mold2(),                     "Please chose a molding option (2)") 
-       , need(E.cure2(),                     'Please chose a curing option (2) ("Cures in mold" is an option)')
-       )
+            )
      
-     data_frame(
-     techset = c(rep(partname1e(), 7), rep(partname2e(), 7) ),
-     process_segment = c(rep(c("Fiber", "Primary Matrix Material", "Other Materials", "Intermediate", "Molding", "Curing", "Finishing"),2)),
-     Energy = c(E.f.fib1(), E.f.pm1(), sum(E.f.ma1(), E.f.mb1(), E.f.mc1(), E.f.ia1(), E.f.ib1()), E.f.int1(), E.f.mold1(), E.f.cure1(), E.f.fin1(),
-                E.f.fib2(), E.f.pm2(), sum(E.f.ma2(), E.f.mb2(), E.f.mc2(), E.f.ia2(), E.f.ib2()), E.f.int2(), E.f.mold2(), E.f.cure2(), E.f.fin2())
-     , order = rep(c(1, 2, 3, 4, 5, 6, 7), 2)
-       )})
+      data_frame(
+        techset = c(rep(partname1e(), 7) ),
+        process_segment = c("Fiber", "Primary Matrix Material", "Other Materials", "Intermediate", "Molding", "Curing", "Finishing"),
+        Energy = c(E.f.fib1(), E.f.pm1(), sum(E.f.ma1(), E.f.mb1(), E.f.mc1(), E.f.ia1(), E.f.ib1()), E.f.int1(), E.f.mold1(), E.f.cure1(), E.f.fin1())
+        , order = c(1, 2, 3, 4, 5, 6, 7)
+      )})  
+    
+    energy_plot.df2 <- reactive({
+      validate(
+        need(sum(input$moldfracUSERNum2, input$primatrixfrac2, input$othermatrixAfrac2, 
+                   input$othermatrixBfrac2, input$othermatrixCfrac2) == 100,      "Sum of Mass Fractions should add to 100% (2)")       
+        , need(m.inserts2() < finalweight2(), "Inserts (2) should not weigh more than the final part")
+        , need(raw.f.f2() >= 0,               "Mass Fractions (Fiber - 2) must not be negative")
+        , need(raw.f.pm2() >= 0,              "Mass Fractions (Primary Matrix - 2) must not be negative")
+        , need(raw.f.ma2() >= 0,              "Mass Fractions (Matrix 2A) must not be negative")
+        , need(raw.f.mb2() >= 0,              "Mass Fractions (Matrix 2B) must not be negative")
+        , need(raw.f.mc2() >= 0,              "Mass Fractions (Matrix 2C) must not be negative")
+        , need(E.fib2(),                      "Please chose a fiber type (2)")  
+        , need(E.pm2(),                       "Please chose a primary matrix material (2)")   
+        , need(E.int2(),                      'Please chose a fiber intermediate (2) ("Not Used" is an option)')    
+        , need(E.mold2(),                     "Please chose a molding option (2)") 
+        , need(E.cure2(),                     'Please chose a curing option (2) ("Cures in mold" is an option)')
+      )
+      
+      data_frame(
+        techset = c(rep(partname2e(), 7) ),
+        process_segment = c("Fiber", "Primary Matrix Material", "Other Materials", "Intermediate", "Molding", "Curing", "Finishing"),
+        Energy = c(E.f.fib2(), E.f.pm2(), sum(E.f.ma2(), E.f.mb2(), E.f.mc2(), E.f.ia2(), E.f.ib2()), E.f.int2(), E.f.mold2(), E.f.cure2(), E.f.fin2())
+        , order = c(1, 2, 3, 4, 5, 6, 7)
+      )})  
+    
+    
+    energy_plot.df <- reactive(bind_rows(energy_plot.df1(), energy_plot.df2()))
+    
+    energy_plot.df.p1 <- reactive({
+      energy_plot.df1() %>%
+        mutate(Process_Segment = reorder(process_segment, order)) })
+    energy_plot.df.p2 <- reactive({
+      energy_plot.df2() %>%
+        mutate(Process_Segment = reorder(process_segment, order)) })
+    
+    # output$testtable1 <- renderTable(energy_plot.df.p1())
+    # output$testtable2 <- renderTable(energy_plot.df.p2())
+    # 
 
-   fill <- c("Fiber" = "#2960A8", "Intermediate"  = "#74A138", "Primary Matrix Material" = "#C46827",
+   fillcolor <- c("Fiber" = "#2960A8", "Intermediate"  = "#74A138", "Primary Matrix Material" = "#C46827",
              "Other Materials"= "#24A7C1", "Molding" = "#8D2A1E", "Curing" = "#E2B500", "Finishing" = "#8A9FCF")
    
    energy_plot.df.p <- reactive({
@@ -1783,18 +1807,69 @@ mold.Ener <- reactiveValues()
               Process_Segment = reorder(process_segment, order))
    })
 
+   marg <- list(
+     l = 50,
+     r = 40,
+     b = 50,
+     t = 50,
+     pad = 0
+   )
+   
+   # Bar Chart
    output$plot1 <- renderPlotly({
     ggplot(energy_plot.df.p(), aes(x = Part, y = Energy, fill = Process_Segment )) +
        geom_bar(stat = "identity") +
        coord_flip() +
        labs(y = "Embodied Energy (MJ/part)", x = "") +
-       scale_fill_manual(values = fill, name = "") +
-     
+       scale_fill_manual(values = fillcolor, name = "") +
+
        theme_bw() + theme(  legend.title = element_blank(), legend.text = element_text(size = 12), legend.background = element_rect(color = "black")
-                        , axis.text = element_text(size = 14), axis.title.x = element_text(size = 18) ) 
+                        , axis.text = element_text(size = 14), axis.title.x = element_text(size = 18), plot.margin = margin(t = 0, r = 0, b = 0, l = 30, unit = "pt") )
          })
    
-    # Results Display Table ----
+   # Pie Chart
+
+   output$plot2a <- renderPlotly(
+     plot_ly(energy_plot.df.p1(), labels = ~Process_Segment, values = ~Energy, type = 'pie',
+             textposition = 'auto',
+             textinfo = 'percent',
+             insidetextfont = list(color = '#FFFFFF', family = "sans-serif", size = 18),
+             outsidetextfont = list(color = '#000000', family = "sans-serif", size = 14),
+             hoverinfo = 'text',
+             text = ~paste(round(Energy, 0), ' MJ'),
+             textfont = list(family = "sans-serif"),
+             sort = FALSE,
+             marker = list(colors = fillcolor,
+                           line = list(color = '#FFFFFF', width = 1)),
+             showlegend = TRUE) %>%
+       layout(title = partname1e(), font = list(family = "sans-serif", size = 16),
+              xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+              yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+              margin = marg,
+              legend = list(bordercolor  = "#000000", borderwidth = 2, bgcolor = "rgba(255, 255, 255, 0.5)") )
+   )
+   
+   output$plot2b <- renderPlotly(
+     plot_ly(energy_plot.df.p2(), labels = ~Process_Segment, values = ~Energy, type = 'pie',
+                 textposition = 'auto',
+                 textinfo = 'percent',
+                 insidetextfont = list(color = '#FFFFFF', family = "sans-serif", size = 18),
+                 outsidetextfont = list(color = '#000000', family = "sans-serif", size = 14),
+                 hoverinfo = 'text',
+                 text = ~paste(round(Energy, 0), ' MJ'),
+                 textfont = list(family = "sans-serif"),
+                 sort = FALSE,
+                 marker = list(colors = fillcolor,
+                               line = list(color = '#FFFFFF', width = 1)),
+                 showlegend = TRUE) %>%
+     layout(title = partname2e(), font = list(family = "sans-serif", size = 16),
+            xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+            yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+            margin = marg,
+            legend = list(bordercolor  = "#000000", borderwidth = 2, bgcolor = "rgba(255, 255, 255, 0.5)") ) 
+   )
+   
+  # Results Display Table ----
    Resultsdf <- reactive({
      validate(
          need(sum(input$moldfracUSERNum2, input$primatrixfrac2, input$othermatrixAfrac2, input$othermatrixBfrac2, input$othermatrixCfrac2) == 100,      "")       

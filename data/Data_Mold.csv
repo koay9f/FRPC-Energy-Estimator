@@ -1,6 +1,6 @@
 Name_Mold,ShortName_Mold,Energy_Mold,Frac_Fiber,Yield_Mold
-Automatic Fiber Placement,AFP,8.8,0.6,0.95
-Automatic Tape Placement,ATP,8.8,0.6,0.95
+Automatic Fiber Placement,AFP,31.6,0.6,0.95
+Automatic Tape Placement,ATP,31.6,0.6,0.95
 Compression Molding,Compression Molding,27.7,0.3,0.95
 Filament Winding,Filament Winding,4.6,0.6,0.95
 High Pressure-RTM,HPRTM,60.3,0.75,0.93

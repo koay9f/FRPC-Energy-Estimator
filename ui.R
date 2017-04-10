@@ -688,9 +688,22 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
             ),
             
             # Results Tab ---- 
-            tabPanel("Results", h1("Results"),
+            tabPanel("Results", h1("Results")
                      #p("This is where users will be able to graphically compare the two technology pathways"),
-                     plotlyOutput("plot1")
+                  , selectizeInput("whichgraph", label = "Type of Graph"
+                                   , choices = c("Bar", "Pie")
+                                   , selected = "Bar", multiple = FALSE)
+                    , conditionalPanel(
+                       condition = 'input.whichgraph == "Bar"'
+                      , plotlyOutput("plot1") )
+                     , conditionalPanel(
+                       condition = 'input.whichgraph == "Pie"'
+                     #, plotOutput("plot2") )
+                     , column(6, 
+                              h2("Technology Set 1"), plotlyOutput("plot2a", width = "100%", height = "auto"))
+                     , column (6, 
+                              h2("Technology Set 2"), plotlyOutput("plot2b", width = "100%", height = "auto"))
+                     )
                      , hr()
                      , tableOutput("ResultsTable")
             ),
@@ -802,15 +815,17 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
           
             #TEST TAB ----
       # Tab to display test tables or other tests
-       # , tabPanel("TEST", h1("TEST")
-      #To use, remove "#' (do not remove from this line) # Currently testing yield & energy calculation data
-        # , tableOutput("table1a")
-        # , tableOutput("table2a")
-        # , tableOutput("table1b")
-        # , tableOutput("table2b")
-      # , tableOutput("test")
+      #  , tabPanel("TEST", h1("TEST")
+      # #To use, remove "#' (do not remove from this line) # Currently testing yield & energy calculation data
+      #   , tableOutput("yieldtab1")
+      #   , tableOutput("yieldtab2")
+      #   , tableOutput("energytab1")
+      #   , tableOutput("energytab2")
+      # , tableOutput("testtable1")
+      # , tableOutput("testtable2")
+
         # , textOutput("testtext")
-      # )
+       # )
                  
             # End ----
             , widths = c(2,10))))

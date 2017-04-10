@@ -3,7 +3,7 @@ library(tidyverse)
 
 #  FUNCTIONS TO MAKE SERVER.R WORK 
 # Citations ----
-Data_Cite <- read.csv("data/Data_Citations.csv")
+Data_Cite = read.csv("data/Data_Citations.csv")
 cite_name = Data_Cite$Name
 cite_source = Data_Cite$Source
 cite_full1 = Data_Cite$Full_Citation1
@@ -180,6 +180,8 @@ intlistfxn <- function(moldtype) {
       c("Prepregs, Auto, Fiber (TS)", "Prepregs, Auto, Fiber (TP)", "Dry Braid", "Not Used")
   }else if (moldtype == "Sheet Molding Compound"){
       c("SMC")
+  }else if (moldtype == "Injection Molding"){
+    c("SMC")
   }else if (moldtype == "Structural Reaction Injection Molding"){
       c("Chopped", "Dry Weave", "Dry Knit", "Powdered P4")
   }  else {
