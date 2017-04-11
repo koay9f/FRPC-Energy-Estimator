@@ -84,23 +84,30 @@ whichenergy <-  function(addYN, calced, user){
 }
 
 # substitute for actionbutton clicking
-gobutton <- function(AddEV, go, Re) {
-  if (is.double(AddEV)){
-  if (AddEV == 0) {
-    0
-  } else if (go > 0 ) {
-    1
-  } else if (!is.null(Re)) {
-    1
-  } else {0}
-} else   if (is.integer(AddEV)){
-  if (AddEV == 0) {
-    0
-  } else if (go > 0 ) {
-    1
-  } else if (!is.null(Re)) {
-    1
-  } else {0}} else {0}}
+# gobutton <- function(go, Re) {
+#   if (go > 0 ) {
+#     1
+#   } else if (!is.null(Re)){
+#     1
+#   } else {0}
+# }
+  
+#   if (is.double(AddEV)){
+#   if (AddEV == 0) {
+#     0
+#   } else if (go > 0 ) {
+#     1
+#   } else if (!is.null(Re)) {
+#     1
+#   } else {0}
+# } else   if (is.integer(AddEV)){
+#   if (AddEV == 0) {
+#     0
+#   } else if (go > 0 ) {
+#     1
+#   } else if (!is.null(Re)) {
+#     1
+#   } else {0}} else {0}}
 
 
 # Specific Additional materials given type ----
@@ -189,38 +196,16 @@ intlistfxn <- function(moldtype) {
   }}
 
 #If all int  should be yes or no
-
-checkallYN <- function(moldin, molddf, reload, add, IC){
-  vari <- if (IC == "Int") {    
-    "intYN"  
-  } else {    
-      "cureYN"    
-  }
-  
-  YN <- function(x,y){
-    rowcall <- dplyr::filter (x, Variable_Name == y) %>% select(4)
-    YN <- if (rowcall == "TRUE") {
-      1
-    } else if (rowcall == "FALSE") {
-      0
+checkallYN <- function(moldin, reload, go, custom, vari){
+  x <- 
+    if (!is.null(reload)) { #check reload file
+    as.numeric(dplyr::filter (reload, Variable_Name == vari) %>% select(4) )
+  } else   if ((go + !is.null(custom)) > 0 ){ #check if custom int/cure has been added
+    1    
+    } else    if (!is.null(moldin)) { #check if using custom mold
+    as.numeric(moldin)
+      } else {0}
     }
-    YN
-  }
-  
-  x <- if (!is.null(reload)) {
-    YN(reload, vari)
-  } else if (as.character(molddf[17,1]) == as.character(moldin)) {
-    1  
-  } else  if (add > 0 ) {
-    1
-  } else {0}
-    }
-
-togglebutton <- function(button){
-  one <- if (button == 0){ 1} else {0}
-  two <- if (one == 0) {1} else {0}
-  two
-}
 
 # FUNCTIONS USED FOR FINAL CALCULATIONS ----
 # Calculate yield from scrap
@@ -478,10 +463,5 @@ custommatch_energy <- function(recustom,vari){
   custom_energy <- dplyr::filter (recustom, Description == vari) %>% select(3)
 }
 
-customdf <- function(inputtable, names, values){
-  in.df <- inputtable
-  in.df[["Names"]] <- names
-  in.df[["Values"]] <- values
-  in.df
-}
+
 

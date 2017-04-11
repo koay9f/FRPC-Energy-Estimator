@@ -1,0 +1,71 @@
+Name_All,Energy_All,ShortName_All,Frac_Fiber,Yield_Mold,Scrap_Int,Prepreg_Int,Table_All,User_YN_All
+Automatic Fiber Placement,31.6,AFP,0.6,0.95,NA,FALSE,Mold,FALSE
+Automatic Tape Placement,31.6,ATP,0.6,0.95,NA,FALSE,Mold,FALSE
+Compression Molding,27.7,Compression Molding,0.3,0.95,NA,FALSE,Mold,FALSE
+Filament Winding,4.6,Filament Winding,0.6,0.95,NA,FALSE,Mold,FALSE
+High Pressure-RTM,60.3,HPRTM,0.75,0.93,NA,FALSE,Mold,FALSE
+Injection Molding,11,Injection Molding,0.2,0.95,NA,FALSE,Mold,FALSE
+Pultrusion,9.7,Pultrusion,0.7,0.98,NA,FALSE,Mold,FALSE
+Resin Transfer Molding,40.2,RTM,0.6,0.93,NA,FALSE,Mold,FALSE
+Seeman Composite Resin Infusion Molding Process,32,SCRIMP,0.7,0.95,NA,FALSE,Mold,FALSE
+Sheet Molding Compound,27.7,SMC,0.3,0.95,NA,FALSE,Mold,FALSE
+Spray Up,46.8,Spray Up,0.4,0.95,NA,FALSE,Mold,FALSE
+Structural Reaction Injection Molding,34.5,SRIM,0.4,0.94,NA,FALSE,Mold,FALSE
+Thermo-hydroforming,42.5,THF,0.5,0.93,NA,FALSE,Mold,FALSE
+Vacuum Assisted-RTM,32,VARTM,0.7,0.95,NA,FALSE,Mold,FALSE
+Vacuum Bag (Autoclave),0.4,Vacuum Bag,0.65,0.93,NA,FALSE,Mold,FALSE
+Wet (Hand) Lay up,0.4,Wet Layup,0.35,0.97,NA,FALSE,Mold,FALSE
+"Commodity PAN, 24k Tow",1166,NA,NA,NA,NA,FALSE,Fiber,FALSE
+"Commodity PAN, 50k Tow",1155,NA,NA,NA,NA,FALSE,Fiber,FALSE
+E-Glass Fiber,50,NA,NA,NA,NA,FALSE,Fiber,FALSE
+Not Used,0,NA,NA,NA,NA,FALSE,Other,FALSE
+TS Epoxy,113.3,NA,NA,NA,NA,FALSE,Matrix,FALSE
+TS Phenol,76.2,NA,NA,NA,NA,FALSE,Matrix,FALSE
+TS Polyurethane,92.75,NA,NA,NA,NA,FALSE,Matrix,FALSE
+TS Unsaturated polyester with styrene,96.3,NA,NA,NA,NA,FALSE,Matrix,FALSE
+TS Vinyl ester with styrene,101.9,NA,NA,NA,NA,FALSE,Matrix,FALSE
+TP Nylon 6,117.31,NA,NA,NA,NA,FALSE,Matrix,FALSE
+TP Nylon 66,140.75,NA,NA,NA,NA,FALSE,Matrix,FALSE
+TP PEEK,288,NA,NA,NA,NA,FALSE,Matrix,FALSE
+TP Polypropylene,75.8,NA,NA,NA,NA,FALSE,Matrix,FALSE
+TP Polystyrene,82.6,NA,NA,NA,NA,FALSE,Matrix,FALSE
+Calcium Carbonate,6.24,NA,NA,NA,NA,FALSE,Filler,FALSE
+Kaolin Clay,16.9,NA,NA,NA,NA,FALSE,Filler,FALSE
+Magnesium Oxide,7.28,NA,NA,NA,NA,FALSE,Additive,FALSE
+Polyvinyl acetate,58.2,NA,NA,NA,NA,FALSE,Additive,FALSE
+Not Used,0,NA,NA,NA,0,FALSE,Int,FALSE
+"Prepregs, Manual, Fabric (TS)",126,NA,NA,NA,0.4,TRUE,Int,FALSE
+"Prepregs, Auto, Tape (TS)",126,NA,NA,NA,0.1,TRUE,Int,FALSE
+"Prepregs, Auto, Fiber (TS)",126,NA,NA,NA,0.07,TRUE,Int,FALSE
+"Prepregs, Manual, Fabric (TP)",24,NA,NA,NA,0.4,TRUE,Int,FALSE
+"Prepregs, Auto, Tape (TP)",24,NA,NA,NA,0.1,TRUE,Int,FALSE
+"Prepregs, Auto, Fiber (TP)",24,NA,NA,NA,0.07,TRUE,Int,FALSE
+Chopped,12,NA,NA,NA,0.15,FALSE,Int,FALSE
+Dry Braid,19,NA,NA,NA,0.3,FALSE,Int,FALSE
+Dry Knit,1.5,NA,NA,NA,0.3,FALSE,Int,FALSE
+Dry Weave,33,NA,NA,NA,0.3,FALSE,Int,FALSE
+Powdered P4,19,NA,NA,NA,0.03,FALSE,Int,FALSE
+SMC,12,NA,NA,NA,0.05,TRUE,Int,FALSE
+Not Used,0,NA,NA,NA,NA,FALSE,Insert,FALSE
+Aluminum,297.5,NA,NA,NA,NA,FALSE,Insert,FALSE
+HDPE,111.5,NA,NA,NA,NA,FALSE,Insert,FALSE
+Polyurethane Foam,105,NA,NA,NA,NA,FALSE,Insert,FALSE
+PVC,79.5,NA,NA,NA,NA,FALSE,Insert,FALSE
+SMC GFRP,34,NA,NA,NA,NA,FALSE,Insert,FALSE
+Steel,115,NA,NA,NA,NA,FALSE,Insert,FALSE
+Titanium,560,NA,NA,NA,NA,FALSE,Insert,FALSE
+TP Polypropylene,75.8,NA,NA,NA,NA,FALSE,Insert,FALSE
+Cures in Mold,0,NA,NA,NA,NA,FALSE,Cure,FALSE
+Autoclave Curing,63.84,NA,NA,NA,NA,FALSE,Cure,FALSE
+Oven Curing,8.97,NA,NA,NA,NA,FALSE,Cure,FALSE
+Oven Curing with Vacuum,14.7,NA,NA,NA,NA,FALSE,Cure,FALSE
+Direct Induction Curing,0.7,NA,NA,NA,NA,FALSE,Cure,FALSE
+E Beam Curing,0.15,NA,NA,NA,NA,FALSE,Cure,FALSE
+Infrared Curing,1.2,NA,NA,NA,NA,FALSE,Cure,FALSE
+Microwave Curing,12.8,NA,NA,NA,NA,FALSE,Cure,FALSE
+Microwave Curing with Vacuum,18.7,NA,NA,NA,NA,FALSE,Cure,FALSE
+QuickStep,27,NA,NA,NA,NA,FALSE,Cure,FALSE
+None,0,NA,NA,NA,NA,FALSE,Finish,FALSE
+Low,0.3,NA,NA,NA,NA,FALSE,Finish,FALSE
+Medium,1,NA,NA,NA,NA,FALSE,Finish,FALSE
+High,4,NA,NA,NA,NA,FALSE,Finish,FALSE
