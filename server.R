@@ -39,11 +39,11 @@ Data_Cite = read_csv("data/Data_Citations.csv")
 
 Input_List1 = read_csv("data/Defaults1.csv")
 Input_List2 = read_csv("data/Defaults2.csv")
-
-source("math.R") #ensure Data_Cite has been read first!!
+source("math.R", local = TRUE) 
 
 #Talk to server ----
 shinyServer(function(input, output, session) {
+
   # Molding Process Properties----
   Props.df <- Props[,-1]
   rownames(Props.df) <- Props[,1]
@@ -341,13 +341,15 @@ mold.Ener <- reactiveValues()
   
    # Match Energy to Name----
   moldenergyfetch1 <- eventReactive(input$moldingInput1,{
+    
+    # this df       select      df[remove]          filter ColName == Condition then add last()
     Data_Mold_new()$Energy_All[Data_Mold_new()$Name_All %in% input$moldingInput1]  })
   moldenergyfetch2 <- eventReactive(input$moldingInput2,{
-    # Data_Mold_new()$Energy_All[Data_Mold_new()$Name_All %in% input$moldingInput2]  })
-    print(Data_Mold_new() %>% filter(Name_All == input$moldingInput2))
-    print(input$moldingInput2)
-    Data_Mold_new() %>% filter(Name_All == input$moldingInput2) %>% 
-    select(Energy_All) })
+    Data_Mold_new() %>% 
+      filter(Name_All == input$moldingInput2) %>% 
+      select(Energy_All) %>%
+      last()
+    })
   
    # Match ShortName to Name----
   moldshortfetch1 <-  eventReactive(input$moldingInput1,{
