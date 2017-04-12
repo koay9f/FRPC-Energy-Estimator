@@ -255,7 +255,7 @@ shinyServer(function(input, output, session) {
     isolate(values$dn <- unique(rbind(values$dn, Re_custom.df())))
   })
   
-  #Builddf ----
+  # Build Custom Data Frame ----
   
   Data_All_Custom <- eventReactive( c(input$goadditive, input$gocure, input$gofiber, input$gofiller, input$gofinish, input$goinsert,
                                       input$goint, input$gomatrix, input$gomold, input$Re_Custom), {
@@ -264,7 +264,7 @@ shinyServer(function(input, output, session) {
                                     input$goint, input$gomatrix, input$gomold, input$Re_Custom), {
                                       unique(rbind(Data_All, Data_All_Custom()))})
   
-  output$testtable <- renderTable(Data_All_Custom())
+  output$testtable <- renderTable(Data_All_df())
   
   # Initial Page (not molding) ----
   # (none) = first use; a = int; b = matrix; c = mold; d= summary;  e or z = calcs
@@ -330,50 +330,64 @@ mold.Ener <- reactiveValues()
   
    # Match Names to Table----
   moldnamefetch1 <- eventReactive(input$moldingInput1,{
-    Data_Mold_new()$Name_All[Data_Mold_new()$Name_All %in% input$moldingInput1]  })
-  moldnamefetch2 <- eventReactive(input$moldingInput2,{
-    Data_Mold_new()$Name_All[Data_Mold_new()$Name_All %in% input$moldingInput2]  })
+    Data_Mold_new() %>%     filter(Name_All == input$moldingInput1) %>% 
+      select(Name_All) %>%  unlist() %>%   last() })
   
+  moldnamefetch2 <- eventReactive(input$moldingInput2,{
+    Data_Mold_new() %>%     filter(Name_All == input$moldingInput2) %>% 
+      select(Energy_All) %>%   unlist() %>%  last() })
+  
+  # Match Names to YN is it User or Default ----
   moldnamecheck1<- eventReactive(input$moldingInput1,{
-    Data_Mold_new()$User_YN_All[Data_Mold_new()$Name_All %in% input$moldingInput1]  })
+  Data_Mold_new() %>%     filter(Name_All == input$moldingInput1) %>% 
+    select(User_YN_All) %>%   unlist() %>%  last() })
+  
   moldnamecheck2<- eventReactive(input$moldingInput2,{
-    Data_Mold_new()$User_YN_All[Data_Mold_new()$Name_All %in% input$moldingInput2]  })
+    Data_Mold_new() %>%     filter(Name_All == input$moldingInput2) %>% 
+      select(User_YN_All) %>%   unlist() %>%  last() })  
   
    # Match Energy to Name----
   moldenergyfetch1 <- eventReactive(input$moldingInput1,{
-    
-    # this df       select      df[remove]          filter ColName == Condition then add last()
-    Data_Mold_new()$Energy_All[Data_Mold_new()$Name_All %in% input$moldingInput1]  })
+  Data_Mold_new() %>%     filter(Name_All == input$moldingInput1) %>% 
+    select(Energy_All) %>%  unlist() %>%    last() })
+  
   moldenergyfetch2 <- eventReactive(input$moldingInput2,{
-    Data_Mold_new() %>% 
-      filter(Name_All == input$moldingInput2) %>% 
-      select(Energy_All) %>%
-      last()
-    })
+    Data_Mold_new() %>%       filter(Name_All == input$moldingInput2) %>% 
+      select(Energy_All) %>%   unlist() %>%    last()    })
   
    # Match ShortName to Name----
   moldshortfetch1 <-  eventReactive(input$moldingInput1,{
-    Data_Mold_new()$ShortName_All[Data_Mold_new()$Name_All  %in% input$moldingInput1]  })
+  Data_Mold_new() %>%       filter(Name_All == input$moldingInput1) %>% 
+    select(ShortName_All) %>%    unlist() %>%   last()    })
+  
   moldshortfetch2 <- eventReactive(input$moldingInput2, {
-   Data_Mold_new()$ShortName_All[Data_Mold_new()$Name_All %in% input$moldingInput2]})
+  Data_Mold_new() %>%       filter(Name_All == input$moldingInput2) %>% 
+    select(ShortName_All) %>%   unlist() %>%    last()    })
   
    # Match Fraction to Name----
   moldfracfetch1 <- eventReactive(input$moldingInput1,{
-    Data_Mold_new()$Frac_Fiber[Data_Mold_new()$Name_All %in% input$moldingInput1]  })
+  Data_Mold_new() %>%       filter(Name_All == input$moldingInput1) %>% 
+    select(Frac_Fiber) %>%   unlist() %>%    last()    })
   moldfracfetch2 <- eventReactive(input$moldingInput2,{ 
-    Data_Mold_new()$Frac_Fiber[Data_Mold_new()$Name_All %in% input$moldingInput2]  })
+    Data_Mold_new() %>%       filter(Name_All == input$moldingInput2) %>% 
+      select(Frac_Fiber) %>%    unlist() %>%   last()    })
   
     # Match Yield to Name----
   moldyieldfetch1 <- eventReactive(input$moldingInput1,{ 
-   Data_Mold_new()$Yield_Mold[Data_Mold_new()$Name_All %in% input$moldingInput1]  })
+  Data_Mold_new() %>%       filter(Name_All == input$moldingInput1) %>% 
+    select(Yield_Mold) %>%   unlist() %>%    last()    })
   moldyieldfetch2 <- eventReactive(input$moldingInput2,{
-    Data_Mold_new()$Yield_Mold[Data_Mold_new()$Name_All %in% input$moldingInput2]  })
+    Data_Mold_new() %>%       filter(Name_All == input$moldingInput2) %>% 
+      select(Yield_Mold) %>%    unlist() %>%   last()    })
   
    # Match Citations to Name----
   moldcitefetch1 <- eventReactive(input$moldingInput1,{
-    cite_source[cite_name %in% input$moldingInput1]  })
+    Data_Cite %>%       filter(Name == input$moldingInput1) %>% 
+    select(Source) %>%     unlist() %>%  last()    })
+  
   moldcitefetch2 <- eventReactive(input$moldingInput2,{
-    cite_source[cite_name %in% input$moldingInput2]  })
+    Data_Cite %>%       filter(Name == input$moldingInput2) %>% 
+      select(Source) %>%    unlist() %>%   last()    })
   
    # Generate Outputs----
   moldname1 <- output$moldname1d <- output$moldname1c <- output$moldname1b <- output$moldname1a <- output$moldname1 <- renderText(moldnamefetch1())
@@ -462,17 +476,21 @@ mold.Ener <- reactiveValues()
   
    # Match Names to Table----
   fibernamefetch1 <- eventReactive(input$fiberInput1,{
-    Data_Fiber_new()$Name_All[Data_Fiber_new()$Name_All %in% input$fiberInput1]  })
+  Data_Fiber_new() %>%     filter(Name_All == input$fiberInput1) %>% 
+      select(Name_All) %>%  unlist() %>%    last() })
   
   fibernamefetch2 <- eventReactive(input$fiberInput2,{
-    Data_Fiber_new()$Name_All[Data_Fiber_new()$Name_All %in% input$fiberInput2]  })
+    Data_Fiber_new() %>%     filter(Name_All == input$fiberInput2) %>% 
+      select(Name_All) %>%  unlist() %>%    last() })  
   
    # Match Energy to Name----
   fiberenergyfetch1 <- eventReactive(input$fiberInput1,{
-    Data_Fiber_new()$Energy_All[Data_Fiber_new()$Name_All %in% input$fiberInput1]  })
+    Data_Fiber_new() %>%     filter(Name_All == input$fiberInput1) %>% 
+      select(Energy_All) %>%  unlist() %>%    last() })  
   
   fiberenergyfetch2 <- eventReactive(input$fiberInput2,{
-    Data_Fiber_new()$Energy_All[Data_Fiber_new()$Name_All %in% input$fiberInput2]  })
+    Data_Fiber_new() %>%     filter(Name_All == input$fiberInput2) %>% 
+      select(Energy_All) %>%  unlist() %>%    last() })  
   
    # Generate Outputs----
   fibername1 <- output$fibername1d  <-  output$fibername1c <- output$fibername1b <- output$fibername1a <- output$fibername1 <- renderText(as.character(fibernamefetch1()))
@@ -501,9 +519,11 @@ mold.Ener <- reactiveValues()
   
    # Citations----
   fibercitefetch1 <- eventReactive(input$fiberInput1,{
-    cite_source[cite_name %in% input$fiberInput1]  })
+    Data_Cite %>%       filter(Name == input$fiberInput1) %>% 
+      select(Source) %>%     unlist() %>%  last()    })  
   fibercitefetch2 <- eventReactive(input$fiberInput2,{
-    cite_source[cite_name %in% input$fiberInput2]  })
+    Data_Cite %>%       filter(Name == input$fiberInput2) %>% 
+      select(Source) %>%     unlist() %>%  last()    })  
   
   fibercite1 <- renderText(as.character(fibercitefetch1()))
   observeEvent(input$fiberInput1, {
@@ -583,17 +603,21 @@ mold.Ener <- reactiveValues()
   matrixenergy_new <- reactive(Data_MatrixM_new()$Energy_All)
 
   primatrixnamefetch1 <- eventReactive(input$PriMatrixInput1,{
-    matrixnames_new()[matrixnames_new() %in% input$PriMatrixInput1]  })
+  Data_MatrixM_new() %>%     filter(Name_All == input$PriMatrixInput1) %>% 
+    select(Name_All) %>%  unlist() %>%    last() })  
   
   primatrixnamefetch2 <- eventReactive(input$PriMatrixInput2,{
-    matrixnames_new()[matrixnames_new()  %in% input$PriMatrixInput2]  })
+    Data_MatrixM_new() %>%     filter(Name_All == input$PriMatrixInput2) %>% 
+      select(Name_All) %>%  unlist() %>%    last() })    
   
    # Match Energy to Name----
   primatrixenergyfetch1 <- eventReactive(input$PriMatrixInput1,{
-    matrixenergy_new()[matrixnames_new()  %in% input$PriMatrixInput1]  })
+    Data_MatrixM_new() %>%     filter(Name_All == input$PriMatrixInput1) %>% 
+      select(Energy_All) %>%  unlist() %>%    last() })  
   
   primatrixenergyfetch2 <- eventReactive(input$PriMatrixInput2,{
-    matrixenergy_new()[matrixnames_new()  %in% input$PriMatrixInput2]  })
+    Data_MatrixM_new() %>%     filter(Name_All == input$PriMatrixInput2) %>% 
+      select(Energy_All) %>%  unlist() %>%    last() })  
   
    # Generate Outputs----
   primatrixname1 <- output$primatrixname1c <-output$primatrixname1a <- renderText(as.character(primatrixnamefetch1()))
@@ -621,9 +645,11 @@ mold.Ener <- reactiveValues()
   
    # Citations----
   primatrixcitefetch1 <- eventReactive(input$PriMatrixInput1,{
-    cite_source[cite_name %in% input$PriMatrixInput1]  })
-  primatrixcitefetch2 <- eventReactive(input$PriMatrixInput2,{
-    cite_source[cite_name %in% input$PriMatrixInput2]  })
+    Data_Cite %>%       filter(Name == input$PriMatrixInput1) %>% 
+      select(Source) %>%     unlist() %>%  last()    })  
+    primatrixcitefetch2 <- eventReactive(input$PriMatrixInput2,{
+      Data_Cite %>%       filter(Name == input$PriMatrixInput2) %>% 
+        select(Source) %>%     unlist() %>%  last()    })    
   
   primatrixcite1 <- renderText(as.character(primatrixcitefetch1()))
   observeEvent(input$PriMatrixInput1, {
@@ -733,20 +759,44 @@ mold.Ener <- reactiveValues()
                          server = TRUE)})
   
    # Match Name with Table----
-  othermatrixAnamefetch1 <- eventReactive(input$OtherMatrixAInput1, {matrixnames_new()[matrixnames_new() %in% input$OtherMatrixAInput1]})
-  othermatrixBnamefetch1 <- eventReactive(input$OtherMatrixBInput1, {matrixnames_new()[matrixnames_new() %in% input$OtherMatrixBInput1]})
-  othermatrixCnamefetch1 <- eventReactive(input$OtherMatrixCInput1, {matrixnames_new()[matrixnames_new() %in% input$OtherMatrixCInput1]})
-  othermatrixAnamefetch2 <- eventReactive(input$OtherMatrixAInput2, {matrixnames_new()[matrixnames_new() %in% input$OtherMatrixAInput2]})
-  othermatrixBnamefetch2 <- eventReactive(input$OtherMatrixBInput2, {matrixnames_new()[matrixnames_new() %in% input$OtherMatrixBInput2]})
-  othermatrixCnamefetch2 <- eventReactive(input$OtherMatrixCInput2, {matrixnames_new()[matrixnames_new() %in% input$OtherMatrixCInput2]})
+  othermatrixAnamefetch1 <- eventReactive(input$OtherMatrixAInput1, {
+                                            Data_MatrixM_new() %>%     filter(Name_All == input$OtherMatrixAInput1) %>% 
+                                              select(Name_All) %>%  unlist() %>%    last() })  
+  othermatrixBnamefetch1 <- eventReactive(input$OtherMatrixBInput1, {
+                                          Data_MatrixM_new() %>%     filter(Name_All == input$OtherMatrixBInput1) %>% 
+                                            select(Name_All) %>%  unlist() %>%    last() })  
+  othermatrixCnamefetch1 <- eventReactive(input$OtherMatrixCInput1,{
+                                          Data_MatrixM_new() %>%     filter(Name_All == input$OtherMatrixCInput1) %>% 
+                                            select(Name_All) %>%  unlist() %>%    last() })  
+  othermatrixAnamefetch2 <- eventReactive(input$OtherMatrixAInput2, {
+                                          Data_MatrixM_new() %>%     filter(Name_All == input$OtherMatrixAInput2) %>% 
+                                            select(Name_All) %>%  unlist() %>%    last() })  
+  othermatrixBnamefetch2 <- eventReactive(input$OtherMatrixBInput2, {
+                                          Data_MatrixM_new() %>%     filter(Name_All == input$OtherMatrixBInput2) %>% 
+                                            select(Name_All) %>%  unlist() %>%    last() }) 
+  othermatrixCnamefetch2 <- eventReactive(input$OtherMatrixCInput2, {
+                                          Data_MatrixM_new() %>%     filter(Name_All == input$OtherMatrixCInput2) %>% 
+                                            select(Name_All) %>%  unlist() %>%    last() }) 
   
    # Match Energy with Name----
-  othermatrixAenergyfetch1 <- eventReactive(input$OtherMatrixAInput1, {matrixenergy_new()[matrixnames_new() %in% input$OtherMatrixAInput1] })
-  othermatrixBenergyfetch1 <- eventReactive(input$OtherMatrixBInput1, { matrixenergy_new()[matrixnames_new() %in% input$OtherMatrixBInput1] })
-  othermatrixCenergyfetch1 <- eventReactive(input$OtherMatrixCInput1, { matrixenergy_new()[matrixnames_new() %in% input$OtherMatrixCInput1] })
-  othermatrixAenergyfetch2 <- eventReactive(input$OtherMatrixAInput2, { matrixenergy_new()[matrixnames_new() %in% input$OtherMatrixAInput2] })
-  othermatrixBenergyfetch2 <- eventReactive(input$OtherMatrixBInput2, { matrixenergy_new()[matrixnames_new() %in% input$OtherMatrixBInput2] })
-  othermatrixCenergyfetch2 <- eventReactive(input$OtherMatrixCInput2, { matrixenergy_new()[matrixnames_new() %in% input$OtherMatrixCInput2] })
+  othermatrixAenergyfetch1 <- eventReactive(input$OtherMatrixAInput1, {
+                                            Data_MatrixM_new() %>%     filter(Name_All == input$OtherMatrixAInput1) %>% 
+                                              select(Energy_All) %>%  unlist() %>%    last() })  
+  othermatrixBenergyfetch1 <- eventReactive(input$OtherMatrixBInput1, { 
+                                            Data_MatrixM_new() %>%     filter(Name_All == input$OtherMatrixBInput1) %>% 
+                                              select(Energy_All) %>%  unlist() %>%    last() })  
+  othermatrixCenergyfetch1 <- eventReactive(input$OtherMatrixCInput1, { 
+                                            Data_MatrixM_new() %>%     filter(Name_All == input$OtherMatrixCInput1) %>% 
+                                              select(Energy_All) %>%  unlist() %>%    last() })  
+  othermatrixAenergyfetch2 <- eventReactive(input$OtherMatrixAInput2, { 
+                                            Data_MatrixM_new() %>%     filter(Name_All == input$OtherMatrixAInput2) %>% 
+                                              select(Energy_All) %>%  unlist() %>%    last() })  
+  othermatrixBenergyfetch2 <- eventReactive(input$OtherMatrixBInput2, { 
+                                              Data_MatrixM_new() %>%     filter(Name_All == input$OtherMatrixBInput2) %>% 
+                                                select(Energy_All) %>%  unlist() %>%    last() })  
+  othermatrixCenergyfetch2 <- eventReactive(input$OtherMatrixCInput2, { 
+                                                Data_MatrixM_new() %>%     filter(Name_All == input$OtherMatrixCInput2) %>% 
+                                                  select(Energy_All) %>%  unlist() %>%    last() })  
   
    # Generate  Outputs----
   othermatrixAname1 <- renderText(as.character(othermatrixAnamefetch1()))
@@ -793,9 +843,13 @@ mold.Ener <- reactiveValues()
       need(input$othermatrixCfrac2 <100, "Mass Fraction cannot be greater than 100%")      ) 
     ({ paste(othermatrixCenergyfetch2(), "MJ/kg")}               )})
   
-   # Citations a----
-  othermatrixAcitefetch1 <- eventReactive(input$OtherMatrixAInput1,{cite_source[cite_name %in% input$OtherMatrixAInput1]  })
-  othermatrixAcitefetch2 <- eventReactive(input$OtherMatrixAInput2,{cite_source[cite_name %in% input$OtherMatrixAInput2]  })
+   # Citations ----
+  othermatrixAcitefetch1 <- eventReactive(input$OtherMatrixAInput1,{
+    Data_Cite %>%       filter(Name == input$OtherMatrixAInput1) %>% 
+      select(Source) %>%     unlist() %>%  last()    })
+  othermatrixAcitefetch2 <- eventReactive(input$OtherMatrixAInput2,{
+    Data_Cite %>%       filter(Name == input$OtherMatrixAInput2) %>% 
+      select(Source) %>%     unlist() %>%  last()    })
   
   othermatrixAcite1 <- renderText(as.character(othermatrixAcitefetch1()))
   observeEvent(input$OtherMatrixAInput1, {
@@ -807,8 +861,12 @@ mold.Ener <- reactiveValues()
     validate(need(othermatrixAname2()!= "Not Used", ""), need(othermatrixAname2(), "")) 
     showNotification(paste("Citation for ", othermatrixAname2(), ": ",othermatrixAcite2()), duration = 5, closeButton = TRUE, type = "message")})
  
-  othermatrixBcitefetch1 <- eventReactive(input$OtherMatrixBInput1,{cite_source[cite_name %in% input$OtherMatrixBInput1]  })
-  othermatrixBcitefetch2 <- eventReactive(input$OtherMatrixBInput2,{cite_source[cite_name %in% input$OtherMatrixBInput2]  })
+  othermatrixBcitefetch1 <- eventReactive(input$OtherMatrixBInput1,{
+    Data_Cite %>%       filter(Name == input$OtherMatrixBInput1) %>% 
+      select(Source) %>%     unlist() %>%  last()    })
+  othermatrixBcitefetch2 <- eventReactive(input$OtherMatrixBInput2,{
+    Data_Cite %>%       filter(Name == input$OtherMatrixBInput2) %>% 
+      select(Source) %>%     unlist() %>%  last()    })
   
   othermatrixBcite1 <- renderText(as.character(othermatrixBcitefetch1()))
   observeEvent(input$OtherMatrixBInput1, {
@@ -820,8 +878,12 @@ mold.Ener <- reactiveValues()
     validate(need(othermatrixBname2() != "Not Used", ""), need(othermatrixBname2(), "")) 
     showNotification(paste("Citation for ", othermatrixBname2(), ": ",othermatrixBcite2()), duration = 5, closeButton = TRUE, type = "message")})
   
-  othermatrixCcitefetch1 <- eventReactive(input$OtherMatrixCInput1,{cite_source[cite_name %in% input$OtherMatrixCInput1]  })
-  othermatrixCcitefetch2 <- eventReactive(input$OtherMatrixCInput2,{cite_source[cite_name %in% input$OtherMatrixCInput2]  })
+  othermatrixCcitefetch1 <- eventReactive(input$OtherMatrixCInput1,{
+    Data_Cite %>%       filter(Name == input$OtherMatrixCInput1) %>% 
+      select(Source) %>%     unlist() %>%  last()    })
+  othermatrixCcitefetch2 <- eventReactive(input$OtherMatrixAInput2,{
+    Data_Cite %>%       filter(Name == input$OtherMatrixCInput2) %>% 
+      select(Source) %>%     unlist() %>%  last()    })
   
   othermatrixCcite1 <- renderText(as.character(othermatrixCcitefetch1()))
   observeEvent(input$OtherMatrixCInput1, {
@@ -876,30 +938,30 @@ mold.Ener <- reactiveValues()
   
    # Associate Names To Table----
   insertsAnamefetch1  <- eventReactive(input$InsertsAInput1,{
-    Data_Insert_new()$Name_All[Data_Insert_new()$Name_All %in% input$InsertsAInput1]  })
-  
+  Data_Insert_new() %>%     filter(Name_All == input$InsertsAInput1) %>% 
+    select(Name_All) %>%  unlist() %>%    last() })  
   insertsBnamefetch1  <- eventReactive(input$InsertsBInput1,{
-    Data_Insert_new()$Name_All[Data_Insert_new()$Name_All %in% input$InsertsBInput1]  })
-  
+    Data_Insert_new() %>%     filter(Name_All == input$InsertsBInput1) %>% 
+      select(Name_All) %>%  unlist() %>%    last() })   
   insertsAnamefetch2  <- eventReactive(input$InsertsAInput2,{
-    Data_Insert_new()$Name_All[Data_Insert_new()$Name_All %in% input$InsertsAInput2]  })
-  
+    Data_Insert_new() %>%     filter(Name_All == input$InsertsAInput2) %>% 
+      select(Name_All) %>%  unlist() %>%    last() })   
   insertsBnamefetch2  <- eventReactive(input$InsertsBInput2,{
-    Data_Insert_new()$Name_All[Data_Insert_new()$Name_All %in% input$InsertsBInput2]  })
-  
+    Data_Insert_new() %>%     filter(Name_All == input$InsertsBInput2) %>% 
+      select(Name_All) %>%  unlist() %>%    last() })   
    # Associate Energy to Table----
   insertsAenergyfetch1 <- eventReactive(input$InsertsAInput1,{
-    Data_Insert_new()$Energy_All[Data_Insert_new()$Name_All %in% input$InsertsAInput1]  })
-  
+    Data_Insert_new() %>%     filter(Name_All == input$InsertsAInput1) %>% 
+      select(Energy_All) %>%  unlist() %>%    last() })     
   insertsBenergyfetch1 <- eventReactive(input$InsertsBInput1,{
-    Data_Insert_new()$Energy_All[Data_Insert_new()$Name_All %in% input$InsertsBInput1]  })
-  
-  
+    Data_Insert_new() %>%     filter(Name_All == input$InsertsBInput1) %>% 
+      select(Energy_All) %>%  unlist() %>%    last() })  
   insertsAenergyfetch2 <- eventReactive(input$InsertsAInput2,{
-    Data_Insert_new()$Energy_All[Data_Insert_new()$Name_All %in% input$InsertsAInput2]  })
-  
+    Data_Insert_new() %>%     filter(Name_All == input$InsertsAInput2) %>% 
+      select(Energy_All) %>%  unlist() %>%    last() })    
   insertsBenergyfetch2 <- eventReactive(input$InsertsBInput2,{
-    Data_Insert_new()$Energy_All[Data_Insert_new()$Name_All %in% input$InsertsBInput2]  })
+    Data_Insert_new() %>%     filter(Name_All == input$InsertsBInput2) %>% 
+      select(Energy_All) %>%  unlist() %>%    last() })  
   
    # Generate Outputs----
   insertsAname1 <- renderText(as.character(insertsAnamefetch1()))
@@ -933,8 +995,12 @@ mold.Ener <- reactiveValues()
     ({ paste(insertsBenergyfetch2(), "MJ/kg")}               )})
   
    # Citations----
-  insertAcitefetch1 <- eventReactive(input$InsertsAInput1,{cite_source[cite_name %in% input$InsertsAInput1]  })
-  insertAcitefetch2 <- eventReactive(input$InsertsAInput2,{cite_source[cite_name %in% input$InsertsAInput2]  })
+ insertAcitefetch1 <- eventReactive(input$InsertsAInput1,{
+    Data_Cite %>%       filter(Name == input$InsertsAInput1) %>% 
+      select(Source) %>%     unlist() %>%  last()    })
+  insertAcitefetch2 <- eventReactive(input$InsertsAInput2,{
+    Data_Cite %>%       filter(Name == input$InsertsAInput2) %>% 
+      select(Source) %>%     unlist() %>%  last()    })
   
   insertAcite1 <- renderText(as.character(insertAcitefetch1()))
   observeEvent(input$InsertsAInput1, {
@@ -946,8 +1012,12 @@ mold.Ener <- reactiveValues()
     validate(need(insertsAname2(), ""), need(insertsAname2() != "Not Used", "")) 
     showNotification(paste("Citation for ", insertsAname2(), ": ",insertAcite2()), duration = 5, closeButton = TRUE, type = "message")})
   
-  insertBcitefetch1 <- eventReactive(input$InsertsBInput1,{cite_source[cite_name %in% input$InsertsBInput1]  })
-  insertBcitefetch2 <- eventReactive(input$InsertsBInput2,{cite_source[cite_name %in% input$InsertsBInput2]  })
+  insertBcitefetch1 <- eventReactive(input$InsertsBInput1,{
+    Data_Cite %>%       filter(Name == input$InsertsBInput1) %>% 
+      select(Source) %>%     unlist() %>%  last()    })
+  insertBcitefetch2 <- eventReactive(input$InsertsAInput2,{
+    Data_Cite %>%       filter(Name == input$InsertsBInput2) %>% 
+      select(Source) %>%     unlist() %>%  last()    })
   
   insertBcite1 <- renderText(as.character(insertBcitefetch1()))
   observeEvent(input$InsertsBInput1, {
@@ -1016,45 +1086,36 @@ mold.Ener <- reactiveValues()
 
    # Match Names to Table----
   intnamefetch1 <- eventReactive(input$intInput1,{
-    int_name <- Data_Int_new()$Name_All
-    int_name[int_name %in% input$intInput1]  })
-  
+    Data_Int_new() %>%     filter(Name_All == input$intInput1) %>% 
+    select(Name_All) %>%  unlist() %>%    last() })  
   intnamefetch2 <- eventReactive(input$intInput2,{
-    int_name <- Data_Int_new()$Name_All
-    int_name[int_name %in% input$intInput2]  })
+    Data_Int_new() %>%     filter(Name_All == input$intInput2) %>% 
+      select(Name_All) %>%  unlist() %>%    last() })  
   
    # Match Energy to Name----
   intenergyfetch1 <- eventReactive(input$intInput1,{
-    int_name <- Data_Int_new()$Name_All
-    int_energy <- Data_Int_new()$Energy_All
-    int_energy[int_name %in% input$intInput1]  })
-  
+    Data_Int_new() %>%     filter(Name_All == input$intInput1) %>% 
+      select(Energy_All) %>%  unlist() %>%    last() })  
   intenergyfetch2 <- eventReactive(input$intInput2,{
-    int_name <- Data_Int_new()$Name_All
-    int_energy <- Data_Int_new()$Energy_All
-    int_energy[int_name %in% input$intInput2]  })
+    Data_Int_new() %>%     filter(Name_All == input$intInput2) %>% 
+      select(Energy_All) %>%  unlist() %>%    last() }) 
   
    # Match Scrap to Name----
   intscrapfetch1 <- eventReactive(input$intInput1,{
-    int_name <- Data_Int_new()$Name_All
-    int_scrap <- Data_Int_new()$Scrap_Int
-    int_scrap[int_name %in% input$intInput1]  })
-  
+    Data_Int_new() %>%     filter(Name_All == input$intInput1) %>% 
+      select(Scrap_Int) %>%  unlist() %>%    last() }) 
   intscrapfetch2 <- eventReactive(input$intInput2,{
-    int_name <- Data_Int_new()$Name_All
-    int_scrap <- Data_Int_new()$Scrap_Int
-    int_scrap[int_name %in% input$intInput2]  })
+    Data_Int_new() %>%     filter(Name_All == input$intInput1) %>% 
+      select(Scrap_Int) %>%  unlist() %>%    last() }) 
   
    # Match PrepregYN to Name (for determining if matrix material needs to be included in intermediate scrap)----
   intprepregfetch1 <- eventReactive(input$intInput1,{
-    int_name <- Data_Int_new()$Name_All
-    int_preg <- Data_Int_new()$Prepreg_Int
-    int_preg[int_name %in% input$intInput1]  })
-  
+    Data_Int_new() %>%     filter(Name_All == input$intInput1) %>% 
+      select(Prepreg_Int) %>%  unlist() %>%    last() }) 
+
   intprepregfetch2 <- eventReactive(input$intInput2,{
-    int_name <- Data_Int_new()$Name_All
-    int_preg <- Data_Int_new()$Prepreg_Int
-    int_preg[int_name %in% input$intInput2]  })
+    Data_Int_new() %>%     filter(Name_All == input$intInput2) %>% 
+      select(Prepreg_Int) %>%  unlist() %>%    last() }) 
   
    # Generate Outputs----
   intname1 <- output$intname1d  <- output$intname1c <-output$intname1 <- renderText(as.character(intnamefetch1()))
@@ -1098,9 +1159,11 @@ mold.Ener <- reactiveValues()
   
    # Citations----
   intcitefetch1 <- eventReactive(input$intInput1,{
-    cite_source[cite_name %in% input$intInput1]  })
+    Data_Cite %>%       filter(Name == input$intInput1) %>% 
+      select(Source) %>%    unlist() %>%   last()    })
   intcitefetch2 <- eventReactive(input$intInput2,{
-    cite_source[cite_name %in% input$intInput2]  })
+    Data_Cite %>%       filter(Name == input$intInput2) %>% 
+      select(Source) %>%    unlist() %>%   last()    })
   
   intcite1 <- renderText(as.character(intcitefetch1()))
   observeEvent(input$intInput1, {
@@ -1178,23 +1241,21 @@ mold.Ener <- reactiveValues()
 
    # Match Names to Table----
   curenamefetch1 <- eventReactive(input$cureInput1,{
-    c_name <- Data_Cure_new()$Name_All
-    c_name[c_name %in% input$cureInput1]  })
+  Data_Cure_new() %>%     filter(Name_All == input$cureInput1) %>% 
+    select(Name_All) %>%  unlist() %>%    last() }) 
   
   curenamefetch2 <- eventReactive(input$cureInput2,{
-    c_name <-Data_Cure_new()$Name_All
-    c_name[c_name %in% input$cureInput2]  })
+    Data_Cure_new() %>%     filter(Name_All == input$cureInput2) %>% 
+      select(Name_All) %>%  unlist() %>%    last() }) 
   
    # Match Energy to Table----
   cureenergyfetch1 <- eventReactive(input$cureInput1,{
-    c_name <- Data_Cure_new()$Name_All
-    c_energy <- Data_Cure_new()$Energy_All
-    c_energy[c_name %in% input$cureInput1]  })
+    Data_Cure_new() %>%     filter(Name_All == input$cureInput1) %>% 
+      select(Energy_All) %>%  unlist() %>%    last() }) 
   
   cureenergyfetch2 <- eventReactive(input$cureInput2,{
-    c_name <- Data_Cure_new()$Name_All
-    c_energy <- Data_Cure_new()$Energy_All
-    c_energy[c_name %in% input$cureInput2]  })
+    Data_Cure_new() %>%     filter(Name_All == input$cureInput2) %>% 
+      select(Energy_All) %>%  unlist() %>%    last() }) 
   
    # Generate Outputs----
   output$curename1d  <- curename1 <- renderText(as.character(curenamefetch1()))
@@ -1217,9 +1278,11 @@ mold.Ener <- reactiveValues()
   
    # Citations----
   curecitefetch1 <- eventReactive(input$cureInput1,{
-    cite_source[cite_name %in% input$cureInput1]  })
+    Data_Cite %>%       filter(Name == input$cureInput1) %>% 
+      select(Source) %>%    unlist() %>%   last()    })
   curecitefetch2 <- eventReactive(input$cureInput2,{
-    cite_source[cite_name %in% input$cureInput2]  })
+    Data_Cite %>%       filter(Name == input$cureInput2) %>% 
+      select(Source) %>%    unlist() %>%   last()    })
   
   curecite1 <- renderText(as.character(curecitefetch1()))
   observeEvent(input$cureInput1, {
@@ -1267,18 +1330,20 @@ mold.Ener <- reactiveValues()
   
    # Match Names to Table----
   finishnamefetch1 <- eventReactive(input$finishInput1,{
-    Data_Finish_new()$Name_All[Data_Finish_new()$Name_All %in% input$finishInput1]  })
+  Data_Finish_new() %>%     filter(Name_All == input$finishInput1) %>% 
+    select(Name_All) %>%  unlist() %>%    last() }) 
+    finishnamefetch2 <- eventReactive(input$finishInput2,{
+    Data_Finish_new() %>%     filter(Name_All == input$finishInput2) %>% 
+      select(Name_All) %>%  unlist() %>%    last() })   
   
-  finishnamefetch2 <- eventReactive(input$finishInput2,{
-    Data_Finish_new()$Name_All[Data_Finish_new()$Name_All %in% input$finishInput2]  })
-  
-   # Match Energy to Table-----
+     # Match Energy to Table-----
   finishenergyfetch1 <- eventReactive(input$finishInput1,{
-    Data_Finish_new()$Energy_All[Data_Finish_new()$Name_All %in% input$finishInput1]  })
-  
+    Data_Finish_new() %>%     filter(Name_All == input$finishInput1) %>% 
+      select(Energy_All) %>%  unlist() %>%    last() })   
   finishenergyfetch2 <- eventReactive(input$finishInput2,{
-    Data_Finish_new()$Energy_All[Data_Finish_new()$Name_All %in% input$finishInput2]  })
- 
+    Data_Finish_new() %>%     filter(Name_All == input$finishInput2) %>% 
+      select(Energy_All) %>%  unlist() %>%    last() }) 
+  
    # Generate Outputs ----
   output$finishname1d  <- finishname1 <- renderText(as.character(finishnamefetch1()))
   output$finishname2d  <- finishname2 <- renderText(as.character(finishnamefetch2()))
@@ -1297,9 +1362,11 @@ mold.Ener <- reactiveValues()
   
    # Citations----
   finishcitefetch1 <- eventReactive(input$finishInput1,{
-    cite_source[cite_name %in% input$finishInput1]  })
+    Data_Cite %>%       filter(Name == input$finishInput1) %>% 
+      select(Source) %>%    unlist() %>%   last()    })
   finishcitefetch2 <- eventReactive(input$finishInput2,{
-    cite_source[cite_name %in% input$finishInput2]  })
+    Data_Cite %>%       filter(Name == input$finishInput2) %>% 
+      select(Source) %>%    unlist() %>%   last()    })
   
   finishcite1 <- renderText(as.character(finishcitefetch1()))
   observeEvent(input$finishInput1, {

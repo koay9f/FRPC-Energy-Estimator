@@ -64,17 +64,21 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                      # This tool can also incorporate custom data using the form below
                    # Which & Instructions ---- 
                      , selectizeInput("add_data_which", label = "What type of custom data would you like to add?",
-                                      choices = c("Instructions", "Fiber Type", "Matrix", "Filler", "Additive", "Insert/Core Material", "Intermediate", "Molding Technology", "Curing Technology", "Finish")
+                                      choices = c("Instructions", "Fiber Type", "Matrix", "Filler", "Additive", 
+                                                  "Insert/Core Material", "Intermediate", "Molding Technology", "Curing Technology", "Finish")
                                       , selected = "Instructions", multiple = FALSE)
                      , conditionalPanel(
                        condition = 'input.add_data_which == "Instructions"'
-                       , tags$li('Only', span("one", style = "text-decoration: underline; color: red"), 'custom data point can be added for each process segment.', style = "font-size:20px")
-                       ,tags$li('Download the .csv file with all of the custom data from this session for future use.')
-                       , p (icon('github'), "If you need multiple custom data for a segment, we recommended that you", span(strong("download R studio ")), "and a copy of this app from GitHub. ")
-                      ,p(icon('envelope-open-o'),' Alternatively, contact Kristina Armstrong (', span('armstrongko@ornl.gov', style = "text-decoration: underline"),  
+                       , tags$li('Multiple custom data points can be added for each process segment.')
+                       , tags$li('If the same name is used for different custom energy values, the last added will be used by the tool. 
+                                 This can also be used to temporarily override the energy values for data already in the provided datasets.')
+                       , tags$li('Download the .csv file with all of the custom data from this session to save time in a future session.')
+                       , p (icon('github'), "If you wish to directly edit the available data,"
+                            , span(strong("download R studio ")), "and a copy of this app from GitHub. ")
+                       , helpText(a("Click here to view this app on GitHub", href = "https://github.com/koay9f/FRPC-Energy-Estimator", target= "_blank"))
+                       ,p(icon('envelope-open-o'),' Alternatively, contact Kristina Armstrong (', span('armstrongko@ornl.gov', style = "text-decoration: underline"),  
                             ') or Sujit Das (', span('dass@ornl.gov', style = "text-decoration: underline"),'). and 
                             we can work with you to add your technology to our tool and grow our database of composite manufacturing technologies.')
-                       , helpText(a("Click here to view this app on GitHub", href = "https://github.com/koay9f/FRPC-Energy-Estimator", target= "_blank"))
                          )
                      # Fiber ----
                      , conditionalPanel(
@@ -815,7 +819,7 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
           
             #TEST TAB ----
       # Tab to display test tables or other tests
- , tabPanel("TEST", h1("TEST")
+ # , tabPanel("TEST", h1("TEST")
 # #To use, remove "#' (do not remove from this line) # Currently testing yield & energy calculation data
   #   , tableOutput("yieldtab1")
   #   , tableOutput("yieldtab2")
@@ -824,10 +828,10 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
   #   , tableOutput("testtable1")
   #   , tableOutput("testtable2")
     # , tableOutput("testtable")
-    , textOutput("testtext1")
+    # , textOutput("testtext1")
   #   , textOutput("testtext2")
 # 
-)
+# )
                  
             # End ----
             , widths = c(2,10))))
