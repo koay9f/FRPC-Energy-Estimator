@@ -27,17 +27,7 @@ if (YN){
   }
 }
 
-
 # Custom Data ====
-# How to tell if should use old or new data sets
-whichone <- function(go, new, old){
-  if (go > 0) {
-    new
-  }  else {
-    old
-  }
-}
-
 # Calculate custom molding or curing energy
 calcenergy <- function(mass, pm, rm, tm, 
                        pp, rp, tp,  pc, rc, tc,
@@ -83,32 +73,34 @@ whichenergy <-  function(addYN, calced, user){
   }
 }
 
-# substitute for actionbutton clicking
-# gobutton <- function(go, Re) {
-#   if (go > 0 ) {
-#     1
-#   } else if (!is.null(Re)){
-#     1
-#   } else {0}
-# }
+# Build DF with input values
+inputsdf <- function(inputtable, values){
+  in.df <- inputtable
+  in.df[["User"]] <- values
   
-#   if (is.double(AddEV)){
-#   if (AddEV == 0) {
-#     0
-#   } else if (go > 0 ) {
-#     1
-#   } else if (!is.null(Re)) {
-#     1
-#   } else {0}
-# } else   if (is.integer(AddEV)){
-#   if (AddEV == 0) {
-#     0
-#   } else if (go > 0 ) {
-#     1
-#   } else if (!is.null(Re)) {
-#     1
-#   } else {0}} else {0}}
+  in.df}
 
+# Rerun ----
+#Use Default selection or a reload - names & numbers
+whichselect <- function(rer, def, vari){
+  reorde <- if (is.null(rer)) {
+    def
+  } else {
+    rer}
+  rowcall <- dplyr::filter (reorde, Variable_Name == vari) %>% select(4)
+  unname(unlist(rowcall))
+}
+
+#Use Default selection or a reload - YNs
+YNcheck <- function(rer,vari){
+  rowcall <- dplyr::filter (rer, Variable_Name == vari) %>% select(4)
+  YN <- if (rowcall == "TRUE") {
+    1
+  } else if (rowcall == "FALSE") {
+    0
+  }
+  YN
+}
 
 # Specific Additional materials given type ----
 othermatfxn <- function(typeother, matrix, additive, filler){
@@ -126,30 +118,6 @@ othermatfxn <- function(typeother, matrix, additive, filler){
     }
   }
 }
-
-# What df should be used to build the Data_MatrixM_new dataframe
-BuildnewMatrix.df <- function(gom, goa, gof, newmat, oldmat, newadd, oldadd, newfil, oldfil, other){
-  mat<- if (gom > 0) {
-      newmat
-      } else {
-        oldmat
-      }
-  additive<-   if (goa > 0) {
-      newadd
-    } else {
-      oldadd
-    }
-     
- filler <-   if (gof > 0) {
-      newfil
-    } else {
-      oldfil
-    }
-
-  df <- rbind(mat, additive, filler, other)
-  df
-}
-
 
 # Curing Tech dependent on molding type ----
 curelistfxn <- function(moldtype, all, only, wlup, autoclave){
@@ -199,7 +167,7 @@ intlistfxn <- function(moldtype) {
 checkallYN <- function(moldin, reload, go, custom, vari){
   x <- 
     if (!is.null(reload)) { #check reload file
-    as.numeric(dplyr::filter (reload, Variable_Name == vari) %>% select(4) )
+    as.logical(dplyr::filter (reload, Variable_Name == vari) %>% select(4) )
   } else   if ((go + !is.null(custom)) > 0 ){ #check if custom int/cure has been added
     1    
     } else    if (!is.null(moldin)) { #check if using custom mold
@@ -428,40 +396,4 @@ finaldf <- function(name1, name2, w1, w2, AA, BB, CC, DD, EE, FF, GG, HH, II, JJ
   
   displaydf
 }
-
-# inputs df ----
-inputsdf <- function(inputtable, values){
-  in.df <- inputtable
-  in.df[["User"]] <- values
-
-  in.df}
-
-# Rerun ----
-whichselect <- function(rer, def, vari){
-  reorde <- if (is.null(rer)) {
-    def
-  } else {
-      rer}
-  rowcall <- dplyr::filter (reorde, Variable_Name == vari) %>% select(4)
-  unname(unlist(rowcall))
-  }
-
-YNcheck <- function(rer,vari){
-  rowcall <- dplyr::filter (rer, Variable_Name == vari) %>% select(4)
-  YN <- if (rowcall == "TRUE") {
-    1
-  } else if (rowcall == "FALSE") {
-    0
-  }
-  YN
-}
-
-custommatch_name <- function(recustom,vari){
-  custom_name <- dplyr::filter (recustom, Description == vari) %>% select(2)
-}
-custommatch_energy <- function(recustom,vari){
-  custom_energy <- dplyr::filter (recustom, Description == vari) %>% select(3)
-}
-
-
 

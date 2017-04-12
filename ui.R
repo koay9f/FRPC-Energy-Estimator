@@ -51,9 +51,8 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
             # Upload Tab ----
             tabPanel("Upload", h1("Upload Data")
                      , p ("Upload a previous run from this tool.  If CSV file was changed, errors may occur.")
-                     , column(6, fileInput("Re_Custom", "Choose CSV File to Upload Custom Data",
-                                 accept = c('csv', 'comma-separated-values','.csv'))) 
-                     , column(6,actionButton("gocustom", strong("Add Custom Data")), style = "padding:25px;", align = "right") 
+                     , fileInput("Re_Custom", "Choose CSV File to Upload Custom Data",
+                                 accept = c('csv', 'comma-separated-values','.csv')) 
                      , fileInput("re_input1", "Choose CSV File for Technology Set 1",
                                  accept = c('csv', 'comma-separated-values','.csv'))
                      , fileInput("re_input2", "Choose CSV File for Technology Set 2",
@@ -817,15 +816,17 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
             #TEST TAB ----
       # Tab to display test tables or other tests
  , tabPanel("TEST", h1("TEST")
-#To use, remove "#' (do not remove from this line) # Currently testing yield & energy calculation data
-#   , tableOutput("yieldtab1")
-#   , tableOutput("yieldtab2")
-#   , tableOutput("energytab1")
-#   , tableOutput("energytab2")
-# , tableOutput("testtable1")
-# , tableOutput("testtable2")
- # , tableOutput("testtable")
-, textOutput("testtext")
+# #To use, remove "#' (do not remove from this line) # Currently testing yield & energy calculation data
+  #   , tableOutput("yieldtab1")
+  #   , tableOutput("yieldtab2")
+  #   , tableOutput("energytab1")
+  #   , tableOutput("energytab2")
+  #   , tableOutput("testtable1")
+  #   , tableOutput("testtable2")
+    # , tableOutput("testtable")
+    , textOutput("testtext1")
+  #   , textOutput("testtext2")
+# 
 )
                  
             # End ----

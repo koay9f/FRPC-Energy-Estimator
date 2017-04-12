@@ -102,13 +102,23 @@ shinyServer(function(input, output, session) {
   Re_custom.df <- reactive({
     if (is.null(input$Re_Custom)) 
       return(NULL)
-    data <- read_csv(input$Re_Custom$datapath)
+    data <- read_csv(input$Re_Custom$datapath, col_types = cols(
+      Name_All = col_character(),
+      Energy_All = col_double(),
+      ShortName_All = col_character(),
+      Frac_Fiber = col_double(),
+      Yield_Mold = col_double(),
+      Scrap_Int = col_double(),
+      Prepreg_Int = col_logical(),
+      Table_All = col_character(),
+      User_YN_All = col_logical()
+    ))
   })
   
   # Build Data_All_Custom ----
   values  <- reactiveValues(dn = data.frame(Name_All = NA,
-                                            ShortName_All = NA,
                                             Energy_All = NA,
+                                            ShortName_All = NA,
                                             Frac_Fiber = NA,
                                             Yield_Mold = NA,
                                             Scrap_Int = NA,
@@ -118,8 +128,8 @@ shinyServer(function(input, output, session) {
   
   observeEvent( input$gofiber, {
     newLinefib <- data.frame(Name_All = as.character(input$fiber_add),
-                             ShortName_All = NA,
                              Energy_All = as.double(input$fiber_add_E),
+                             ShortName_All = NA,
                              Frac_Fiber = NA,
                              Yield_Mold = NA,
                              Scrap_Int = NA,
@@ -131,8 +141,8 @@ shinyServer(function(input, output, session) {
   
   observeEvent( input$gomatrix, {
     newLinemat <- data.frame(Name_All = as.character(input$matrix_add),
-                             ShortName_All = NA,
                              Energy_All = as.double(input$matrix_add_E),
+                             ShortName_All = NA,
                              Frac_Fiber = NA,
                              Yield_Mold = NA,
                              Scrap_Int = NA,
@@ -144,8 +154,8 @@ shinyServer(function(input, output, session) {
   
   observeEvent( input$goadditive, {
     newLineadd <- data.frame(Name_All = as.character(input$additive_add),
-                             ShortName_All = NA,
                              Energy_All = as.double(input$additive_add_E),
+                             ShortName_All = NA,
                              Frac_Fiber = NA,
                              Yield_Mold = NA,
                              Scrap_Int = NA,
@@ -157,8 +167,8 @@ shinyServer(function(input, output, session) {
   
   observeEvent( input$gofiller, {
     newLinefil <- data.frame(Name_All = as.character(input$filler_add),
-                             ShortName_All = NA,
                              Energy_All = as.double(input$filler_add_E),
+                             ShortName_All = NA,
                              Frac_Fiber = NA,
                              Yield_Mold = NA,
                              Scrap_Int = NA,
@@ -170,8 +180,8 @@ shinyServer(function(input, output, session) {
   
   observeEvent( input$goinsert, {
     newLineins <- data.frame(Name_All = as.character(input$insert_add),
-                             ShortName_All = NA,
                              Energy_All = as.double(input$insert_add_E),
+                             ShortName_All = NA,
                              Frac_Fiber = NA,
                              Yield_Mold = NA,
                              Scrap_Int = NA,
@@ -183,8 +193,8 @@ shinyServer(function(input, output, session) {
   
   observeEvent( input$goint, {
     newLineins <- data.frame(Name_All = as.character(input$int_add),
-                             ShortName_All = NA,
                              Energy_All = as.double(input$int_add_E),
+                             ShortName_All = NA,
                              Frac_Fiber = NA,
                              Yield_Mold = NA,
                              Scrap_Int = 0,
@@ -200,8 +210,8 @@ shinyServer(function(input, output, session) {
                               input$mold_add_E_P_o, input$mold_add_E_u_o, input$mold_add_E_per_o, input$mold_add_E_t_o)
     mold.Ener <- whichenergy(input$mold_add_EYN, mold.E.calc, input$mold_add_E_Y)
     newLinemold <- data.frame(Name_All = as.character(input$mold_add),
-                              ShortName_All = as.character(input$mold_add),
                               Energy_All = mold.Ener,
+                              ShortName_All = as.character(input$mold_add),
                               Frac_Fiber = 0.5,
                               Yield_Mold = 1,
                               Scrap_Int = NA,
@@ -217,8 +227,8 @@ shinyServer(function(input, output, session) {
                               input$cure_add_E_P_o, input$cure_add_E_u_o, input$cure_add_E_per_o, input$cure_add_E_t_o)
     cure.Ener <- whichenergy(input$cure_add_EYN, cure.E.calc, input$cure_add_E_Y)
     newLinecure <- data.frame(Name_All = as.character(input$cure_add),
-                              ShortName_All = as.character(input$cure_add),
                               Energy_All = cure.Ener,
+                              ShortName_All = NA,
                               Frac_Fiber = NA,
                               Yield_Mold = NA,
                               Scrap_Int = NA,
@@ -230,8 +240,8 @@ shinyServer(function(input, output, session) {
   
   observeEvent( input$gofinish, {
     newLinefin <- data.frame(Name_All = as.character(input$finish_add),
-                             ShortName_All = NA,
                              Energy_All = as.double(input$finish_add_E),
+                             ShortName_All = NA,
                              Frac_Fiber = NA,
                              Yield_Mold = NA,
                              Scrap_Int = NA,
@@ -241,16 +251,20 @@ shinyServer(function(input, output, session) {
     isolate(values$dn <- rbind(values$dn, newLinefin))
   })
   
+  observeEvent( input$Re_Custom, {
+    isolate(values$dn <- unique(rbind(values$dn, Re_custom.df())))
+  })
+  
   #Builddf ----
   
   Data_All_Custom <- eventReactive( c(input$goadditive, input$gocure, input$gofiber, input$gofiller, input$gofinish, input$goinsert,
-                                      input$goint, input$gomatrix, input$gomold), {
+                                      input$goint, input$gomatrix, input$gomold, input$Re_Custom), {
                                         unique(values$dn)})
   Data_All_df <- eventReactive( c(input$goadditive, input$gocure, input$gofiber, input$gofiller, input$gofinish, input$goinsert,
                                     input$goint, input$gomatrix, input$gomold, input$Re_Custom), {
-                                      rbind(Data_All, Re_custom.df(), Data_All_Custom())})
+                                      unique(rbind(Data_All, Data_All_Custom()))})
   
-  # output$testtable <- renderTable(Data_All_df())
+  output$testtable <- renderTable(Data_All_Custom())
   
   # Initial Page (not molding) ----
   # (none) = first use; a = int; b = matrix; c = mold; d= summary;  e or z = calcs
@@ -295,8 +309,6 @@ mold.Ener <- reactiveValues()
   Data_Mold_new  <- reactive(
     if (is.null(Data_All_df())) {Data_Mold
     } else {  subset(Data_All_df(), Table_All == "Mold")})
-  
-
   mold1_selected <- reactive(whichselect(Re_input1.df(), Input_List1,"moldingInput"))
   mold2_selected <- reactive(whichselect(Re_input2.df(), Input_List2,"moldingInput"))
 
@@ -331,7 +343,11 @@ mold.Ener <- reactiveValues()
   moldenergyfetch1 <- eventReactive(input$moldingInput1,{
     Data_Mold_new()$Energy_All[Data_Mold_new()$Name_All %in% input$moldingInput1]  })
   moldenergyfetch2 <- eventReactive(input$moldingInput2,{
-    Data_Mold_new()$Energy_All[Data_Mold_new()$Name_All %in% input$moldingInput2]  })
+    # Data_Mold_new()$Energy_All[Data_Mold_new()$Name_All %in% input$moldingInput2]  })
+    print(Data_Mold_new() %>% filter(Name_All == input$moldingInput2))
+    print(input$moldingInput2)
+    Data_Mold_new() %>% filter(Name_All == input$moldingInput2) %>% 
+    select(Energy_All) })
   
    # Match ShortName to Name----
   moldshortfetch1 <-  eventReactive(input$moldingInput1,{
@@ -345,7 +361,7 @@ mold.Ener <- reactiveValues()
   moldfracfetch2 <- eventReactive(input$moldingInput2,{ 
     Data_Mold_new()$Frac_Fiber[Data_Mold_new()$Name_All %in% input$moldingInput2]  })
   
-   # Match Yield to Name----
+    # Match Yield to Name----
   moldyieldfetch1 <- eventReactive(input$moldingInput1,{ 
    Data_Mold_new()$Yield_Mold[Data_Mold_new()$Name_All %in% input$moldingInput1]  })
   moldyieldfetch2 <- eventReactive(input$moldingInput2,{
@@ -394,26 +410,27 @@ mold.Ener <- reactiveValues()
   
    # Update Fiber fractions & mold yield based on mold process choice----
   observeEvent(input$moldingInput1,{
-    if (is.null(input$re_input1)) {
     ff1 <- moldfracfetch1()
     moldy1 <-  moldyieldfetch1()
     updateNumericInput(session, "moldfracUSERNum1", value = (ff1*100)) 
     updateNumericInput(session, "moldyieldUSERNum1", value = (moldy1*100)) 
-    } else {
-      updateNumericInput(session, "moldfracUSERNum1", value = whichselect(Re_input1.df(), Input_List1, "moldfracUSERNum"))
-      updateNumericInput(session, "moldyieldUSERNum1", value = whichselect(Re_input1.df(), Input_List1, "moldyieldUSERNum"))
-    } })
+   })
   
+  observeEvent(input$re_input1, {
+    updateNumericInput(session, "moldfracUSERNum1", value = whichselect(Re_input1.df(), Input_List1, "moldfracUSERNum"))
+    updateNumericInput(session, "moldyieldUSERNum1", value = whichselect(Re_input1.df(), Input_List1, "moldyieldUSERNum"))
+  })
   observeEvent(input$moldingInput2,{
-    if (is.null(input$re_input2)) {
-      ff2 <- moldfracfetch2()
-      moldy2 <-  moldyieldfetch2()
-      updateNumericInput(session, "moldfracUSERNum2", value = (ff2*100)) 
-      updateNumericInput(session, "moldyieldUSERNum2", value = (moldy2*100)) 
-    } else {
-      updateNumericInput(session, "moldfracUSERNum2", value = whichselect(Re_input2.df(), Input_List2, "moldfracUSERNum"))
-      updateNumericInput(session, "moldyieldUSERNum2", value = whichselect(Re_input1.df(), Input_List1, "moldyieldUSERNum"))
-          } })
+    ff2 <- moldfracfetch2()
+    moldy2 <-  moldyieldfetch2()
+    updateNumericInput(session, "moldfracUSERNum2", value = (ff2*100)) 
+    updateNumericInput(session, "moldyieldUSERNum2", value = (moldy2*100)) 
+  })
+  
+  observeEvent(input$re_input2, {
+    updateNumericInput(session, "moldfracUSERNum2", value = whichselect(Re_input2.df(), Input_List2, "moldfracUSERNum"))
+    updateNumericInput(session, "moldyieldUSERNum2", value = whichselect(Re_input2.df(), Input_List2, "moldyieldUSERNum"))
+  })
 }
   # Fiber ----
   {
@@ -450,11 +467,9 @@ mold.Ener <- reactiveValues()
   
    # Match Energy to Name----
   fiberenergyfetch1 <- eventReactive(input$fiberInput1,{
-    f_name <- whichone(input$gofiber, Data_Fiber_new()$Name_All, Data_Fiber$Name_All)
     Data_Fiber_new()$Energy_All[Data_Fiber_new()$Name_All %in% input$fiberInput1]  })
   
   fiberenergyfetch2 <- eventReactive(input$fiberInput2,{
-    f_name <- whichone(input$gofiber, Data_Fiber_new()$Name_All, Data_Fiber$Name_All)
     Data_Fiber_new()$Energy_All[Data_Fiber_new()$Name_All %in% input$fiberInput2]  })
   
    # Generate Outputs----
@@ -543,20 +558,22 @@ mold.Ener <- reactiveValues()
 
    # Matrix mass fraction = 1 - fiber or from upload----
   observe({
-    if (is.null(input$re_input1)) {
       rff1 <- input$moldfracUSERNum1
       updateNumericInput(session, "primatrixfrac1", value = 100-rff1)
-    } else {
-      updateTextInput(session, "primatrixfrac1", value = whichselect(Re_input1.df(), Input_List1, "primatrixfrac"))
-    } })
+  })
+  
+  observeEvent(input$re_input1, {
+    updateNumericInput(session, "primatrixfrac1", value = whichselect(Re_input1.df(), Input_List1, "primatrixfrac"))
+  })
   
   observe({
-    if (is.null(input$re_input2)) {
-      rff2 <- input$moldfracUSERNum2
-      updateNumericInput(session, "primatrixfrac2", value = 100-rff2)
-    } else {
-      updateTextInput(session, "primatrixfrac2", value = whichselect(Re_input2.df(), Input_List2, "primatrixfrac"))
-    } })
+    rff2 <- input$moldfracUSERNum2
+    updateNumericInput(session, "primatrixfrac2", value = 100-rff2)
+  })
+  
+  observeEvent(input$re_input2, {
+    updateNumericInput(session, "primatrixfrac2", value = whichselect(Re_input2.df(), Input_List2, "primatrixfrac"))
+  })
     
    # Match Names to Table----
 
@@ -877,13 +894,9 @@ mold.Ener <- reactiveValues()
   
   
   insertsAenergyfetch2 <- eventReactive(input$InsertsAInput2,{
-    ins_name <- whichone(input$goinsert, Data_Insert_new()$Name_All, Data_Insert$Name_All)
-    ins_energy <- whichone(input$goinsert, Data_Insert_new()$Energy_All, Data_Insert$Energy_All)
     Data_Insert_new()$Energy_All[Data_Insert_new()$Name_All %in% input$InsertsAInput2]  })
   
   insertsBenergyfetch2 <- eventReactive(input$InsertsBInput2,{
-    ins_name <- whichone(input$goinsert, Data_Insert_new()$Name_All, Data_Insert$Name_All)
-    ins_energy <- whichone(input$goinsert, Data_Insert_new()$Energy_All, Data_Insert$Energy_All)
     Data_Insert_new()$Energy_All[Data_Insert_new()$Name_All %in% input$InsertsBInput2]  })
   
    # Generate Outputs----
@@ -958,8 +971,8 @@ mold.Ener <- reactiveValues()
 
   qintyn1 <- reactive(as.logical(checkallYN(moldnamecheck1(), Re_input1.df(), input$goint, input$Re_Custom, "intYN")))
   qintyn2 <- reactive(as.logical(checkallYN(moldnamecheck2(), Re_input2.df(), input$goint, input$Re_Custom, "intYN")))
-output$testtext <- renderText(!is.null(moldnamecheck1()))
-  observe(updateCheckboxInput(session, "intYN1", value = qintyn1()))
+
+    observe(updateCheckboxInput(session, "intYN1", value = qintyn1()))
   observe(updateCheckboxInput(session, "intYN2", value = qintyn2()))
   
   Data_Int_new <- reactiveValues()
@@ -1108,10 +1121,10 @@ output$testtext <- renderText(!is.null(moldnamecheck1()))
     updateNumericInput(session, "moldyieldUSERNum2", value = whichselect(Re_input2.df(), Input_List2, "moldyieldUSERNum"))
     updateNumericInput(session, "moldyieldrecycle2", value = whichselect(Re_input2.df(), Input_List2, "moldyieldrecycle"))
   })
-  
+
   qcureyn1 <- reactive(as.logical(checkallYN(moldnamecheck1(), Re_input1.df(), input$gocure, input$Re_Custom, "cureYN")))
   qcureyn2 <- reactive(as.logical(checkallYN(moldnamecheck2(), Re_input2.df(), input$gocure, input$Re_Custom, "cureYN")))
-  
+
   observe(updateCheckboxInput(session, "cureYN1", value = qcureyn1()))
   observe(updateCheckboxInput(session, "cureYN2", value = qcureyn2()))
   
