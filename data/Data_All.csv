@@ -1,7 +1,7 @@
 Name_All,Energy_All,ShortName_All,Frac_Fiber,Yield_Mold,Scrap_Int,Prepreg_Int,Table_All,User_YN_All
 Automatic Fiber Placement,31.6,AFP,0.6,0.95,NA,FALSE,Mold,FALSE
 Automatic Tape Placement,31.6,ATP,0.6,0.95,NA,FALSE,Mold,FALSE
-Compression Molding,27.7,Compression Molding,0.3,0.95,NA,FALSE,Mold,FALSE
+Compression Molding,27.7,Compression Molding,0.55,0.95,NA,FALSE,Mold,FALSE
 Filament Winding,4.6,Filament Winding,0.6,0.95,NA,FALSE,Mold,FALSE
 High Pressure-RTM,60.3,HPRTM,0.75,0.93,NA,FALSE,Mold,FALSE
 Injection Molding,11,Injection Molding,0.2,0.95,NA,FALSE,Mold,FALSE
