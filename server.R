@@ -37,8 +37,8 @@ vbcure <- c("Autoclave Curing","QuickStep","Microwave Curing with Vacuum","Infra
 Props = read.csv("data/Properties_Mold.csv") # causes error if read_csv due to use of row names
 Data_Cite = read_csv("data/Data_Citations.csv")
 
-Input_List1 = read_csv("data/Defaults1.csv")
-Input_List2 = read_csv("data/Defaults2.csv")
+Input_List1 = read_csv("data/Defaults.csv")
+Input_List2 = read_csv("data/Defaults.csv")
 source("math.R", local = TRUE) 
 
 #Talk to server ----
@@ -73,6 +73,8 @@ shinyServer(function(input, output, session) {
     Props.df[input$show_molds , input$show_vars]
   },  options = list(lengthMenu = c(2, 4, 8, 12, 16), pageLength = 16, scrollX = TRUE), style = 'bootstrap')
   
+  # Custom Data ----
+  {
   # Complete icons for Custom Data ----
   observeEvent(input$gofiber, {show("fibi")    })
   observeEvent(input$gomatrix, {show("mati")    })
@@ -84,35 +86,145 @@ shinyServer(function(input, output, session) {
   observeEvent(input$gocure, {show("curei")    })
   observeEvent(input$gofinish, {show("fini")    })
   
-  # Upload Previous Run ----
-  Re_input1.df <- reactiveValues()
-  Re_input1.df <- reactive({
-    if (is.null(input$re_input1)) 
-      return(NULL)
-    data <- read_csv(input$re_input1$datapath)
+  # Set Process heating values to zero if boxes un-checked ----
+  observeEvent(input$mold_add_row1, {
+    if (!input$mold_add_row1){
+      updateNumericInput(session, "mold_add_E_P_h2", value = (0)) 
+      updateNumericInput(session, "mold_add_E_per_h2", value = (100)) 
+      updateNumericInput(session, "mold_add_E_t_h2", value = (0)) 
+      updateCheckboxInput(session, "mold_add_row2", value = FALSE)  }
+  })
+  observeEvent(input$mold_add_row2, {
+    if (!input$mold_add_row2){
+      updateNumericInput(session, "mold_add_E_P_h3", value = (0)) 
+      updateNumericInput(session, "mold_add_E_per_h3", value = (100)) 
+      updateNumericInput(session, "mold_add_E_t_h3", value = (0)) 
+      updateCheckboxInput(session, "mold_add_row3", value = FALSE)  }
+  })
+  observeEvent(input$mold_add_row3, {
+    if (!input$mold_add_row3){
+      updateNumericInput(session, "mold_add_E_P_h4", value = (0)) 
+      updateNumericInput(session, "mold_add_E_per_h4", value = (100)) 
+      updateNumericInput(session, "mold_add_E_t_h4", value = (0)) 
+      updateCheckboxInput(session, "mold_add_row4", value = FALSE)  }
+  })
+  observeEvent(input$mold_add_row4, {
+    if (!input$mold_add_row4){
+      updateNumericInput(session, "mold_add_E_P_h5", value = (0)) 
+      updateNumericInput(session, "mold_add_E_per_h5", value = (100)) 
+      updateNumericInput(session, "mold_add_E_t_h5", value = (0)) 
+      updateCheckboxInput(session, "mold_add_row5", value = FALSE)  }
+  })
+  observeEvent(input$mold_add_row5, {
+    if (!input$mold_add_row5){
+      updateNumericInput(session, "mold_add_E_P_h6", value = (0)) 
+      updateNumericInput(session, "mold_add_E_per_h6", value = (100)) 
+      updateNumericInput(session, "mold_add_E_t_h6", value = (0)) 
+      updateCheckboxInput(session, "mold_add_row6", value = FALSE)  }
+  })
+  observeEvent(input$mold_add_row6, {
+    if (!input$mold_add_row6){
+      updateNumericInput(session, "mold_add_E_P_h7", value = (0)) 
+      updateNumericInput(session, "mold_add_E_per_h7", value = (100)) 
+      updateNumericInput(session, "mold_add_E_t_h7", value = (0)) 
+      updateCheckboxInput(session, "mold_add_row7", value = FALSE)  }
+  })
+  observeEvent(input$mold_add_row7, {
+    if (!input$mold_add_row7){
+      updateNumericInput(session, "mold_add_E_P_h7", value = (0)) 
+      updateNumericInput(session, "mold_add_E_per_h7", value = (100)) 
+      updateNumericInput(session, "mold_add_E_t_h7", value = (0)) 
+      updateCheckboxInput(session, "mold_add_row7", value = FALSE)  }
+  })
+  observeEvent(input$mold_add_row7, {
+    if (!input$mold_add_row7){
+      updateNumericInput(session, "mold_add_E_P_h8", value = (0)) 
+      updateNumericInput(session, "mold_add_E_per_h8", value = (100)) 
+      updateNumericInput(session, "mold_add_E_t_h8", value = (0)) 
+      updateCheckboxInput(session, "mold_add_row8", value = FALSE)  }
+  })
+  observeEvent(input$mold_add_row8, {
+    if (!input$mold_add_row8){
+      updateNumericInput(session, "mold_add_E_P_h9", value = (0)) 
+      updateNumericInput(session, "mold_add_E_per_h9", value = (100)) 
+      updateNumericInput(session, "mold_add_E_t_h9", value = (0)) 
+      updateCheckboxInput(session, "mold_add_row9", value = FALSE)  }
+  })
+  observeEvent(input$mold_add_row9, {
+    if (!input$mold_add_row9){
+      updateNumericInput(session, "mold_add_E_P_h0", value = (0)) 
+      updateNumericInput(session, "mold_add_E_per_h0", value = (100)) 
+      updateNumericInput(session, "mold_add_E_t_h0", value = (0))  }
   })
   
-  Re_input2.df <- reactiveValues()
-  Re_input2.df <- reactive({
-    if (is.null(input$re_input2)) 
-      return(NULL)
-    data <- read_csv(input$re_input2$datapath)
+  observeEvent(input$cure_add_row1, {
+    if (!input$cure_add_row1){
+      updateNumericInput(session, "cure_add_E_P_h2", value = (0)) 
+      updateNumericInput(session, "cure_add_E_per_h2", value = (100)) 
+      updateNumericInput(session, "cure_add_E_t_h2", value = (0)) 
+      updateCheckboxInput(session, "cure_add_row2", value = FALSE)  }
   })
-  
-  Re_custom.df <- reactive({
-    if (is.null(input$Re_Custom)) 
-      return(NULL)
-    data <- read_csv(input$Re_Custom$datapath, col_types = cols(
-      Name_All = col_character(),
-      Energy_All = col_double(),
-      ShortName_All = col_character(),
-      Frac_Fiber = col_double(),
-      Yield_Mold = col_double(),
-      Scrap_Int = col_double(),
-      Prepreg_Int = col_logical(),
-      Table_All = col_character(),
-      User_YN_All = col_logical()
-    ))
+  observeEvent(input$cure_add_row2, {
+    if (!input$cure_add_row2){
+      updateNumericInput(session, "cure_add_E_P_h3", value = (0)) 
+      updateNumericInput(session, "cure_add_E_per_h3", value = (100)) 
+      updateNumericInput(session, "cure_add_E_t_h3", value = (0)) 
+      updateCheckboxInput(session, "cure_add_row3", value = FALSE)  }
+  })
+  observeEvent(input$cure_add_row3, {
+    if (!input$cure_add_row3){
+      updateNumericInput(session, "cure_add_E_P_h4", value = (0)) 
+      updateNumericInput(session, "cure_add_E_per_h4", value = (100)) 
+      updateNumericInput(session, "cure_add_E_t_h4", value = (0)) 
+      updateCheckboxInput(session, "cure_add_row4", value = FALSE)  }
+  })
+  observeEvent(input$cure_add_row4, {
+    if (!input$cure_add_row4){
+      updateNumericInput(session, "cure_add_E_P_h5", value = (0)) 
+      updateNumericInput(session, "cure_add_E_per_h5", value = (100)) 
+      updateNumericInput(session, "cure_add_E_t_h5", value = (0)) 
+      updateCheckboxInput(session, "cure_add_row5", value = FALSE)  }
+  })
+  observeEvent(input$cure_add_row5, {
+    if (!input$cure_add_row5){
+      updateNumericInput(session, "cure_add_E_P_h6", value = (0)) 
+      updateNumericInput(session, "cure_add_E_per_h6", value = (100)) 
+      updateNumericInput(session, "cure_add_E_t_h6", value = (0)) 
+      updateCheckboxInput(session, "cure_add_row6", value = FALSE)  }
+  })
+  observeEvent(input$cure_add_row6, {
+    if (!input$cure_add_row6){
+      updateNumericInput(session, "cure_add_E_P_h7", value = (0)) 
+      updateNumericInput(session, "cure_add_E_per_h7", value = (100)) 
+      updateNumericInput(session, "cure_add_E_t_h7", value = (0)) 
+      updateCheckboxInput(session, "cure_add_row7", value = FALSE)  }
+  })
+  observeEvent(input$cure_add_row7, {
+    if (!input$cure_add_row7){
+      updateNumericInput(session, "cure_add_E_P_h7", value = (0)) 
+      updateNumericInput(session, "cure_add_E_per_h7", value = (100)) 
+      updateNumericInput(session, "cure_add_E_t_h7", value = (0)) 
+      updateCheckboxInput(session, "cure_add_row7", value = FALSE)  }
+  })
+  observeEvent(input$cure_add_row7, {
+    if (!input$cure_add_row7){
+      updateNumericInput(session, "cure_add_E_P_h8", value = (0)) 
+      updateNumericInput(session, "cure_add_E_per_h8", value = (100)) 
+      updateNumericInput(session, "cure_add_E_t_h8", value = (0)) 
+      updateCheckboxInput(session, "cure_add_row8", value = FALSE)  }
+  })
+  observeEvent(input$cure_add_row8, {
+    if (!input$cure_add_row8){
+      updateNumericInput(session, "cure_add_E_P_h9", value = (0)) 
+      updateNumericInput(session, "cure_add_E_per_h9", value = (100)) 
+      updateNumericInput(session, "cure_add_E_t_h9", value = (0)) 
+      updateCheckboxInput(session, "cure_add_row9", value = FALSE)  }
+  })
+  observeEvent(input$cure_add_row9, {
+    if (!input$cure_add_row9){
+      updateNumericInput(session, "cure_add_E_P_h0", value = (0)) 
+      updateNumericInput(session, "cure_add_E_per_h0", value = (100)) 
+      updateNumericInput(session, "cure_add_E_t_h0", value = (0))  }
   })
   
   # Build Data_All_Custom ----
@@ -203,10 +315,23 @@ shinyServer(function(input, output, session) {
                              User_YN_All = TRUE)
     isolate(values$dn <- rbind(values$dn, newLineins))
   })
-  
+
   observeEvent( input$gomold, {
-    mold.E.calc <- calcenergy(input$mold_add_E_m, input$mold_add_E_P_M, input$mold_add_E_per_M, input$mold_add_E_t_M, input$mold_add_E_P_p, input$mold_add_E_per_p, input$mold_add_E_t_p,
-                              input$mold_add_E_P_c, input$mold_add_E_per_c, input$mold_add_E_t_c,input$mold_add_E_P_h, input$mold_add_E_u_h, input$mold_add_E_per_h, input$mold_add_E_t_h,
+    mold.E.h.calc <- calc.ph(input$mold_add_E_P_h1, input$mold_add_E_u_h1, input$mold_add_E_per_h1, input$mold_add_E_t_h1,
+                             input$mold_add_E_P_h2, input$mold_add_E_u_h2, input$mold_add_E_per_h2, input$mold_add_E_t_h2,
+                             input$mold_add_E_P_h3, input$mold_add_E_u_h3, input$mold_add_E_per_h3, input$mold_add_E_t_h3,
+                             input$mold_add_E_P_h4, input$mold_add_E_u_h4, input$mold_add_E_per_h4, input$mold_add_E_t_h4,
+                             input$mold_add_E_P_h5, input$mold_add_E_u_h5, input$mold_add_E_per_h5, input$mold_add_E_t_h5,
+                             input$mold_add_E_P_h6, input$mold_add_E_u_h6, input$mold_add_E_per_h6, input$mold_add_E_t_h6,
+                             input$mold_add_E_P_h7, input$mold_add_E_u_h7, input$mold_add_E_per_h7, input$mold_add_E_t_h7,
+                             input$mold_add_E_P_h8, input$mold_add_E_u_h8, input$mold_add_E_per_h8, input$mold_add_E_t_h8,
+                             input$mold_add_E_P_h9, input$mold_add_E_u_h9, input$mold_add_E_per_h9, input$mold_add_E_t_h9,
+                             input$mold_add_E_P_h0, input$mold_add_E_u_h0, input$mold_add_E_per_h0, input$mold_add_E_t_h0)
+    mold.E.calc <- calcenergy(input$mold_add_E_m, 
+                              input$mold_add_E_P_M, input$mold_add_E_per_M, input$mold_add_E_t_M, 
+                              input$mold_add_E_P_p, input$mold_add_E_per_p, input$mold_add_E_t_p,
+                              input$mold_add_E_P_c, input$mold_add_E_per_c, input$mold_add_E_t_c,
+                              mold.E.h.calc,
                               input$mold_add_E_P_o, input$mold_add_E_u_o, input$mold_add_E_per_o, input$mold_add_E_t_o)
     mold.Ener <- whichenergy(input$mold_add_EYN, mold.E.calc, input$mold_add_E_Y)
     newLinemold <- data.frame(Name_All = as.character(input$mold_add),
@@ -222,8 +347,21 @@ shinyServer(function(input, output, session) {
   })
   
   observeEvent( input$gocure, {
-    cure.E.calc <- calcenergy(input$cure_add_E_m, input$cure_add_E_P_M, input$cure_add_E_per_M, input$cure_add_E_t_M, input$cure_add_E_P_p, input$cure_add_E_per_p, input$cure_add_E_t_p,
-                              input$cure_add_E_P_c, input$cure_add_E_per_c, input$cure_add_E_t_c,input$cure_add_E_P_h, input$cure_add_E_u_h, input$cure_add_E_per_h, input$cure_add_E_t_h,
+    cure.E.h.calc <- calc.ph(input$cure_add_E_P_h1, input$cure_add_E_u_h1, input$cure_add_E_per_h1, input$cure_add_E_t_h1,
+                             input$cure_add_E_P_h2, input$cure_add_E_u_h2, input$cure_add_E_per_h2, input$cure_add_E_t_h2,
+                             input$cure_add_E_P_h3, input$cure_add_E_u_h3, input$cure_add_E_per_h3, input$cure_add_E_t_h3,
+                             input$cure_add_E_P_h4, input$cure_add_E_u_h4, input$cure_add_E_per_h4, input$cure_add_E_t_h4,
+                             input$cure_add_E_P_h5, input$cure_add_E_u_h5, input$cure_add_E_per_h5, input$cure_add_E_t_h5,
+                             input$cure_add_E_P_h6, input$cure_add_E_u_h6, input$cure_add_E_per_h6, input$cure_add_E_t_h6,
+                             input$cure_add_E_P_h7, input$cure_add_E_u_h7, input$cure_add_E_per_h7, input$cure_add_E_t_h7,
+                             input$cure_add_E_P_h8, input$cure_add_E_u_h8, input$cure_add_E_per_h8, input$cure_add_E_t_h8,
+                             input$cure_add_E_P_h9, input$cure_add_E_u_h9, input$cure_add_E_per_h9, input$cure_add_E_t_h9,
+                             input$cure_add_E_P_h0, input$cure_add_E_u_h0, input$cure_add_E_per_h0, input$cure_add_E_t_h0)
+    cure.E.calc <- calcenergy(input$cure_add_E_m, 
+                              input$cure_add_E_P_M, input$cure_add_E_per_M, input$cure_add_E_t_M, 
+                              input$cure_add_E_P_p, input$cure_add_E_per_p, input$cure_add_E_t_p,
+                              input$cure_add_E_P_c, input$cure_add_E_per_c, input$cure_add_E_t_c,
+                              cure.E.h.calc,
                               input$cure_add_E_P_o, input$cure_add_E_u_o, input$cure_add_E_per_o, input$cure_add_E_t_o)
     cure.Ener <- whichenergy(input$cure_add_EYN, cure.E.calc, input$cure_add_E_Y)
     newLinecure <- data.frame(Name_All = as.character(input$cure_add),
@@ -263,8 +401,39 @@ shinyServer(function(input, output, session) {
   Data_All_df <- eventReactive( c(input$goadditive, input$gocure, input$gofiber, input$gofiller, input$gofinish, input$goinsert,
                                     input$goint, input$gomatrix, input$gomold, input$Re_Custom), {
                                       unique(rbind(Data_All, Data_All_Custom()))})
+  # output$testtable <- renderTable(Data_All_df())
   
-  output$testtable <- renderTable(Data_All_df())
+}
+  # Upload Previous Run ----
+  Re_input1.df <- reactiveValues()
+  Re_input1.df <- reactive({
+    if (is.null(input$re_input1)) 
+      return(NULL)
+    data <- read_csv(input$re_input1$datapath)
+  })
+  
+  Re_input2.df <- reactiveValues()
+  Re_input2.df <- reactive({
+    if (is.null(input$re_input2)) 
+      return(NULL)
+    data <- read_csv(input$re_input2$datapath)
+  })
+  
+  Re_custom.df <- reactive({
+    if (is.null(input$Re_Custom)) 
+      return(NULL)
+    data <- read_csv(input$Re_Custom$datapath, col_types = cols(
+      Name_All = col_character(),
+      Energy_All = col_double(),
+      ShortName_All = col_character(),
+      Frac_Fiber = col_double(),
+      Yield_Mold = col_double(),
+      Scrap_Int = col_double(),
+      Prepreg_Int = col_logical(),
+      Table_All = col_character(),
+      User_YN_All = col_logical()
+    ))
+  })
   
   # Initial Page (not molding) ----
   # (none) = first use; a = int; b = matrix; c = mold; d= summary;  e or z = calcs
@@ -297,9 +466,24 @@ shinyServer(function(input, output, session) {
   # Molding ----
   {
    # Build dataframe for Box----
-  calcmoldE <-  reactive(calcenergy(input$mold_add_E_m, input$mold_add_E_P_M, input$mold_add_E_per_M, input$mold_add_E_t_M, input$mold_add_E_P_p, input$mold_add_E_per_p, input$mold_add_E_t_p,
-                                   input$mold_add_E_P_c, input$mold_add_E_per_c, input$mold_add_E_t_c,input$mold_add_E_P_h, input$mold_add_E_u_h, input$mold_add_E_per_h, input$mold_add_E_t_h,
-                                   input$mold_add_E_P_o, input$mold_add_E_u_o, input$mold_add_E_per_o, input$mold_add_E_t_o))
+    calcmoldph <- reactive(calc.ph(
+                             input$mold_add_E_P_h1, input$mold_add_E_u_h1, input$mold_add_E_per_h1, input$mold_add_E_t_h1,
+                             input$mold_add_E_P_h2, input$mold_add_E_u_h2, input$mold_add_E_per_h2, input$mold_add_E_t_h2,
+                             input$mold_add_E_P_h3, input$mold_add_E_u_h3, input$mold_add_E_per_h3, input$mold_add_E_t_h3,
+                             input$mold_add_E_P_h4, input$mold_add_E_u_h4, input$mold_add_E_per_h4, input$mold_add_E_t_h4,
+                             input$mold_add_E_P_h5, input$mold_add_E_u_h5, input$mold_add_E_per_h5, input$mold_add_E_t_h5,
+                             input$mold_add_E_P_h6, input$mold_add_E_u_h6, input$mold_add_E_per_h6, input$mold_add_E_t_h6,
+                             input$mold_add_E_P_h7, input$mold_add_E_u_h7, input$mold_add_E_per_h7, input$mold_add_E_t_h7,
+                             input$mold_add_E_P_h8, input$mold_add_E_u_h8, input$mold_add_E_per_h8, input$mold_add_E_t_h8,
+                             input$mold_add_E_P_h9, input$mold_add_E_u_h9, input$mold_add_E_per_h9, input$mold_add_E_t_h9,
+                             input$mold_add_E_P_h0, input$mold_add_E_u_h0, input$mold_add_E_per_h0, input$mold_add_E_t_h0))
+    calcmoldE <- reactive(calcenergy(input$mold_add_E_m, 
+                              input$mold_add_E_P_M, input$mold_add_E_per_M, input$mold_add_E_t_M, 
+                              input$mold_add_E_P_p, input$mold_add_E_per_p, input$mold_add_E_t_p,
+                              input$mold_add_E_P_c, input$mold_add_E_per_c, input$mold_add_E_t_c,
+                              calcmoldph(),
+                              input$mold_add_E_P_o, input$mold_add_E_u_o, input$mold_add_E_per_o, input$mold_add_E_t_o))
+    
 mold.Ener <- reactiveValues()
    mold.Ener <- reactive(whichenergy(input$mold_add_EYN, calcmoldE(), input$mold_add_E_Y))
 
@@ -327,7 +511,6 @@ mold.Ener <- reactiveValues()
   observeEvent(input$re_input1, {updateSelectizeInput(session, 'moldingInput1', selected = mold1_selected())  })
   observeEvent(input$re_input2, {updateSelectizeInput(session, 'moldingInput2', selected = mold2_selected())  })
   
-  
    # Match Names to Table----
   moldnamefetch1 <- eventReactive(input$moldingInput1,{
     Data_Mold_new() %>%     filter(Name_All == input$moldingInput1) %>% 
@@ -335,17 +518,17 @@ mold.Ener <- reactiveValues()
   
   moldnamefetch2 <- eventReactive(input$moldingInput2,{
     Data_Mold_new() %>%     filter(Name_All == input$moldingInput2) %>% 
-      select(Energy_All) %>%   unlist() %>%  last() })
+      select(Name_All) %>%   unlist() %>%  last() })
   
-  # Match Names to YN is it User or Default ----
-  moldnamecheck1<- eventReactive(input$moldingInput1,{
-  Data_Mold_new() %>%     filter(Name_All == input$moldingInput1) %>% 
-    select(User_YN_All) %>%   unlist() %>%  last() })
-  
-  moldnamecheck2<- eventReactive(input$moldingInput2,{
-    Data_Mold_new() %>%     filter(Name_All == input$moldingInput2) %>% 
-      select(User_YN_All) %>%   unlist() %>%  last() })  
-  
+   # Match Names to YN is it User or Default ----
+    moldnamecheck1<- eventReactive(input$moldingInput1,{
+    Data_Mold_new() %>%     filter(Name_All == input$moldingInput1) %>% 
+      select(User_YN_All) %>%   unlist() %>%  last() })
+    
+    moldnamecheck2<- eventReactive(input$moldingInput2,{
+      Data_Mold_new() %>%     filter(Name_All == input$moldingInput2) %>% 
+        select(User_YN_All) %>%   unlist() %>%  last() })  
+    
    # Match Energy to Name----
   moldenergyfetch1 <- eventReactive(input$moldingInput1,{
   Data_Mold_new() %>%     filter(Name_All == input$moldingInput1) %>% 
@@ -372,7 +555,7 @@ mold.Ener <- reactiveValues()
     Data_Mold_new() %>%       filter(Name_All == input$moldingInput2) %>% 
       select(Frac_Fiber) %>%    unlist() %>%   last()    })
   
-    # Match Yield to Name----
+   # Match Yield to Name----
   moldyieldfetch1 <- eventReactive(input$moldingInput1,{ 
   Data_Mold_new() %>%       filter(Name_All == input$moldingInput1) %>% 
     select(Yield_Mold) %>%   unlist() %>%    last()    })
@@ -416,12 +599,12 @@ mold.Ener <- reactiveValues()
    # Citations----
   moldcite1 <- renderText(as.character(moldcitefetch1()))
   observeEvent(input$moldingInput1, {
-    validate(need(moldname1(), "")) 
+    validate(need(moldname1() != 'NA', "")) 
     showNotification(paste("Citation for ", moldname1(), ": ",moldcite1()), duration = 5, closeButton = TRUE, type = "message")})
   
   moldcite2 <- renderText(as.character(moldcitefetch2()))
   observeEvent(input$moldingInput2, {
-    validate(need(moldname2(), "")) 
+    validate(need(moldname2() != 'NA', "")) 
     showNotification(paste("Citation for ", moldname2(), ": ",moldcite2()), duration = 5, closeButton = TRUE, type = "message")})
   
    # Update Fiber fractions & mold yield based on mold process choice----
@@ -527,12 +710,12 @@ mold.Ener <- reactiveValues()
   
   fibercite1 <- renderText(as.character(fibercitefetch1()))
   observeEvent(input$fiberInput1, {
-    validate(need(fibername1(), "")) 
+    validate(need(fibername1() != 'NA', "")) 
     showNotification(paste("Citation for ", fibername1(), ": ",fibercite1()), duration = 5, closeButton = TRUE, type = "message")})
   
   fibercite2 <- renderText(as.character(fibercitefetch2()))
   observeEvent(input$fiberInput2, {
-    validate(need(fibername2(), "")) 
+    validate(need(fibername2() != 'NA', "")) 
     showNotification(paste("Citation for ", fibername2(), ": ",fibercite2()), duration = 5, closeButton = TRUE, type = "message")})
   }
   # Matrix ----
@@ -598,7 +781,6 @@ mold.Ener <- reactiveValues()
   })
     
    # Match Names to Table----
-
   matrixnames_new <- reactive(Data_MatrixM_new()$Name_All)
   matrixenergy_new <- reactive(Data_MatrixM_new()$Energy_All)
 
@@ -653,12 +835,12 @@ mold.Ener <- reactiveValues()
   
   primatrixcite1 <- renderText(as.character(primatrixcitefetch1()))
   observeEvent(input$PriMatrixInput1, {
-    validate(need(primatrixname1(), "")) 
+    validate(need(primatrixname1() != 'NA', "")) 
     showNotification(paste("Citation for ", primatrixname1(), ": ",primatrixcite1()), duration = 5, closeButton = TRUE, type = "message")})
   
   primatrixcite2 <- renderText(as.character(primatrixcitefetch2()))
   observeEvent(input$PriMatrixInput2, {
-    validate(need(primatrixname2(), "")) 
+    validate(need(primatrixname2() != 'NA', "")) 
     showNotification(paste("Citation for ", primatrixname2(), ": ",primatrixcite2()), duration = 5, closeButton = TRUE, type = "message")})
   }
   # OtherMat ----
@@ -853,12 +1035,12 @@ mold.Ener <- reactiveValues()
   
   othermatrixAcite1 <- renderText(as.character(othermatrixAcitefetch1()))
   observeEvent(input$OtherMatrixAInput1, {
-    validate(need(othermatrixAname1() != "Not Used", ""), need(othermatrixAname1(), "")) 
+    validate(need(othermatrixAname1() != "Not Used", ""), need(othermatrixAname1()!= 'NA', "")) 
     showNotification(paste("Citation for ", othermatrixAname1(), ": ",othermatrixAcite1()), duration = 5, closeButton = TRUE, type = "message")})
   
   othermatrixAcite2 <- renderText(as.character(othermatrixAcitefetch2()))
   observeEvent(input$OtherMatrixAInput2, {
-    validate(need(othermatrixAname2()!= "Not Used", ""), need(othermatrixAname2(), "")) 
+    validate(need(othermatrixAname2()!= "Not Used", ""), need(othermatrixAname2()!= 'NA', "")) 
     showNotification(paste("Citation for ", othermatrixAname2(), ": ",othermatrixAcite2()), duration = 5, closeButton = TRUE, type = "message")})
  
   othermatrixBcitefetch1 <- eventReactive(input$OtherMatrixBInput1,{
@@ -870,12 +1052,12 @@ mold.Ener <- reactiveValues()
   
   othermatrixBcite1 <- renderText(as.character(othermatrixBcitefetch1()))
   observeEvent(input$OtherMatrixBInput1, {
-    validate(need(othermatrixBname1() != "Not Used", ""), need(othermatrixBname1(), "")) 
+    validate(need(othermatrixBname1() != "Not Used", ""), need(othermatrixBname1()!= 'NA', "")) 
     showNotification(paste("Citation for ", othermatrixBname1(), ": ",othermatrixBcite1()), duration = 5, closeButton = TRUE, type = "message")})
   
   othermatrixBcite2 <- renderText(as.character(othermatrixBcitefetch2()))
   observeEvent(input$OtherMatrixBInput2, {
-    validate(need(othermatrixBname2() != "Not Used", ""), need(othermatrixBname2(), "")) 
+    validate(need(othermatrixBname2() != "Not Used", ""), need(othermatrixBname2()!= 'NA', "")) 
     showNotification(paste("Citation for ", othermatrixBname2(), ": ",othermatrixBcite2()), duration = 5, closeButton = TRUE, type = "message")})
   
   othermatrixCcitefetch1 <- eventReactive(input$OtherMatrixCInput1,{
@@ -887,18 +1069,17 @@ mold.Ener <- reactiveValues()
   
   othermatrixCcite1 <- renderText(as.character(othermatrixCcitefetch1()))
   observeEvent(input$OtherMatrixCInput1, {
-    validate(need(othermatrixCname1() != "Not Used", ""), need(othermatrixCname1(), "")) 
+    validate(need(othermatrixCname1() != "Not Used", ""), need(othermatrixCname1()!= 'NA', "")) 
     showNotification(paste("Citation for ", othermatrixCname1(), ": ",othermatrixCcite1()), duration = 5, closeButton = TRUE, type = "message")})
   
   othermatrixCcite2 <- renderText(as.character(othermatrixCcitefetch2()))
   observeEvent(input$OtherMatrixCInput2, {
-    validate(need(othermatrixCname2() != "Not Used", ""), need(othermatrixCname2(), "")) 
+    validate(need(othermatrixCname2() != "Not Used", ""), need(othermatrixCname2()!= 'NA', "")) 
     showNotification(paste("Citation for ", othermatrixCname2(), ": ",othermatrixCcite2()), duration = 5, closeButton = TRUE, type = "message")})
   }
   # Inserts ----
   {
    # Build Dataframe for Box----
-  
   Data_Insert_new <- reactiveValues()
   Data_Insert_new  <- reactive(
     if (is.null(Data_All_df())) {Data_Insert
@@ -936,7 +1117,7 @@ mold.Ener <- reactiveValues()
   observeEvent(input$re_input2, {updateSelectizeInput(session, 'InsertsAInput2', selected = ins2a_selected())})
   observeEvent(input$re_input2, {updateSelectizeInput(session, 'InsertsBInput2', selected = ins2b_selected())})
   
-   # Associate Names To Table----
+   # Match Names To Table----
   insertsAnamefetch1  <- eventReactive(input$InsertsAInput1,{
   Data_Insert_new() %>%     filter(Name_All == input$InsertsAInput1) %>% 
     select(Name_All) %>%  unlist() %>%    last() })  
@@ -949,7 +1130,7 @@ mold.Ener <- reactiveValues()
   insertsBnamefetch2  <- eventReactive(input$InsertsBInput2,{
     Data_Insert_new() %>%     filter(Name_All == input$InsertsBInput2) %>% 
       select(Name_All) %>%  unlist() %>%    last() })   
-   # Associate Energy to Table----
+   # Match Energy to Table----
   insertsAenergyfetch1 <- eventReactive(input$InsertsAInput1,{
     Data_Insert_new() %>%     filter(Name_All == input$InsertsAInput1) %>% 
       select(Energy_All) %>%  unlist() %>%    last() })     
@@ -1004,12 +1185,12 @@ mold.Ener <- reactiveValues()
   
   insertAcite1 <- renderText(as.character(insertAcitefetch1()))
   observeEvent(input$InsertsAInput1, {
-    validate(need(insertsAname1(), ""), need(insertsAname1() != "Not Used", "")) 
+    validate(need(insertsAname1() != 'NA', ""), need(insertsAname1() != "Not Used", "")) 
     showNotification(paste("Citation for ", insertsAname1(), ": ",insertAcite1()), duration = 5, closeButton = TRUE, type = "message")})
   
   insertAcite2 <- renderText(as.character(insertAcitefetch2()))
   observeEvent(input$InsertsAInput2, {
-    validate(need(insertsAname2(), ""), need(insertsAname2() != "Not Used", "")) 
+    validate(need(insertsAname2() != 'NA', ""), need(insertsAname2() != "Not Used", "")) 
     showNotification(paste("Citation for ", insertsAname2(), ": ",insertAcite2()), duration = 5, closeButton = TRUE, type = "message")})
   
   insertBcitefetch1 <- eventReactive(input$InsertsBInput1,{
@@ -1021,17 +1202,17 @@ mold.Ener <- reactiveValues()
   
   insertBcite1 <- renderText(as.character(insertBcitefetch1()))
   observeEvent(input$InsertsBInput1, {
-    validate(need(insertsBname1(), ""), need(insertsBname1() != "Not Used", "")) 
+    validate(need(insertsBname1() != 'NA', ""), need(insertsBname1() != "Not Used", "")) 
     showNotification(paste("Citation for ", insertsBname1(), ": ",insertBcite1()), duration = 5, closeButton = TRUE, type = "message")})
   
   insertBcite2 <- renderText(as.character(insertBcitefetch2()))
   observeEvent(input$InsertsBInput2, {
-    validate(need(insertsBname2(), ""), need(insertsBname2() != "Not Used", "")) 
+    validate(need(insertsBname2() != 'NA', ""), need(insertsBname2() != "Not Used", "")) 
     showNotification(paste("Citation for ", insertsBname2(), ": ",insertBcite2()), duration = 5, closeButton = TRUE, type = "message")})
   }
   # Intermediate ----
   {
-   # Recall from upload #update scrap is lower----
+   # Recall from upload (update scrap is lower) ----
   observeEvent(input$re_input1, {
     updateNumericInput(session, "intscraprecycle1", value = whichselect(Re_input1.df(), Input_List1, "intscraprecycle"))
   })
@@ -1040,7 +1221,6 @@ mold.Ener <- reactiveValues()
   })
   
    # Build dataframe for Box ----
-
   qintyn1 <- reactive(as.logical(checkallYN(moldnamecheck1(), Re_input1.df(), input$goint, input$Re_Custom, "intYN")))
   qintyn2 <- reactive(as.logical(checkallYN(moldnamecheck2(), Re_input2.df(), input$goint, input$Re_Custom, "intYN")))
 
@@ -1167,12 +1347,12 @@ mold.Ener <- reactiveValues()
   
   intcite1 <- renderText(as.character(intcitefetch1()))
   observeEvent(input$intInput1, {
-    validate(need(intname1(), "")) 
+    validate(need(intname1() != 'NA', "")) 
     showNotification(paste("Citation for ", intname1(), ": ",intcite1()), duration = 5, closeButton = TRUE, type = "message")})
   
   intcite2 <- renderText(as.character(intcitefetch2()))
   observeEvent(input$intInput2, {
-    validate(need(intname2(), "")) 
+    validate(need(intname2() != 'NA', "")) 
     showNotification(paste("Citation for ", intname2(), ": ",intcite2()), duration = 5, closeButton = TRUE, type = "message")})
   }
   # Cure ----
@@ -1194,9 +1374,24 @@ mold.Ener <- reactiveValues()
   observe(updateCheckboxInput(session, "cureYN2", value = qcureyn2()))
   
    # Make dataframe for box if custom values used----
-  calccureE <- reactive(calcenergy(input$cure_add_E_m, input$cure_add_E_P_M, input$cure_add_E_per_M, input$cure_add_E_t_M, input$cure_add_E_P_p, input$cure_add_E_per_p, input$cure_add_E_t_p,
-                                   input$cure_add_E_P_c, input$cure_add_E_per_c, input$cure_add_E_t_c,input$cure_add_E_P_h, input$cure_add_E_u_h, input$cure_add_E_per_h, input$cure_add_E_t_h,
+    calccureph <- reactive(calc.ph(
+    input$cure_add_E_P_h1, input$cure_add_E_u_h1, input$cure_add_E_per_h1, input$cure_add_E_t_h1,
+    input$cure_add_E_P_h2, input$cure_add_E_u_h2, input$cure_add_E_per_h2, input$cure_add_E_t_h2,
+    input$cure_add_E_P_h3, input$cure_add_E_u_h3, input$cure_add_E_per_h3, input$cure_add_E_t_h3,
+    input$cure_add_E_P_h4, input$cure_add_E_u_h4, input$cure_add_E_per_h4, input$cure_add_E_t_h4,
+    input$cure_add_E_P_h5, input$cure_add_E_u_h5, input$cure_add_E_per_h5, input$cure_add_E_t_h5,
+    input$cure_add_E_P_h6, input$cure_add_E_u_h6, input$cure_add_E_per_h6, input$cure_add_E_t_h6,
+    input$cure_add_E_P_h7, input$cure_add_E_u_h7, input$cure_add_E_per_h7, input$cure_add_E_t_h7,
+    input$cure_add_E_P_h8, input$cure_add_E_u_h8, input$cure_add_E_per_h8, input$cure_add_E_t_h8,
+    input$cure_add_E_P_h9, input$cure_add_E_u_h9, input$cure_add_E_per_h9, input$cure_add_E_t_h9,
+    input$cure_add_E_P_h0, input$cure_add_E_u_h0, input$cure_add_E_per_h0, input$cure_add_E_t_h0))
+  calccureE <- reactive(calcenergy(input$cure_add_E_m, 
+                                   input$cure_add_E_P_M, input$cure_add_E_per_M, input$cure_add_E_t_M, 
+                                   input$cure_add_E_P_p, input$cure_add_E_per_p, input$cure_add_E_t_p,
+                                   input$cure_add_E_P_c, input$cure_add_E_per_c, input$cure_add_E_t_c,
+                                   calccureph(),
                                    input$cure_add_E_P_o, input$cure_add_E_u_o, input$cure_add_E_per_o, input$cure_add_E_t_o))
+  
   output$calcedcureE <- renderText({paste(signif(calccureE(), digits = 3), "MJ/kg")})
   
   cure.Ener <- reactiveValues()
@@ -1286,12 +1481,12 @@ mold.Ener <- reactiveValues()
   
   curecite1 <- renderText(as.character(curecitefetch1()))
   observeEvent(input$cureInput1, {
-    validate(need(curename1(), "")) 
+    validate(need(curename1() != 'NA', "")) 
     showNotification(paste("Citation for ", curename1(), ": ",curecite1()), duration = 5, closeButton = TRUE, type = "message")})
   
   curecite2 <- renderText(as.character(curecitefetch2()))
   observeEvent(input$cureInput2, {
-    validate(need(curename2(), "")) 
+    validate(need(curename2() != 'NA', "")) 
     showNotification(paste("Citation for ", curename2(), ": ",curecite2()), duration = 5, closeButton = TRUE, type = "message")})
   }
   # Finish ----
@@ -1336,7 +1531,7 @@ mold.Ener <- reactiveValues()
     Data_Finish_new() %>%     filter(Name_All == input$finishInput2) %>% 
       select(Name_All) %>%  unlist() %>%    last() })   
   
-     # Match Energy to Table-----
+   # Match Energy to Table-----
   finishenergyfetch1 <- eventReactive(input$finishInput1,{
     Data_Finish_new() %>%     filter(Name_All == input$finishInput1) %>% 
       select(Energy_All) %>%  unlist() %>%    last() })   
@@ -1370,12 +1565,12 @@ mold.Ener <- reactiveValues()
   
   finishcite1 <- renderText(as.character(finishcitefetch1()))
   observeEvent(input$finishInput1, {
-    validate(need(finishname1(), ""), need(finishname1() != "None", "")) 
+    validate(need(finishname1() != 'NA', ""), need(finishname1() != "None", "")) 
     showNotification(paste("Citation for ", finishname1(), ": ",finishcite1()), duration = 5, closeButton = TRUE, type = "message")})
   
   finishcite2 <- renderText(as.character(finishcitefetch2()))
   observeEvent(input$finishInput2, {
-    validate(need(finishname2(), ""), need(finishname2() != "None", "")) 
+    validate(need(finishname2() != 'NA', ""), need(finishname2() != "None", "")) 
     showNotification(paste("Citation for ", finishname2(), ": ",finishcite2()), duration = 5, closeButton = TRUE, type = "message")})
   }
   # Citation Page ----
@@ -1405,7 +1600,7 @@ mold.Ener <- reactiveValues()
   
   # Return Mass/Massfracs to zero if "Use ..." checkboxes are false ----
   {
- #Set Inserts mass to zero----
+ # Set Inserts mass to zero----
  observeEvent(input$insertsAUSERYN1, {
    if (!input$insertsAUSERYN1){
      updateNumericInput(session, "insertsAfrac1", value = (0)) 
@@ -1518,7 +1713,8 @@ mold.Ener <- reactiveValues()
   # Calculations ----
     {
     # Change User Input --> Variables (Yield & Mass Fracs) ----
-      # Yield
+      {
+       # Yield ----
       layup.yield1 <- reactive(yield_layup(input$intscrapUSERNum1,input$intscraprecycle1))
       layup.yield2 <- reactive(yield_layup(input$intscrapUSERNum2,input$intscraprecycle2))
       mold.yield1 <- reactive(yield_mold(input$moldyieldUSERNum1, input$moldyieldrecycle1))
@@ -1526,7 +1722,7 @@ mold.Ener <- reactiveValues()
       finish.yield1 <- reactive(yield_finish(input$finishscrap1, input$finishscraprecycle1))
       finish.yield2 <- reactive(yield_finish(input$finishscrap2, input$finishscraprecycle2))
       
-      #mass fracs
+      # mass fracs ----
       finalweight1 <- reactive({input$finalweight1})
       
       raw.f.f1 <- reactive({input$moldfracUSERNum1/100})
@@ -1547,6 +1743,7 @@ mold.Ener <- reactiveValues()
       m.ia2 <- reactive({input$insertsAfrac2})
       m.ib2 <- reactive({input$insertsBfrac2})
       
+    }
     # Mass Fractions converion (calculations treats inserts as part of sum(mass fractions) = 1 )----  
     raw.to.actual.fracs1 <- reactive(Data_mass_fxn(finalweight1(), raw.f.f1(), raw.f.pm1(), raw.f.ma1(), raw.f.mb1(), raw.f.mc1(), m.ia1(), m.ib1()))
     raw.to.actual.fracs2 <- reactive(Data_mass_fxn(finalweight2(), raw.f.f2(), raw.f.pm2(), raw.f.ma2(), raw.f.mb2(), raw.f.mc2(), m.ia2(), m.ib2()))
@@ -1557,10 +1754,7 @@ mold.Ener <- reactiveValues()
      
      f.raw.sum2 <- reactive(sum(raw.f.f2(), raw.f.pm2(), raw.f.ma2(), raw.f.mb2(), raw.f.mc2()))
      output$massfracsum2 <- renderText( { paste(f.raw.sum2() * 100, "%")}  )
-     
-     
-     
-     
+    
      m.inserts1 <- reactive(sum(m.ia1(), m.ib1()))
      m.inserts2 <- reactive(sum(m.ia2(), m.ib2()))
       
@@ -1595,7 +1789,6 @@ mold.Ener <- reactiveValues()
       int.prepregYN2(), finalweight2()
     ))   
 
-    
     # Energy Variables ----
     E.fib1 <- reactive(fiberenergyfetch1())
     E.int1 <- reactive(intenergyfetch1())
@@ -1831,6 +2024,8 @@ mold.Ener <- reactiveValues()
     output$Table.pro.2 <- renderTable(Process2.E.df(), signif = 2)
   
     # Results Graph ----
+    {
+      # DF for charts 1 ----
     energy_plot.df1 <- reactive({
      validate(
        need(sum(input$moldfracUSERNum1, input$primatrixfrac1, input$othermatrixAfrac1, 
@@ -1855,6 +2050,7 @@ mold.Ener <- reactiveValues()
         , order = c(1, 2, 3, 4, 5, 6, 7)
       )})  
     
+      # DF for Charts 2 ----
     energy_plot.df2 <- reactive({
       validate(
         need(sum(input$moldfracUSERNum2, input$primatrixfrac2, input$othermatrixAfrac2, 
@@ -1891,7 +2087,8 @@ mold.Ener <- reactiveValues()
     
     # output$testtable1 <- renderTable(energy_plot.df.p1())
     # output$testtable2 <- renderTable(energy_plot.df.p2())
-    # 
+    
+      # DF for formatting ---- 
 
    fillcolor <- c("Fiber" = "#2960A8", "Intermediate"  = "#74A138", "Primary Matrix Material" = "#C46827",
              "Other Materials"= "#24A7C1", "Molding" = "#8D2A1E", "Curing" = "#E2B500", "Finishing" = "#8A9FCF")
@@ -1910,7 +2107,7 @@ mold.Ener <- reactiveValues()
      pad = 0
    )
    
-   # Bar Chart
+      # Bar Chart ----
    output$plot1 <- renderPlotly({
     ggplot(energy_plot.df.p(), aes(x = Part, y = Energy, fill = Process_Segment )) +
        geom_bar(stat = "identity") +
@@ -1922,7 +2119,7 @@ mold.Ener <- reactiveValues()
                         , axis.text = element_text(size = 14), axis.title.x = element_text(size = 18), plot.margin = margin(t = 0, r = 0, b = 0, l = 30, unit = "pt") )
          })
    
-   # Pie Chart
+      # Pie Charts ----
 
    output$plot2a <- renderPlotly(
      plot_ly(energy_plot.df.p1(), labels = ~Process_Segment, values = ~Energy, type = 'pie',
@@ -1963,8 +2160,8 @@ mold.Ener <- reactiveValues()
             margin = marg,
             legend = list(bordercolor  = "#000000", borderwidth = 2, bgcolor = "rgba(255, 255, 255, 0.5)") ) 
    )
-   
-  # Results Display Table ----
+    }
+    # Results Display Table ----
    Resultsdf <- reactive({
      validate(
          need(sum(input$moldfracUSERNum2, input$primatrixfrac2, input$othermatrixAfrac2, input$othermatrixBfrac2, input$othermatrixCfrac2) == 100,      "")       

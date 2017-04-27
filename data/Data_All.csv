@@ -18,6 +18,8 @@ Wet (Hand) Lay up,0.4,Wet Layup,0.35,0.97,NA,FALSE,Mold,FALSE
 "Commodity PAN, 24k Tow",1166,NA,NA,NA,NA,FALSE,Fiber,FALSE
 "Commodity PAN, 50k Tow",1155,NA,NA,NA,NA,FALSE,Fiber,FALSE
 E-Glass Fiber,50,NA,NA,NA,NA,FALSE,Fiber,FALSE
+Kanaf Fibers,21,NA,NA,NA,NA,FALSE,Fiber,FALSE
+Recycled Carbon Fiber,11.4,NA,NA,NA,NA,FALSE,Fiber,FALSE
 Not Used,0,NA,NA,NA,NA,FALSE,Other,FALSE
 TS Epoxy,113.3,NA,NA,NA,NA,FALSE,Matrix,FALSE
 TS Phenol,76.2,NA,NA,NA,NA,FALSE,Matrix,FALSE

@@ -197,10 +197,87 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                            , column(4, numericInput("mold_add_E_t_c", "Compressor Running Time (min)", 0, min = 0, NA, NA)) )
                          , h4("Process Heating")
                          , fluidRow(
-                           column(3, numericInput("mold_add_E_P_h", "Rated Heater Power", 0, min = 0, NA, NA))
-                           , column(3, selectizeInput("mold_add_E_u_h", "Units", choices = c("kW (electricity)", "BTU/h (Natural Gas)"), selected = "kW (electricity)"))
-                           , column(3, numericInput("mold_add_E_per_h", "Percent of Rated Power (%)", 100, min = 0, 100, 5))
-                           , column(3, numericInput("mold_add_E_t_h", "Heater Running Time (min)", 0, min = 0, NA, NA)) )
+                           column(2, numericInput("mold_add_E_P_h1", "Rated Heater Power", 0, min = 0, NA, NA))
+                           , column(2, selectizeInput("mold_add_E_u_h1", "Units", choices = c("kW (electricity)", "BTU/h (Natural Gas)"), selected = "kW (electricity)"))
+                           , column(3, numericInput("mold_add_E_per_h1", "Percent of Rated Power (%)", 100, min = 0, 100, 5))
+                           , column(3, numericInput("mold_add_E_t_h1", "Heater Running Time (min)", 0, min = 0, NA, NA)) 
+                           , column(2, checkboxInput("mold_add_row1", "Add another time segment?", FALSE))  )
+                         , conditionalPanel( 
+                           condition = "input.mold_add_row1 == true"
+                           , fluidRow(
+                               column(2, numericInput("mold_add_E_P_h2", "Rated Heater Power", 0, min = 0, NA, NA))
+                             , column(2, selectizeInput("mold_add_E_u_h2", "Units", choices = c("kW (electricity)", "BTU/h (Natural Gas)"), selected = "kW (electricity)"))
+                             , column(3, numericInput("mold_add_E_per_h2", "Percent of Rated Power (%)", 100, min = 0, 100, 5))
+                             , column(3, numericInput("mold_add_E_t_h2", "Heater Running Time (min)", 0, min = 0, NA, NA)) 
+                             , column(2, checkboxInput("mold_add_row2", "Add another time segment?", FALSE))   )
+                           , conditionalPanel( 
+                             condition = "input.mold_add_row2 == true"
+                             , fluidRow(
+                               column(2, numericInput("mold_add_E_P_h3", "Rated Heater Power", 0, min = 0, NA, NA))
+                               , column(2, selectizeInput("mold_add_E_u_h3", "Units", choices = c("kW (electricity)", "BTU/h (Natural Gas)"), selected = "kW (electricity)"))
+                               , column(3, numericInput("mold_add_E_per_h3", "Percent of Rated Power (%)", 100, min = 0, 100, 5))
+                               , column(3, numericInput("mold_add_E_t_h3", "Heater Running Time (min)", 0, min = 0, NA, NA)) 
+                             , column(2, checkboxInput("mold_add_row3", "Add another time segment?", FALSE))      )
+                             , conditionalPanel( 
+                               condition = "input.mold_add_row3 == true"
+                               , fluidRow(
+                                 column(2, numericInput("mold_add_E_P_h4", "Rated Heater Power", 0, min = 0, NA, NA))
+                                 , column(2, selectizeInput("mold_add_E_u_h4", "Units", choices = c("kW (electricity)", "BTU/h (Natural Gas)"), selected = "kW (electricity)"))
+                                 , column(3, numericInput("mold_add_E_per_h4", "Percent of Rated Power (%)", 100, min = 0, 100, 5))
+                                 , column(3, numericInput("mold_add_E_t_h4", "Heater Running Time (min)", 0, min = 0, NA, NA)) 
+                                 , column(2, checkboxInput("mold_add_row4", "Add another time segment?", FALSE))   )
+                               , conditionalPanel( 
+                                 condition = "input.mold_add_row4 == true"
+                                 , fluidRow(
+                                   column(2, numericInput("mold_add_E_P_h5", "Rated Heater Power", 0, min = 0, NA, NA))
+                                   , column(2, selectizeInput("mold_add_E_u_h5", "Units", choices = c("kW (electricity)", "BTU/h (Natural Gas)"), selected = "kW (electricity)"))
+                                   , column(3, numericInput("mold_add_E_per_h5", "Percent of Rated Power (%)", 100, min = 0, 100, 5))
+                                   , column(3, numericInput("mold_add_E_t_h5", "Heater Running Time (min)", 0, min = 0, NA, NA)) 
+                                   , column(2, checkboxInput("mold_add_row5", "Add another time segment?", FALSE))      )
+                                 , conditionalPanel( 
+                                   condition = "input.mold_add_row5 == true"
+                                   , fluidRow(
+                                     column(2, numericInput("mold_add_E_P_h6", "Rated Heater Power", 0, min = 0, NA, NA))
+                                     , column(2, selectizeInput("mold_add_E_u_h6", "Units", choices = c("kW (electricity)", "BTU/h (Natural Gas)"), selected = "kW (electricity)"))
+                                     , column(3, numericInput("mold_add_E_per_h6", "Percent of Rated Power (%)", 100, min = 0, 100, 5))
+                                     , column(3, numericInput("mold_add_E_t_h6", "Heater Running Time (min)", 0, min = 0, NA, NA)) 
+                                     , column(2, checkboxInput("mold_add_row6", "Add another time segment?", FALSE))   )
+                                   , conditionalPanel( 
+                                     condition = "input.mold_add_row6 == true"
+                                     , fluidRow(
+                                       column(2, numericInput("mold_add_E_P_h7", "Rated Heater Power", 0, min = 0, NA, NA))
+                                       , column(2, selectizeInput("mold_add_E_u_h7", "Units", choices = c("kW (electricity)", "BTU/h (Natural Gas)"), selected = "kW (electricity)"))
+                                       , column(3, numericInput("mold_add_E_per_h7", "Percent of Rated Power (%)", 100, min = 0, 100, 5))
+                                       , column(3, numericInput("mold_add_E_t_h7", "Heater Running Time (min)", 0, min = 0, NA, NA)) 
+                                       , column(2, checkboxInput("mold_add_row7", "Add another time segment?", FALSE))      )
+                                     , conditionalPanel( 
+                                       condition = "input.mold_add_row7 == true"
+                                       , fluidRow(
+                                         column(2, numericInput("mold_add_E_P_h8", "Rated Heater Power", 0, min = 0, NA, NA))
+                                         , column(2, selectizeInput("mold_add_E_u_h8", "Units", choices = c("kW (electricity)", "BTU/h (Natural Gas)"), selected = "kW (electricity)"))
+                                         , column(3, numericInput("mold_add_E_per_h8", "Percent of Rated Power (%)", 100, min = 0, 100, 5))
+                                         , column(3, numericInput("mold_add_E_t_h8", "Heater Running Time (min)", 0, min = 0, NA, NA)) 
+                                         , column(2, checkboxInput("mold_add_row8", "Add another time segment?", FALSE))   )
+                                       , conditionalPanel( 
+                                         condition = "input.mold_add_row8 == true"
+                                         , fluidRow(
+                                           column(2, numericInput("mold_add_E_P_h9", "Rated Heater Power", 0, min = 0, NA, NA))
+                                           , column(2, selectizeInput("mold_add_E_u_h9", "Units", choices = c("kW (electricity)", "BTU/h (Natural Gas)"), selected = "kW (electricity)"))
+                                           , column(3, numericInput("mold_add_E_per_h9", "Percent of Rated Power (%)", 100, min = 0, 100, 5))
+                                           , column(3, numericInput("mold_add_E_t_h9", "Heater Running Time (min)", 0, min = 0, NA, NA)) 
+                                           , column(2, checkboxInput("mold_add_row9", "Add another time segment?", FALSE))      )
+                                         , conditionalPanel( 
+                                           condition = "input.mold_add_row9 == true"
+                                           , fluidRow(
+                                             column(2, numericInput("mold_add_E_P_h0", "Rated Heater Power", 0, min = 0, NA, NA))
+                                             , column(2, selectizeInput("mold_add_E_u_h0", "Units", choices = c("kW (electricity)", "BTU/h (Natural Gas)"), selected = "kW (electricity)"))
+                                             , column(3, numericInput("mold_add_E_per_h0", "Percent of Rated Power (%)", 100, min = 0, 100, 5))
+                                             , column(3, numericInput("mold_add_E_t_h0", "Heater Running Time (min)", 0, min = 0, NA, NA))       )   
+                                         
+                                         ))) #10 , 9 , 8
+                                         )))  #7, 6, 5
+                                         ))) # 4, 3, 2 - 1 does not have a conditional panel
+                             
                          , h4("Other")
                          , fluidRow(
                            column(3, numericInput("mold_add_E_P_o", "Rated Equipment Power (kW)", 0, min = 0, NA, NA))
@@ -259,10 +336,86 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                            , column(4, numericInput("cure_add_E_t_c", "Compressor Running Time (min)", 0, min = 0, NA, NA)) )
                          , h4("Process Heating")
                          , fluidRow(
-                           column(3, numericInput("cure_add_E_P_h", "Rated Heater Power (kW)", 0, min = 0, NA, NA))
-                           , column(3, selectizeInput("cure_add_E_u_h", "Units", choices = c("kW (electricity)", "BTU/h (Natural Gas)"), selected = "kW (electricity)"))
-                           , column(3, numericInput("cure_add_E_per_h", "Percent of Rated Power (%)", 100, min = 0, 100, 5))
-                           , column(3, numericInput("cure_add_E_t_h", "Heater Running Time (min)", 0, min = 0, NA, NA)) )
+                           column(2, numericInput("cure_add_E_P_h1", "Rated Heater Power", 0, min = 0, NA, NA))
+                           , column(2, selectizeInput("cure_add_E_u_h1", "Units", choices = c("kW (electricity)", "BTU/h (Natural Gas)"), selected = "kW (electricity)"))
+                           , column(3, numericInput("cure_add_E_per_h1", "Percent of Rated Power (%)", 100, min = 0, 100, 5))
+                           , column(3, numericInput("cure_add_E_t_h1", "Heater Running Time (min)", 0, min = 0, NA, NA)) 
+                           , column(2, checkboxInput("cure_add_row1", "Add another time segment?", FALSE))  )
+                         , conditionalPanel( 
+                           condition = "input.cure_add_row1 == true"
+                           , fluidRow(
+                             column(2, numericInput("cure_add_E_P_h2", "Rated Heater Power", 0, min = 0, NA, NA))
+                             , column(2, selectizeInput("cure_add_E_u_h2", "Units", choices = c("kW (electricity)", "BTU/h (Natural Gas)"), selected = "kW (electricity)"))
+                             , column(3, numericInput("cure_add_E_per_h2", "Percent of Rated Power (%)", 100, min = 0, 100, 5))
+                             , column(3, numericInput("cure_add_E_t_h2", "Heater Running Time (min)", 0, min = 0, NA, NA)) 
+                             , column(2, checkboxInput("cure_add_row2", "Add another time segment?", FALSE))   )
+                           , conditionalPanel( 
+                             condition = "input.cure_add_row2 == true"
+                             , fluidRow(
+                               column(2, numericInput("cure_add_E_P_h3", "Rated Heater Power", 0, min = 0, NA, NA))
+                               , column(2, selectizeInput("cure_add_E_u_h3", "Units", choices = c("kW (electricity)", "BTU/h (Natural Gas)"), selected = "kW (electricity)"))
+                               , column(3, numericInput("cure_add_E_per_h3", "Percent of Rated Power (%)", 100, min = 0, 100, 5))
+                               , column(3, numericInput("cure_add_E_t_h3", "Heater Running Time (min)", 0, min = 0, NA, NA)) 
+                               , column(2, checkboxInput("cure_add_row3", "Add another time segment?", FALSE))      )
+                             , conditionalPanel( 
+                               condition = "input.cure_add_row3 == true"
+                               , fluidRow(
+                                 column(2, numericInput("cure_add_E_P_h4", "Rated Heater Power", 0, min = 0, NA, NA))
+                                 , column(2, selectizeInput("cure_add_E_u_h4", "Units", choices = c("kW (electricity)", "BTU/h (Natural Gas)"), selected = "kW (electricity)"))
+                                 , column(3, numericInput("cure_add_E_per_h4", "Percent of Rated Power (%)", 100, min = 0, 100, 5))
+                                 , column(3, numericInput("cure_add_E_t_h4", "Heater Running Time (min)", 0, min = 0, NA, NA)) 
+                                 , column(2, checkboxInput("cure_add_row4", "Add another time segment?", FALSE))   )
+                               , conditionalPanel( 
+                                 condition = "input.cure_add_row4 == true"
+                                 , fluidRow(
+                                   column(2, numericInput("cure_add_E_P_h5", "Rated Heater Power", 0, min = 0, NA, NA))
+                                   , column(2, selectizeInput("cure_add_E_u_h5", "Units", choices = c("kW (electricity)", "BTU/h (Natural Gas)"), selected = "kW (electricity)"))
+                                   , column(3, numericInput("cure_add_E_per_h5", "Percent of Rated Power (%)", 100, min = 0, 100, 5))
+                                   , column(3, numericInput("cure_add_E_t_h5", "Heater Running Time (min)", 0, min = 0, NA, NA)) 
+                                   , column(2, checkboxInput("cure_add_row5", "Add another time segment?", FALSE))      )
+                                 , conditionalPanel( 
+                                   condition = "input.cure_add_row5 == true"
+                                   , fluidRow(
+                                     column(2, numericInput("cure_add_E_P_h6", "Rated Heater Power", 0, min = 0, NA, NA))
+                                     , column(2, selectizeInput("cure_add_E_u_h6", "Units", choices = c("kW (electricity)", "BTU/h (Natural Gas)"), selected = "kW (electricity)"))
+                                     , column(3, numericInput("cure_add_E_per_h6", "Percent of Rated Power (%)", 100, min = 0, 100, 5))
+                                     , column(3, numericInput("cure_add_E_t_h6", "Heater Running Time (min)", 0, min = 0, NA, NA)) 
+                                     , column(2, checkboxInput("cure_add_row6", "Add another time segment?", FALSE))   )
+                                   , conditionalPanel( 
+                                     condition = "input.cure_add_row6 == true"
+                                     , fluidRow(
+                                       column(2, numericInput("cure_add_E_P_h7", "Rated Heater Power", 0, min = 0, NA, NA))
+                                       , column(2, selectizeInput("cure_add_E_u_h7", "Units", choices = c("kW (electricity)", "BTU/h (Natural Gas)"), selected = "kW (electricity)"))
+                                       , column(3, numericInput("cure_add_E_per_h7", "Percent of Rated Power (%)", 100, min = 0, 100, 5))
+                                       , column(3, numericInput("cure_add_E_t_h7", "Heater Running Time (min)", 0, min = 0, NA, NA)) 
+                                       , column(2, checkboxInput("cure_add_row7", "Add another time segment?", FALSE))      )
+                                     , conditionalPanel( 
+                                       condition = "input.cure_add_row7 == true"
+                                       , fluidRow(
+                                         column(2, numericInput("cure_add_E_P_h8", "Rated Heater Power", 0, min = 0, NA, NA))
+                                         , column(2, selectizeInput("cure_add_E_u_h8", "Units", choices = c("kW (electricity)", "BTU/h (Natural Gas)"), selected = "kW (electricity)"))
+                                         , column(3, numericInput("cure_add_E_per_h8", "Percent of Rated Power (%)", 100, min = 0, 100, 5))
+                                         , column(3, numericInput("cure_add_E_t_h8", "Heater Running Time (min)", 0, min = 0, NA, NA)) 
+                                         , column(2, checkboxInput("cure_add_row8", "Add another time segment?", FALSE))   )
+                                       , conditionalPanel( 
+                                         condition = "input.cure_add_row8 == true"
+                                         , fluidRow(
+                                           column(2, numericInput("cure_add_E_P_h9", "Rated Heater Power", 0, min = 0, NA, NA))
+                                           , column(2, selectizeInput("cure_add_E_u_h9", "Units", choices = c("kW (electricity)", "BTU/h (Natural Gas)"), selected = "kW (electricity)"))
+                                           , column(3, numericInput("cure_add_E_per_h9", "Percent of Rated Power (%)", 100, min = 0, 100, 5))
+                                           , column(3, numericInput("cure_add_E_t_h9", "Heater Running Time (min)", 0, min = 0, NA, NA)) 
+                                           , column(2, checkboxInput("cure_add_row9", "Add another time segment?", FALSE))      )
+                                         , conditionalPanel( 
+                                           condition = "input.cure_add_row9 == true"
+                                           , fluidRow(
+                                             column(2, numericInput("cure_add_E_P_h0", "Rated Heater Power", 0, min = 0, NA, NA))
+                                             , column(2, selectizeInput("cure_add_E_u_h0", "Units", choices = c("kW (electricity)", "BTU/h (Natural Gas)"), selected = "kW (electricity)"))
+                                             , column(3, numericInput("cure_add_E_per_h0", "Percent of Rated Power (%)", 100, min = 0, 100, 5))
+                                             , column(3, numericInput("cure_add_E_t_h0", "Heater Running Time (min)", 0, min = 0, NA, NA))       )   
+                                           
+                                         ))) #10 , 9 , 8
+                                   )))  #7, 6, 5
+                             ))) # 4, 3, 2 - 1 does not have a conditional panel
                          , h4("Other")
                          , fluidRow(
                            column(3, numericInput("cure_add_E_P_o", "Rated Equipment Power (kW)", 0, min = 0, NA, NA))

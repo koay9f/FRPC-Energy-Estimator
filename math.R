@@ -1,7 +1,7 @@
 library(tidyverse)
 
 
-#  FUNCTIONS TO MAKE SERVER.R WORK 
+# FUNCTIONS TO MAKE SERVER.R WORK 
 # Citations ----
 Data_Cite = read.csv("data/Data_Citations.csv")
 cite_name = Data_Cite$Name
@@ -31,7 +31,7 @@ if (YN){
 # Calculate custom molding or curing energy
 calcenergy <- function(mass, pm, rm, tm, 
                        pp, rp, tp,  pc, rc, tc,
-                       ph, uh, rh, th,
+                       heat,
                        po, uo, ro, to){
   Errc <- function (val){if (is.na(val)) {0}else{val}}
   power.m <- Errc(pm)
@@ -43,10 +43,6 @@ calcenergy <- function(mass, pm, rm, tm,
   power.c <- Errc(pc)
   rate.c <- Errc(rc)
   time.c <- Errc(tc)
-  power.h <- Errc(ph)
-  unit.h <- Errc(uh)
-  rate.h <- Errc(rh)
-  time.h <- Errc(th)
   power.o <- Errc(po)
   unit.o <- Errc(uo)
   rate.o <- Errc(ro)
@@ -55,14 +51,39 @@ calcenergy <- function(mass, pm, rm, tm,
   motor <- power.m* rate.m * time.m * 3.1 # convert to embodied
   pump <- power.p* rate.p * time.p * 3.1
   compress <- power.c* rate.c * time.c * 3.1
-  u.h <- if (unit.h == "kW (electricity)") {3.1} else {(1/3412.142)} # either *3 for embodied electricity or divide by 3412 for BTU/h --> kW & emboided =1 
-  heat <- power.h* rate.h * time.h * u.h
+  
   u.o <- if (unit.o == "kW (electricity)") {3.1} else {(1/3412.142)} 
   other <- power.o* rate.o * time.o * u.o
     #Convert from kW to MW, convert min to s, convert % to frac, / mass
   specificenergy <- sum(motor, pump, compress, heat, other)*(60/(1000*100))/mass
   specificenergy
 }
+
+# calc process heating energy
+calc.ph <- function(p1, u1, r1, t1,  p2, u2, r2, t2,  p3, u3, r3, t3,  p4, u4, r4, t4,  p5, u5, r5, t5,
+                    p6, u6, r6, t6,  p7, u7, r7, t7,  p8, u8, r8, t8,  p9, u9, r9, t9,  p0, u0, r0, t0){
+  Errc <- function (val){if (is.na(val)) {0}else{val}}
+
+  
+  u.h <- function (unit) {if (unit == "kW (electricity)") {3.1} else {(1/3412.142)} }
+    # either *3 for embodied electricity or divide by 3412 for BTU/h --> kW & emboided =1 
+  heat <- function (px, rx, tx, ux) {px * rx * tx * ux}
+ 
+  h1 <- heat(Errc(p1), Errc(r1), Errc(t1), u.h(u1))
+  h2 <- heat(Errc(p2), Errc(r2), Errc(t2), u.h(u2)) 
+  h3 <- heat(Errc(p3), Errc(r3), Errc(t3), u.h(u3))
+  h4 <- heat(Errc(p4), Errc(r4), Errc(t4), u.h(u4))
+  h5 <- heat(Errc(p5), Errc(r5), Errc(t5), u.h(u5))
+  h6 <- heat(Errc(p6), Errc(r6), Errc(t6), u.h(u6))
+  h7 <- heat(Errc(p7), Errc(r7), Errc(t7), u.h(u7))
+  h8 <- heat(Errc(p8), Errc(r8), Errc(t8), u.h(u8))
+  h9 <- heat(Errc(p9), Errc(r9), Errc(t9), u.h(u9))
+  h0 <- heat(Errc(p0), Errc(r0), Errc(t0), u.h(u0))
+  energy <- sum(h1, h2, h3, h4, h5, h6, h7, h8, h9, h0)
+  energy
+  #this value is not "real" it still needs to be converted from % (/ 100), convert from min --> s, convert kW to MW and / mass
+}
+
 
 # How to tell if should use calculated molding/curing energy or energy entered as MJ/kg
 whichenergy <-  function(addYN, calced, user){
@@ -73,15 +94,15 @@ whichenergy <-  function(addYN, calced, user){
   }
 }
 
-# Build DF with input values
+# Build DF with input values for download ----
 inputsdf <- function(inputtable, values){
   in.df <- inputtable
   in.df[["User"]] <- values
   
   in.df}
 
-# Rerun ----
-#Use Default selection or a reload - names & numbers
+# Upload ----
+#Use Default selection or upload ? - names & numbers
 whichselect <- function(rer, def, vari){
   reorde <- if (is.null(rer)) {
     def
@@ -106,18 +127,13 @@ YNcheck <- function(rer,vari){
 othermatfxn <- function(typeother, matrix, additive, filler){
   if (typeother == "Not Used" ) {
     "Not Used"
-  } else {
-    if (typeother == "Matrix"){
+  } else if (typeother == "Matrix"){
       matrix
-    } else{
-      if (typeother == "Additive") {
+    } else if (typeother == "Additive") {
         additive
-      } else{
+      } else {
         filler
-      }
-    }
-  }
-}
+      }      }
 
 # Curing Tech dependent on molding type ----
 curelistfxn <- function(moldtype, all, only, wlup, autoclave){
@@ -371,7 +387,7 @@ BIGFUNCTION2 <- function(Data_yield, partname,
   Data_energy
 }
 
-# Results DataTable ----
+# Build Results DataTable ----
 finaldf <- function(name1, name2, w1, w2, AA, BB, CC, DD, EE, FF, GG, HH, II, JJ, KK, YF1, YM1, YT1,
                                   AA2, BB2, CC2, DD2, EE2, FF2, GG2, HH2, II2, JJ2, KK2, YF2, YM2, YT2){
   pd <- function (n1, n2){
