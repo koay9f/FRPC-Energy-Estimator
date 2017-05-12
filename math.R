@@ -102,13 +102,33 @@ inputsdf <- function(inputtable, values){
   in.df}
 
 # Upload ----
+#Match selections to example
+exselect <- function(df, vari) {
+  rowcall <- dplyr::filter (df, Variable_Name == vari) %>% select(4)
+  unname(unlist(rowcall))
+}
+
 #Use Default selection or upload ? - names & numbers
 whichselect <- function(rer, def, vari){
-  reorde <- if (is.null(rer)) {
+  whichdf <- if (is.null(rer)) {
     def
   } else {
     rer}
-  rowcall <- dplyr::filter (reorde, Variable_Name == vari) %>% select(4)
+  rowcall <- dplyr::filter (whichdf, Variable_Name == vari) %>% select(4)
+  unname(unlist(rowcall))
+}
+#Use Default selection or upload or example? - names & numbers
+whichselect2 <- function(rer, def, go, ex, vari){
+  whichdf <- if (is.null(rer)) {
+      if (go > 0) {
+        ex
+        } else {
+        def
+      }
+    } else {
+      rer}
+  
+  rowcall <- dplyr::filter (whichdf, Variable_Name == vari) %>% select(4)
   unname(unlist(rowcall))
 }
 

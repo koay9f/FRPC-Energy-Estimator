@@ -25,31 +25,37 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                   navlistPanel( 
             
             # Guide Tab ----
-            tabPanel("Guide",h1("Tool Guide")
+            tabPanel(div(icon("book"), "Guide"),h1("Tool Guide")
                      , tags$img(src='ToolScope.svg', style = "height: 300; width: 100%; max-width: 778.3079951422452px;")
                      , br()
                      , hr()
                      , br()
                       , strong('This tool has been developed by ORNL to provide composite researchers and manufacturers the ability to quickly estimate 
                          the embodied energy use of their composite manufacturing process and compare it to other conventional processes.')  
-                     , hr()    
-                     , p(icon("table"),'   A table for comparing molding technologies is available on the "Molding Properties" Page.')  
-                      , p(icon("internet-explorer"),'   Some features of this tool are not fully suppported in Internet Explorer.')
-                     , p(icon("envelope-o"), '   If you wish to permanently add a material or process to our database or otherwise wish to comment on this tool, please contact 
-                         the developers by', span(strong(" email:")), 'Kristina Armstrong (', span('armstrongko@ornl.gov', style = "text-decoration: underline"),  ') or Sujit Das (', span('dass@ornl.gov', style = "text-decoration: underline"),').')
-                     , helpText(a("Or connect with us on GitHub", href = "https://github.com/koay9f/FRPC-Energy-Estimator", target= "_blank"))
-                     , p(icon("save"),strong("Saving:"), "When you exit the application, all data is lost.", style = "color: red")
-                      ,p(icon("download"),'To rerun in future sessions, download the "Input" files from the Download Page at the end of your session.')
-                     , p(icon("upload"), 'In later sessions, you can upload this on the Upload Page, and the forms will autopopulate.')
+                     , br()
+                     , p(icon("arrow-left"),'   To get started, click "Initial Inputs" in the menu bar on the left, or ...')
+                     , actionButton('goexample', div(icon("edit"),"Click to load an example scenario"))
                      , hr()
-                     , p(icon("file-zip-o"),'   For more help or information,', span(strong( "download" )), 'the Tool Documentation. This includes includes energy data,
+                     , p(icon("book"),'   For help using or additional information about this tool,', span(strong( "download" )), 'the Tool Documentation. This includes includes energy data,
                          molding process properties, references and details of tool computations' ) 
                      , downloadButton('info', "Download Tool Documentation Zip File")
                      , p("If you are unable to download the background zip file, try", span(strong("reloading")), "the application.",  
                          span("Note: you will lose any information you have entered into the app.", style = "color:red"))
+                     , hr()    
+                     , p(icon("internet-explorer"),'   Some features of this tool are not fully suppported in Internet Explorer.')
+                     , p(icon("envelope-o"), '   If you wish to permanently add a material or process to our database or otherwise wish to comment on this tool, please contact 
+                         the developers by', span(strong(" email:")), 'Kristina Armstrong (', span('armstrongko@ornl.gov', style = "text-decoration: underline"),  ') or Sujit Das (', span('dass@ornl.gov', style = "text-decoration: underline"),').')
+                     , helpText(a("Or connect with us on GitHub", href = "https://github.com/koay9f/FRPC-Energy-Estimator", target= "_blank"))
+                     , p(icon("save"),"When you exit the application, all data is lost.", style = "color: red")
+                     , p(icon("times"),"Application will shut down after 5 minutes of inactivity (and data will be lost).", style = "color: red")
+                     , p(icon("save"),"Data is not lost when moving between pages.")
+                     , p(icon("download"),'To save your session, download the "Input" files from the', strong('Download Page'), ' at the end of your session.')
+                     , p(icon("upload"), 'In later sessions, you can upload this on the', strong(' Upload Page'), ', and the forms will autopopulate.')
+                     , p(icon("table"),'   A table for comparing molding technologies is available on the', strong(' Molding Properties Page.'))  
+                     
                    ),
             # Upload Tab ----
-            tabPanel("Upload", h1("Upload Data")
+            tabPanel(div(icon("upload"), "Upload"), h1("Upload Data")
                      , p ("Upload a previous run from this tool.  If CSV file was changed, errors may occur.")
                      , fileInput("Re_Custom", "Choose CSV File to Upload Custom Data",
                                  accept = c('csv', 'comma-separated-values','.csv')) 
@@ -60,12 +66,12 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                ),
             
             # Add data tab ----
-            {tabPanel("Custom Data",h1("Custom Data")
+            {tabPanel(div(icon("plus"), "Custom Data"),h1("Custom Data")
                      # This tool can also incorporate custom data using the form below
                    # Which & Instructions ---- 
                      , selectizeInput("add_data_which", label = "What type of custom data would you like to add?",
                                       choices = c("Instructions", "Fiber Type", "Matrix", "Filler", "Additive", 
-                                                  "Insert/Core Material", "Intermediate", "Molding Technology", "Curing Technology", "Finish")
+                                                  "Insert/Core Material", "Intermediate", "Molding Process", "Curing Process", "Finish")
                                       , selected = "Instructions", multiple = FALSE)
                      , conditionalPanel(
                        condition = 'input.add_data_which == "Instructions"'
@@ -136,6 +142,10 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                      , conditionalPanel(
                        condition = 'input.add_data_which == "Intermediate"'
                        , fluidRow(column(5,h4("Custom Intermediate")))
+                       , fluidRow(column(12, p("Normally the options available for fiber intermediate are dependent on the user's choice for molding process.")
+                                         , p("If a custom intermediate has been added, ", strong("all"), " options for intermediates (including the custom process) will be available.")
+                                         , p("In this tool, the matrix mass of a prepreg is accounted for when calculating change in material mass as material
+                                             is scrapped.  The mass of the matrix is not included for when calculating the embodied energy of the intermediate.")))
                        , fluidRow(column(3, textInput("int_add", "Name", "Custom Intermediate"))
                                   , column (3, numericInput("int_add_E", "Specific Embodied Energy (MJ/kg fiber)", 0, min = 0, NA, NA))
                                   , column (3,  checkboxInput("int_add_PP", "Does the intermediate material include matrix material (i.e. prepregs)?",FALSE))
@@ -143,22 +153,18 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                                   , column(1,         hidden(
                                     p(id = "inti", icon("check", "fa-2x"))), style = "padding:25px;", align = "left" )
                        )
-                       , fluidRow(column(12, p("Normally the options available for fiber intermediate are dependent on the user's choice for molding technology.  
-                                                             If a custom intermediate has been added, this is overridden and all options for 
-                                                             intermediates (including the custom process) will be available.")
-                                                       , p("In this tool, the matrix mass of a prepreg is accounted for when calculating change in material mass as material
-                                                           is scrapped.  The mass of the matrix is not included for when calculating the embodied energy of the intermediate.")))
+
                        )
                      # Molding ---- 
                      , conditionalPanel(
-                       condition = 'input.add_data_which == "Molding Technology"'
+                       condition = 'input.add_data_which == "Molding Process"'
                        , h4("Custom Molding Process")
                        , br()
-                       , p("Normally the options available for fiber intermediate and curing process are dependent on the user's choice for molding technology.  
-                           If a custom molding process has been added and chosen, this is overridden and all options for these will be available.")
+                       , p("Normally the options available for fiber intermediate and curing process are dependent on the user's choice for molding process.")
+                      , p("If a custom molding process has been added and chosen, ", strong("all"), " intermediate and curing process options will be available.")
                        , fluidRow(
                          column(4, textInput("mold_add", "Name", "Custom Mold Tech"))
-                         , column(4, checkboxInput("mold_add_EYN", "Is the specific embodied Energy of the molding process known?",FALSE), style = "padding:15px;")
+                         , column(4, checkboxInput("mold_add_EYN", "Is the Specific Embodied Energy of the molding process known?",FALSE), style = "padding:15px;")
                          , column(3,actionButton("gomold", strong("Add Molding Data")), style = "padding:25px;")
                          , column(1,         hidden(
                            p(id = "moldi", icon("check", "fa-2x"))), style = "padding:25px;", align = "left" )
@@ -174,7 +180,7 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                            column(3, strong("Calculated Embodied Energy: "))
                            , column(2, textOutput("calcedmoldE"))                                 )
                          , br()
-                         , h3("Process Information")
+                         , h3("Specific Embodied Energy Calculator")
                          , p('If the specific energy of the molding process is unknown, it can be estimated using the rated power of the equipment
                              envolved in the molding process.  If multiple pieces of equipment are used, multiply the rated power of the equipment
                              by the fraction of the rated power (i.e., the power used) and enter the sum into the"Rated Equipment Power (kW)" input 
@@ -287,15 +293,14 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                          ))
                      # Curing ---- 
                      , conditionalPanel(
-                       condition = 'input.add_data_which == "Curing Technology"'
+                       condition = 'input.add_data_which == "Curing Process"'
                        , h4("Custom Curing Process")
                        , br()
-                       , p("Normally the options available for curing process are dependent on the user's choice for molding technology.  
-                                                             If a custom curing process has been added, this is overridden and all options for 
-                           curing (including the custom process) will be available.")
+                       , fluidRow(column(12, p("Normally the options available for curing process are dependent on the user's choice for molding process.")
+                                       ,  p("If a custom curing process has been added, ", strong("all"), " options for curing (including the custom process) will be available.")))
                        , fluidRow(
                           column(4, textInput("cure_add", "Name", "Custom Cure Tech"))
-                         , column(4, checkboxInput("cure_add_EYN", "Is the specific embodied energy of the curing process known?",FALSE), style = "padding:15px;")
+                         , column(4, checkboxInput("cure_add_EYN", "Is the Specific Embodied energy of the curing process known?",FALSE), style = "padding:15px;")
                          , column(3,actionButton("gocure", strong("Add Curing Data")), style = "padding:25px;")
                          , column(1,         hidden(
                            p(id = "curei", icon("check", "fa-2x"))), style = "padding:25px;", align = "left" )
@@ -311,7 +316,7 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                            column(3, strong("Calculated Embodied Energy: "))
                          , column(2, textOutput("calcedcureE")))
                          , br()
-                         , h3("Process Information")
+                         , h3("Specific Embodied Energy Calculator")
                          , p('If the specific energy of the curing process is unknown, it can be estimated using the rated power of the equipment
                                       envolved in the curing process.  If multiple pieces of 
                                       equipment are used, multiply the rated power of the equipment
@@ -436,7 +441,7 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                    # End Tab ----
                        )},
             # Initial Tab ----   
-            tabPanel("Initial Inputs", h1("Initial Inputs")
+            tabPanel(div(icon("edit"), "Initial Inputs"), h1("Initial Inputs")
                      #, p("Enter information on modeled part:  part name, part weight, and molding technology to be used")
                      , fluidRow(
                 #TechSet1
@@ -490,7 +495,7 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                  )),
             
             # Fiber Tab ----
-            tabPanel("Fiber", h1("Fiber & Fiber Manufacturing") 
+            tabPanel(div(icon("edit"),"Fiber"), h1("Fiber & Fiber Manufacturing") 
                      #, p("Enter information on modeled part: fiber type, tow, and fiber mass fraction")
                       , fluidRow(
                        #TechSet1
@@ -504,7 +509,7 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                                  selectizeInput("fiberInput1", label = "Fiber Type",
                                                  choices = NULL, selected = "", multiple = FALSE,
                                                  options = list(placeholder = 'Choose Fiber Type/Tow     '))
-                                , numericInput("moldfracUSERNum1","Fiber Mass Fraction",  min = 0.0, max = 100.0, value = 0.0,5.0)
+                                , numericInput("moldfracUSERNum1","Fiber Mass Fraction (%)",  min = 0.0, max = 100.0, value = 0.0,5.0)
                               )
                               , column (6,strong("Embodied Energy:")),column (6,textOutput("fiberEnergyNum1"), align = "right")  
                        )
@@ -519,14 +524,14 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                                    selectizeInput("fiberInput2", label = "Fiber Type",
                                                    choices = NULL, selected = "", multiple = FALSE,
                                                    options = list(placeholder = 'Choose Fiber Type/Tow     '))
-                                  , numericInput("moldfracUSERNum2","Fiber Mass Fraction", min = 0.0, max = 100.0, value = 0.0,5.0)
+                                  , numericInput("moldfracUSERNum2","Fiber Mass Fraction (%)", min = 0.0, max = 100.0, value = 0.0,5.0)
                                   )
                                 , column (6,strong("Embodied Energy:")),column (6,textOutput("fiberEnergyNum2"), align = "right")
                        )
                      #EndFiber 
                      )),
             # Matrix Tab ----
-            {tabPanel("Matrix", h1("Matrix Materials Manufacturing")
+            {tabPanel(div(icon("edit"),"Matrix"), h1("Matrix Materials Manufacturing")
                     # Enter information on modeled part: primary matrix material and other materials 
                     #(additional matrix, additives, fillers and inserts) and the mass fraction of each
                      , fluidRow( 
@@ -542,7 +547,7 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                             selectizeInput("PriMatrixInput1", label = "Primary Matrix Material",
                                            choices = NULL,  selected = "",  multiple = FALSE,
                                            options = list(placeholder = 'Choose Matrix Material '))
-                            , numericInput("primatrixfrac1","Primary Matrix Mass Fraction", 0.0,  min = 0.0, max = 100.0,5.0))
+                            , numericInput("primatrixfrac1","Primary Matrix Mass Fraction (%)", 0.0,  min = 0.0, max = 100.0,5.0))
                           , fluidRow(column(6, strong("Embodied Energy:")), column(6,textOutput("primatrixEnergyNum1"), align = "right"))
                           , fluidRow(column(8, strong("Mass Fraction Check:")), column(4,textOutput("massfracsum1"), align = "right"))
                           
@@ -556,7 +561,7 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                                      choices = c("Matrix", "Additive", "Filler", "Not Used"), selected = "Not Used", multiple = FALSE)
                                    , selectizeInput("OtherMatrixAInput1", label = "Additional Matrix Material",
                                       choices = NULL,  selected = "Not Used",  multiple = FALSE)
-                                   , numericInput("othermatrixAfrac1","Additional Material A Mass Fraction", 0.0,  min = 0.0, max = 100.0,5.0)
+                                   , numericInput("othermatrixAfrac1","Additional Material A Mass Fraction (%)", 0.0,  min = 0.0, max = 100.0,5.0)
                                        ))
                          , conditionalPanel(
                             condition = "input.othermatrixAUSERYN1 == true"
@@ -570,7 +575,7 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                                        choices = c("Matrix", "Additive", "Filler", "Not Used"), selected = "Not Used", multiple = FALSE)
                                    , selectizeInput("OtherMatrixBInput1", label = "Additional Matrix Material",
                                         choices = NULL,  selected = "Not Used",  multiple = FALSE)
-                                   , numericInput("othermatrixBfrac1","Additional Material B Mass Fraction", 0.0,  min = 0.0, max = 100.0,5.0)
+                                   , numericInput("othermatrixBfrac1","Additional Material B Mass Fraction (%)", 0.0,  min = 0.0, max = 100.0,5.0)
                                         ))
                             )
                           , conditionalPanel(
@@ -585,7 +590,7 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                                         choices = c("Matrix", "Additive", "Filler", "Not Used"), selected = "Not Used", multiple = FALSE)      
                                     , selectizeInput("OtherMatrixCInput1", label = "Additional Matrix Material",
                                         choices = NULL,  selected = "Not Used",  multiple = FALSE)
-                                    , numericInput("othermatrixCfrac1","Additional Material C Mass Fraction", 0.0,  min = 0.0, max = 100.0,5.0)
+                                    , numericInput("othermatrixCfrac1","Additional Material C Mass Fraction (%)", 0.0,  min = 0.0, max = 100.0,5.0)
                                          ))
                             )
                           , conditionalPanel(
@@ -624,7 +629,7 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                               selectizeInput("PriMatrixInput2", label = "Primary Matrix Material",
                                      choices = NULL,  selected = "",  multiple = FALSE,
                                      options = list(placeholder = 'Choose Matrix Material  '))
-                               , numericInput("primatrixfrac2","Primary Matrix Mass Fraction", 0.0,  min = 0.0, max = 100.0,5.0))
+                               , numericInput("primatrixfrac2","Primary Matrix Mass Fraction (%)", 0.0,  min = 0.0, max = 100.0,5.0))
                             , fluidRow(column(6, strong("Embodied Energy:")), column(6,textOutput("primatrixEnergyNum2"), align = "right"))
                             , fluidRow(column(8, strong("Mass Fraction Check:")), column(4,textOutput("massfracsum2"), align = "right"))
                             
@@ -638,7 +643,7 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                                          choices = c("Matrix", "Additive", "Filler", "Not Used"), selected = "Not Used", multiple = FALSE)
                                    , selectizeInput("OtherMatrixAInput2", label = "Additional Matrix Material",
                                         choices = NULL,  selected = "Not Used",  multiple = FALSE)
-                                   , numericInput("othermatrixAfrac2","Additional Material A Mass Fraction", 0.0,  min = 0.0, max = 100.0,5.0)
+                                   , numericInput("othermatrixAfrac2","Additional Material A Mass Fraction (%)", 0.0,  min = 0.0, max = 100.0,5.0)
                                         ))
                             , conditionalPanel(
                               condition = "input.othermatrixAUSERYN2"
@@ -652,7 +657,7 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                                                 choices = c("Matrix", "Additive", "Filler", "Not Used"), selected = "Not Used", multiple = FALSE)
                                        , selectizeInput("OtherMatrixBInput2", label = "Additional Matrix Material",
                                                  choices = NULL,  selected = "Not Used",  multiple = FALSE)
-                                       , numericInput("othermatrixBfrac2","Additional Material B Mass Fraction", 0.0,  min = 0.0, max = 100.0,5.0))
+                                       , numericInput("othermatrixBfrac2","Additional Material B Mass Fraction (%)", 0.0,  min = 0.0, max = 100.0,5.0))
                                   ))
                             , conditionalPanel(
                               condition = "input.othermatrixBUSERYN2 == true"    
@@ -666,7 +671,7 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                                                   choices = c("Matrix", "Additive", "Filler", "Not Used"), selected = "Not Used", multiple = FALSE)
                                        , selectizeInput("OtherMatrixCInput2", label = "Additional Matrix Material",
                                                     choices = NULL,  selected = "Not Used",  multiple = FALSE)
-                                      , numericInput("othermatrixCfrac2","Additional Material C Mass Fraction", 0.0,  min = 0.0, max = 100.0,5.0))))
+                                      , numericInput("othermatrixCfrac2","Additional Material C Mass Fraction (%)", 0.0,  min = 0.0, max = 100.0,5.0))))
                             , conditionalPanel(
                               condition = "input.othermatrixCUSERYN2 == true"
                               , fluidRow(column(6, strong("Embodied Energy:")), column(6,textOutput("othermatrixCEnergyNum2"), align = "right"))
@@ -694,7 +699,7 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                  )}  ,
                       
             # Intermediate Tab ----
-            tabPanel("Intermediate", h1("Fiber Intermediate Manufacturing & Layup") 
+            tabPanel(div(icon("edit"),"Intermediate"), h1("Fiber Intermediate Manufacturing & Layup") 
                      #, p("Enter information on modeled part: intermediate type layup scrap rate")
                      , fluidRow( 
                        #Techset1
@@ -713,7 +718,7 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                                                      options = list(placeholder = 'Choose Fiber Intermediate Type   ')))
                           , fluidRow(column(6, strong("Embodied Energy:")), column(6,textOutput("intEnergyNum1"), align = "right"))
                           , fluidRow(column(8, strong("Default Layup Scrap Rate: ")), column(4, textOutput("intscrapNum1"), align = "right"))
-                          , wellPanel(numericInput("intscrapUSERNum1","Layup Scrap Rate", 0.0,  min = 0.0, max = 100.0,5.0)
+                          , wellPanel(numericInput("intscrapUSERNum1","Layup Scrap Rate (%)", 0.0,  min = 0.0, max = 100.0,5.0)
                                       ,numericInput("intscraprecycle1","Layup Recycle Fraction (% scrap that is recycled)", 
                                                     0.0,  min = 0.0, max = 100.0,5.0))
                        )    
@@ -733,7 +738,7 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                                                      options = list(placeholder = 'Choose Fiber Intermediate Type     ')))
                           , fluidRow(column(6, strong("Embodied Energy:")), column (6,textOutput("intEnergyNum2"), align = "right"))
                           , fluidRow(column(8, strong("Default Layup Scrap Rate: ")), column(4, textOutput("intscrapNum2"), align = "right"))
-                          , wellPanel(numericInput("intscrapUSERNum2","Layup Scrap Rate", 0.0,  min = 0.0, max = 100.0, 5.0)
+                          , wellPanel(numericInput("intscrapUSERNum2","Layup Scrap Rate (%)", 0.0,  min = 0.0, max = 100.0, 5.0)
                                       ,numericInput("intscraprecycle2","Layup Recycle Fraction (% scrap that is recycled)",
                                                     0.0,  min = 0.0, max = 100.0,5.0))
                        ))
@@ -741,7 +746,7 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
             ),
             
             # Molding Tab ----  
-            tabPanel("Molding", h1("Molding, Curing & Finishing")
+            tabPanel(div(icon("edit"),"Molding"), h1("Molding, Curing & Finishing")
                    # , p("Enter information on modeled part: curing technology, amount of finishing, 
                     #   finishing scrap rate and confirm the molding technology and molding yield")
                      , fluidRow(
@@ -756,7 +761,7 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                           , hr()
                           #Molding Yield
                           , fluidRow(column(8, strong("Default Molding Yield: ")), column(4, textOutput("moldyieldNum1"), align = "right"))
-                          , wellPanel(numericInput("moldyieldUSERNum1","Molding Yield", 0.0,  min = 0.0, max = 100.0,5.0)
+                          , wellPanel(numericInput("moldyieldUSERNum1","Molding Yield (%)", 0.0,  min = 0.0, max = 100.0,5.0)
                                       , numericInput("moldyieldrecycle1","Molding Recycle Fraction (% scrap that is recycled)"
                                                      , 0.0,  min = 0.0, max = 100.0,5.0))
                           , br()
@@ -775,7 +780,7 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                                              options = list(placeholder = 'Choose Finishing Level    ')))
                           , fluidRow(column (6,strong("Embodied Energy:")),column(6,textOutput("finishEnergyNum1"), align = "right"))
                           , wellPanel(style = "background-color: #FFCD00;"
-                                      , numericInput("finishscrap1","Finish Scrap Rate", 0.0,  min = 0.0, max = 100.0,5)
+                                      , numericInput("finishscrap1","Finish Scrap Rate (%)", 0.0,  min = 0.0, max = 100.0,5)
                                       , numericInput("finishscraprecycle1", "Finish Recycle Fraction (% scrap that is recycled)", 
                                                      0.0,  min = 0.0, max = 100.0,5.0))
                    )
@@ -790,7 +795,7 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                                 , hr()
                                 #Molding Yield
                                 , fluidRow(column(8, strong("Default Molding Yield: ")), column(4, textOutput("moldyieldNum2"), align = "right"))
-                                , wellPanel(numericInput("moldyieldUSERNum2","Molding Yield", 0.0,  min = 0.0, max = 100.0,5)
+                                , wellPanel(numericInput("moldyieldUSERNum2","Molding Yield (%)", 0.0,  min = 0.0, max = 100.0,5)
                                             , numericInput("moldyieldrecycle2", "Molding Recycle Fraction (% scrap that is recycled)", 
                                                            0.0,  min = 0.0, max = 100.0,5.0))
                                 , br()
@@ -809,14 +814,14 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                                                        options = list(placeholder = 'Choose Finishing Level    ')))
                                 , fluidRow(column (6,strong("Embodied Energy:")),column(6,textOutput("finishEnergyNum2"), align = "right"))
                                 , wellPanel(style = "background-color: #FFCD00;"
-                                            , numericInput("finishscrap2","Finish Scrap Rate", 0.0,  min = 0.0, max = 100.0,5.0)
+                                            , numericInput("finishscrap2","Finish Scrap Rate (%)", 0.0,  min = 0.0, max = 100.0,5.0)
                                             , numericInput("finishscraprecycle2","Finish Recycle Fraction (% scrap that is recycled)"
                                                            , 0.0,  min = 0.0, max = 100.0,5.0))
                        ))
                      #EndTab
                      ),
             # Summary Tab ----
-            tabPanel("Summary", h1("Summary")
+            tabPanel(div(icon("table"),"Summary"), h1("Summary")
                     #, p("Summary of User Choices and Embodied Energy")
                      #Display Part Name & Weight & Molding Process & Fiber Fraction
                     #, fluidRow(actionButton("calculate", strong("Run Model")))
@@ -847,7 +852,7 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
             ),
             
             # Results Tab ---- 
-            tabPanel("Results", h1("Results")
+            tabPanel(div(icon("pie-chart"),"Results"), h1("Results")
                      #p("This is where users will be able to graphically compare the two technology pathways"),
                   , selectizeInput("whichgraph", label = "Type of Graph"
                                    , choices = c("Bar", "Pie")
@@ -869,7 +874,7 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
             
             
             # Download Tab ----
-            tabPanel("Downloads", h1("Downloads")
+            tabPanel(div(icon("download"),"Downloads"), h1("Downloads")
                      , fluidRow(  
                        column(6, h2("Technology Set 1")), column(6, h2("Technology Set 2"))
                        
@@ -919,7 +924,7 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
             ),
             
             # Molding Properties Tab ----
-            tabPanel("Molding Properties", h1("Molding Properties")
+            tabPanel(div(icon("table"),"Molding Properties"), h1("Molding Properties")
                      , fluidRow(
                        p('The columns and rows visible can be changed by clicking the "Select all..." boxes 
                         or within the "... Visible" boxes and selecting from the list or using the', span(strong(' "Backspace" ')), "or", 
@@ -927,9 +932,9 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                      , column(6,
                      
                      
-                     checkboxInput('show_allmolds', "Select all Molding Technology Options", value = TRUE)
+                     checkboxInput('show_allmolds', "Select all Molding Processes", value = TRUE)
                      , selectizeInput('show_molds', 
-                                    label =  'Molding Technologies Visible:', 
+                                    label =  'Molding Processes Visible:', 
                                     choices = NULL,
                                     selected = NULL,
                                     multiple = TRUE,
@@ -951,7 +956,7 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                     
             ),
             # Ref Tab ----
-             tabPanel ("References", h1("References")
+             tabPanel (div(icon("book"),"References"), h1("References")
                 , p("To view citations for process and material embodied energy, choose Type and then the specific process/material")
                 , selectizeInput("cite_type", label = "Type", 
                                  choices = c("Select Type","Fiber", "Matrix", "Additive", "Filler", "Insert/Core", "Intermediate", "Mold", "Cure", "Finishing"),

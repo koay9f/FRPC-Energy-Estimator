@@ -1,4 +1,4 @@
-Process,Surface_Finish,Part_Size,Part_Shape/complexity,Dimensional_Control,Mold_Sides,Capital_Costs,Part_Cost,Production_Speed,Production_Volume,Max_Fiber_Mass_Frac.,Strength,Fiber_Placement_Control,Molding_Yield,Additional_Curing?,Heat_Cure,Pressure_Cure,Vacuum_Cure,Prepreg?,Preform?,Easily_Incorp._Inserts
+Process,Surface_Finish,Part_Size,Part_Shape/complexity,Dimensional_Control,Mold_Sides,Capital_Costs,Part_Cost,Cycle_Time,Production_Volume,Max_Fiber_Mass_Frac.,Strength,Fiber_Placement_Control,Molding_Yield,Additional_Curing?,Heat_Cure,Pressure_Cure,Vacuum_Cure,Prepreg?,Preform?,Easily_Incorp._Inserts
 Automatic Fiber Placement (AFP),"Fair, One Side",Medium - Large,Simple - Complex,High,1,High,Low,Medium,High,0.6,High,Precise,0.95,Maybe,Yes,Maybe,Maybe,Yes,No,No
 Automatic Tape Placement (ATP),"Fair, One Side",Medium - Large,Flat or shallow curve,High,1,High,Low,Medium,High,0.6,High,Precise,0.95,Maybe,Yes,Maybe,Maybe,Yes,No,No
 Compression Molding,"Fair, All Sides",Small - Medium,Simple - Complex,High,2,High,Low,Fast,High,0.3,Medium,Variable,0.95,Maybe,Yes,Yes,No,Maybe,Maybe,Yes

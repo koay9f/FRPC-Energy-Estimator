@@ -1,0 +1,37 @@
+Page,Variable_Name,Description,User
+Initial,finalweight,Final Part Weight (kg),1.7
+Initial,name,Part Name,Example - CM
+Initial,moldingInput,Molding Technology Options,Compression Molding
+Initial,insertsAUSERYN,YN - use inserts (A),FALSE
+Initial,insertsAfrac,Insert/Core Mass,0
+Initial,insertsBUSERYN,YN - use inserts (B),FALSE
+Initial,insertsBfrac,Additional Insert/Core Mass,0
+Fiber,moldfracUSERNum,Fiber Mass Fraction,62
+Fiber,fiberInput,Fiber Type,"Commodity PAN, 24k Tow"
+Matrix,PriMatrixInput,Choose Primary Matrix Material,TS Epoxy
+Matrix,primatrixfrac,Primary Matrix Mass Fraction,38
+Matrix,othermatrixAUSERYN,YN - use additional materials (A),FALSE
+Matrix,typesa,Choose Type of Additional Matrix Material,Not Used
+Matrix,OtherMatrixAInput,Choose Other Matrix Material,Not Used
+Matrix,othermatrixAfrac,Other Material A Mass Fraction,0
+Matrix,othermatrixBUSERYN,YN - use additional materials (C),FALSE
+Matrix,typesb,Choose Type of Additional Matrix Material,Not Used
+Matrix,OtherMatrixBInput,Choose Other Matrix Material,Not Used
+Matrix,othermatrixBfrac,Other Material B Mass Fraction,0
+Matrix,othermatrixCUSERYN,YN - use additional materials (B),FALSE
+Matrix,typesc,Choose Type of Additional Matrix Material,Not Used
+Matrix,OtherMatrixCInput,Choose Other Matrix Material,Not Used
+Matrix,othermatrixCfrac,Other Material C Mass Fraction,0
+Matrix,InsertsAInput,Choose Insert Type,Not Used
+Matrix,InsertsBInput,Choose Additional Insert Type,Not Used
+Intermediate,intYN,YN - view all intermediate options,FALSE
+Intermediate,intInput,Choose Fiber Intermediate,"Prepregs, Manual, Fabric (TS)"
+Intermediate,intscrapUSERNum,Layup Scrap Rate,37
+Intermediate,intscraprecycle,Layp Recycle Rate (% scrap that is recycled),0
+Molding,moldyieldUSERNum,Molding Yield,97
+Molding,moldyieldrecycle,Molding Recycle Rate (% scrap that is recycled),0
+Molding,cureYN,YN - view all curing options,FALSE
+Molding,cureInput,Curing Technology Options,Cures in Mold
+Molding,finishInput,Finishing Level Options,None
+Molding,finishscrap,Finish Scrap Rate,1
+Molding,finishscraprecycle,Finish Recycle Rate (% scrap that is recycled),0

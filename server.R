@@ -32,13 +32,12 @@ onlymoldcure <- c("Cures in Mold")
 wetcure <- c("Cures in Mold","Oven Curing","QuickStep","Microwave Curing","Infrared Curing","Direct Induction Curing","E Beam Curing")
 vbcure <- c("Autoclave Curing","QuickStep","Microwave Curing with Vacuum","Infrared Curing","Direct Induction Curing","E Beam Curing")
 
-# Data_Finish = read_csv("data/Data_Finishing.csv")
-
 Props = read.csv("data/Properties_Mold.csv") # causes error if read_csv due to use of row names
 Data_Cite = read_csv("data/Data_Citations.csv")
 
 Input_List1 = read_csv("data/Defaults.csv")
 Input_List2 = read_csv("data/Defaults.csv")
+Ex_List1 = read_csv("data/Example.csv")
 source("math.R", local = TRUE) 
 
 #Talk to server ----
@@ -49,7 +48,7 @@ shinyServer(function(input, output, session) {
   rownames(Props.df) <- Props[,1]
   propmolds <- rownames(Props.df)
   new_col <- c("Surface Finish","Part Size", "Part Shape-Complexity", "Dimensional Control", "Mold Sides", "Capital Costs", "Part Cost", 
-               "Production Speed", "Production Volume", "Max Fiber Mass Frac.", "Strength", "Fiber Placement Control", "Molding Yield", 
+               "Cycle Time", "Production Volume", "Max Fiber Mass Frac.", "Strength", "Fiber Placement Control", "Molding Yield", 
                "Additional Curing?", "Heat Cure", "Pressure Cure", "Vacuum Cure", "Prepreg?", "Preform?", "Easily Incorp. Inserts")
   names(Props.df)<- new_col
   
@@ -403,7 +402,21 @@ shinyServer(function(input, output, session) {
                                       unique(rbind(Data_All, Data_All_Custom()))})
   # output$testtable <- renderTable(Data_All_df())
   
-}
+  
+  }
+  # Upload Example ----
+  observeEvent(input$goexample, {
+    # Choices
+    updateSelectizeInput(session, 'moldingInput1', selected = exselect(Ex_List1,"moldingInput"))
+    updateSelectizeInput(session, 'fiberInput1', selected = exselect(Ex_List1,"fiberInput"))
+    updateSelectizeInput(session, 'PriMatrixInput1', selected = exselect(Ex_List1,"PriMatrixInput"))
+    updateSelectizeInput(session, 'intInput1', selected = exselect(Ex_List1,"intInput"))
+    updateSelectizeInput(session, 'cureInput1', selected = exselect(Ex_List1,"cureInput"))
+    updateSelectizeInput(session, 'finishInput1', selected = exselect(Ex_List1,"finishInput"))
+    # Manual
+    updateTextInput(session, "name1", value = exselect(Ex_List1, "name"))
+    updateTextInput(session, "finalweight1", value = exselect(Ex_List1, "finalweight"))
+  })
   # Upload Previous Run ----
   Re_input1.df <- reactiveValues()
   Re_input1.df <- reactive({
@@ -1233,10 +1246,10 @@ mold.Ener <- reactiveValues()
     } else {  subset(Data_All_df(), Table_All == "Int")})
   
    # Make List for Box: choose if check box is selected----
-  int1_selected <- reactive(whichselect(Re_input1.df(), Input_List1,"intInput"))
+  int1_selected <- reactive(whichselect2(Re_input1.df(), Input_List1, input$goexample, Ex_List1, "intInput"))
   int2_selected <- reactive(whichselect(Re_input2.df(), Input_List2,"intInput"))
   
-  observeEvent(c(input$intYN1, input$moldingInput1, input$goint, input$Re_Custom) , {
+  observeEvent(c(input$intYN1, input$goint, input$moldingInput1, input$Re_Custom) , {
       intlist1 <- intlistfxn(input$moldingInput1)
      if (input$intYN1 == 0) {
        updateSelectizeInput(session, 'intInput1',
@@ -1250,7 +1263,7 @@ mold.Ener <- reactiveValues()
                             server = TRUE)
      }      })
   
-  observeEvent(c(input$intYN2, input$moldingInput2, input$goint, input$Re_Custom) , {
+  observeEvent(c(input$intYN2, input$goint, input$moldingInput2, input$Re_Custom) , {
     intlist2 <- intlistfxn(input$moldingInput2)
       if (input$intYN2 == 0) {
         updateSelectizeInput(session, 'intInput2',
@@ -1403,10 +1416,10 @@ mold.Ener <- reactiveValues()
     } else {  subset(Data_All_df(), Table_All == "Cure")})
   
    # Make list for box ----
-  cure1_selected <- reactive(whichselect(Re_input1.df(), Input_List1,"cureInput"))
+  cure1_selected <- reactive(whichselect2(Re_input1.df(), Input_List1, input$goexample, Ex_List1, "cureInput"))
   cure2_selected <- reactive(whichselect(Re_input2.df(), Input_List2,"cureInput"))
   
-  observeEvent(c(input$cureYN1, input$moldingInput1, input$gocure, input$Re_Custom) , {
+  observeEvent(c(input$cureYN1, input$gocure, input$moldingInput1 , input$Re_Custom) , {
     curelist1 <- curelistfxn(input$moldingInput1, allcure, onlymoldcure, wetcure, vbcure)
       if (input$cureYN1 == 0) {
         updateSelectizeInput(session, 'cureInput1',
@@ -1420,7 +1433,7 @@ mold.Ener <- reactiveValues()
                              server = TRUE)
       } })
   
-  observeEvent(c(input$cureYN2, input$moldingInput2, input$gocure, input$Re_Custom) , {
+  observeEvent(c(input$cureYN2, input$gocure, input$moldingInput2, input$Re_Custom) , {
     curelist2 <- curelistfxn(input$moldingInput2, allcure, onlymoldcure, wetcure, vbcure)
       if (input$cureYN2 == 0) {
         updateSelectizeInput(session, 'cureInput2',
