@@ -287,7 +287,7 @@ BIGFUNCTION1 <- function(partname,
   # Match given material and stage to yield and generate cumulative yield to given point ----
   yield <- function(mat,stg){
       syield.df <- dplyr::filter(Data_yield, Material == mat, Stage == stg) %>%
-        select(stageyield)
+        select(stage_yield)
       yield <- unname(unlist(syield.df))
       yield
     }
@@ -295,9 +295,9 @@ BIGFUNCTION1 <- function(partname,
   # Determines if should apply the stage yield for a given material 
   applyyield_fxn <- function(mat,stg){
     ayield.df <- dplyr::filter(Data_yield, Material == mat, Stage == stg) %>%
-      select(applyyield)
-    apply_yield <- unname(unlist(ayield.df))
-    apply_yield
+      select(apply_yield)
+    applyyield <- unname(unlist(ayield.df))
+    applyyield
   }
     
   #Builds column for stage yield (if should apply yield then fills with yield value, if not then 1)
@@ -328,8 +328,8 @@ BIGFUNCTION1 <- function(partname,
     Material = c(rep("fiber",3), rep("matrix", 3), rep("insert", 3)),
     Stage = c(rep(c("finish", "mold", "layup"),3)),
     Mass_Fraction = c(rep(massfracs[1], 3),rep(massfracs[2],3), rep(massfracs[3],3)),
-    stageyield = c(rep(c(finish_yield, mold_yield, layup_yield), 3)),
-    applyyield = c(1,1,1, 1,1,YN, 0, 1, 0)
+    stage_yield = c(rep(c(finish_yield, mold_yield, layup_yield), 3)),
+    apply_yield = c(1,1,1, 1,1,YN, 0, 1, 0)
   )
   
   # APPEND DATAFRAME ----
