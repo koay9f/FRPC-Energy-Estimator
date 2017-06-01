@@ -497,7 +497,7 @@ shinyServer(function(input, output, session) {
                               calcmoldph(),
                               input$mold_add_E_P_o, input$mold_add_E_u_o, input$mold_add_E_per_o, input$mold_add_E_t_o))
     
-mold.Ener <- reactiveValues()
+   mold.Ener <- reactiveValues()
    mold.Ener <- reactive(whichenergy(input$mold_add_EYN, calcmoldE(), input$mold_add_E_Y))
 
   output$calcedmoldE <- renderText({paste(signif(calcmoldE(), digits = 3), "MJ/kg")})
@@ -621,28 +621,64 @@ mold.Ener <- reactiveValues()
     showNotification(paste("Citation for ", moldname2(), ": ",moldcite2()), duration = 5, closeButton = TRUE, type = "message")})
   
    # Update Fiber fractions & mold yield based on mold process choice----
+
   observeEvent(input$moldingInput1,{
-    ff1 <- moldfracfetch1()
-    moldy1 <-  moldyieldfetch1()
-    updateNumericInput(session, "moldfracUSERNum1", value = (ff1*100)) 
-    updateNumericInput(session, "moldyieldUSERNum1", value = (moldy1*100)) 
-   })
+    ff1 <- moldfracfetch1() * 100
+    moldy1 <-  moldyieldfetch1() *100
+    
+    updateNumericInput(session, "moldfracUSERNum1", value = (ff1)) 
+    updateNumericInput(session, "moldyieldUSERNum1", value = (moldy1))    
+    
+    observeEvent(input$re_input1, {
+
+      Re_ff1 <- unname(unlist(dplyr::filter (Re_input1.df(), Variable_Name == "moldfracUSERNum") %>% select(4)))
+      updateNumericInput(session, "moldfracUSERNum1", value = (Re_ff1)) 
+
+      Re_y1 <- unname(unlist(dplyr::filter (Re_input1.df(), Variable_Name == "moldyieldUSERNum") %>% select(4)))
+      updateNumericInput(session, "moldyieldUSERNum1", value = (Re_y1))
+
+      })
+       })
   
-  observeEvent(input$re_input1, {
-    updateNumericInput(session, "moldfracUSERNum1", value = whichselect(Re_input1.df(), Input_List1, "moldfracUSERNum"))
-    updateNumericInput(session, "moldyieldUSERNum1", value = whichselect(Re_input1.df(), Input_List1, "moldyieldUSERNum"))
-  })
+
   observeEvent(input$moldingInput2,{
-    ff2 <- moldfracfetch2()
-    moldy2 <-  moldyieldfetch2()
-    updateNumericInput(session, "moldfracUSERNum2", value = (ff2*100)) 
-    updateNumericInput(session, "moldyieldUSERNum2", value = (moldy2*100)) 
+    ff2 <- moldfracfetch2() * 100
+    moldy2 <-  moldyieldfetch2() *100
+    
+    updateNumericInput(session, "moldfracUSERNum2", value = (ff2)) 
+    updateNumericInput(session, "moldyieldUSERNum2", value = (moldy2))    
+    
+    observeEvent(input$re_input2, {
+      
+      Re_ff2 <- unname(unlist(dplyr::filter (Re_input2.df(), Variable_Name == "moldfracUSERNum") %>% select(4)))
+      updateNumericInput(session, "moldfracUSERNum2", value = (Re_ff2)) 
+      
+      Re_y2 <- unname(unlist(dplyr::filter (Re_input2.df(), Variable_Name == "moldyieldUSERNum") %>% select(4)))
+      updateNumericInput(session, "moldyieldUSERNum2", value = (Re_y2))
+    })
   })
   
-  observeEvent(input$re_input2, {
-    updateNumericInput(session, "moldfracUSERNum2", value = whichselect(Re_input2.df(), Input_List2, "moldfracUSERNum"))
-    updateNumericInput(session, "moldyieldUSERNum2", value = whichselect(Re_input2.df(), Input_List2, "moldyieldUSERNum"))
-  })
+  # THIS IS HOW I DID IT PREVIOUSLY BUT IT WOULD NOT UPDATE BASED ON UPLOAD, ONLY CHANGE IN MOLDING.  NOW WILL UPDATE BASED ON CHANGEING MOLDING *UNLESS*
+  # SOMETHING HAS BE UPLOADED, THEN WILL ONLY PULL BASED ON WHAT IS IN THE UPLOAD FILE
+  # #update 2 based on molding
+  # observeEvent(input$moldingInput2,{
+  #   ff2 <- moldfracfetch2()
+  #   moldy2 <-  moldyieldfetch2()
+  #   updateNumericInput(session, "moldfracUSERNum2", value = (ff2*100)) 
+  #   updateNumericInput(session, "moldyieldUSERNum2", value = (moldy2*100)) 
+  # })
+  # 
+  # #update 2 based on upload
+  # observeEvent({input$moldingInput2
+  #   input$re_input2}, 
+  #              {
+  #   updateNumericInput(session, "moldfracUSERNum2", value = whichselect(Re_input2.df(), Input_List2, "moldfracUSERNum"))
+  #   updateNumericInput(session, "moldyieldUSERNum2", value = whichselect(Re_input2.df(), Input_List2, "moldyieldUSERNum"))
+  # })
+  #THIS SHOULD ALSO WORK WITHIN THE OBSERVEEVENT BLOCK: 
+ # onclick("moldingInput1", {updateNumericInput(session,"moldfracUSERNum1", value = moldfracfetch1() * 100)})
+  
+  
 }
   # Fiber ----
   {

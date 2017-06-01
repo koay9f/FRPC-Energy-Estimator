@@ -117,6 +117,7 @@ whichselect <- function(rer, def, vari){
   rowcall <- dplyr::filter (whichdf, Variable_Name == vari) %>% select(4)
   unname(unlist(rowcall))
 }
+
 #Use Default selection or upload or example? - names & numbers
 whichselect2 <- function(rer, def, go, ex, vari){
   whichdf <- if (is.null(rer)) {
