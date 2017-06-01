@@ -75,15 +75,25 @@ shinyServer(function(input, output, session) {
   # Custom Data ----
   {
   # Complete icons for Custom Data ----
-  observeEvent(input$gofiber, {show("fibi")    })
-  observeEvent(input$gomatrix, {show("mati")    })
-  observeEvent(input$gofiller, {show("fili")    })
-  observeEvent(input$goadditive, {show("addi")    })
-  observeEvent(input$goinsert, {show("insi")    })
-  observeEvent(input$goint, {show("inti")    })
-  observeEvent(input$gomold, {show("moldi")    })
-  observeEvent(input$gocure, {show("curei")    })
-  observeEvent(input$gofinish, {show("fini")    })
+    onclick ("gofiber", {show("fibi")    })
+    onclick("gomatrix", {show("mati")    })
+    onclick("gofiller", {show("fili")    })
+    onclick("goadditive", {show("addi")    })
+    onclick("goinsert", {show("insi")    })
+    onclick("goint", {show("inti")    })
+    onclick("gomold", {show("moldi")    })
+    onclick("gocure", {show("curei")    })
+    onclick("gofinish", {show("fini")    })
+    
+    onclick("fiber_add", {hide("fibi")    })
+    onclick("matrix_add", {hide("mati")    })
+    onclick("filler_add", {hide("fili")    })
+    onclick("additive_add", {hide("addi")    })
+    onclick("insert_add", {hide("insi")    })
+    onclick("int_add", {hide("inti")    })
+    onclick("mold_add", {hide("moldi")    })
+    onclick("cure_add", {hide("curei")    })
+    onclick("finish_add", {hide("fini")    })
   
   # Set Process heating values to zero if boxes un-checked ----
   observeEvent(input$mold_add_row1, {
