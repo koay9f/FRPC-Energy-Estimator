@@ -650,7 +650,6 @@ shinyServer(function(input, output, session) {
       })
        })
   
-
   observeEvent(input$moldingInput2,{
     ff2 <- moldfracfetch2() * 100
     moldy2 <-  moldyieldfetch2() *100
