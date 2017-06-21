@@ -1343,7 +1343,7 @@ shinyServer(function(input, output, session) {
     Data_Int_new() %>%     filter(Name_All == input$intInput1) %>% 
       select(Scrap_Int) %>%  unlist() %>%    last() }) 
   intscrapfetch2 <- eventReactive(input$intInput2,{
-    Data_Int_new() %>%     filter(Name_All == input$intInput1) %>% 
+    Data_Int_new() %>%     filter(Name_All == input$intInput2) %>% 
       select(Scrap_Int) %>%  unlist() %>%    last() }) 
   
    # Match PrepregYN to Name (for determining if matrix material needs to be included in intermediate scrap)----
