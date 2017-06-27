@@ -36,7 +36,7 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                      , p(icon("arrow-left"),'   To get started, click "Initial Inputs" in the menu bar on the left, or ...')
                      , actionButton('goexample', div(icon("edit"),"Click to load an example scenario"))
                      , hr()
-                     , p(icon("book"),'   For help using or additional information about this tool,', span(strong( "download" )), 'the Tool Documentation. This includes includes energy data,
+                     , p(icon("book"),'   For help using or additional information about this tool,', span(strong( "download" )), 'the Tool Documentation. This includes includes an in-depth user guide, energy data,
                          molding process properties, references and details of tool computations' ) 
                      , downloadButton('info', "Download Tool Documentation Zip File")
                      , p("If you are unable to download the background zip file, try", span(strong("reloading")), "the application.",  
@@ -44,7 +44,8 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                      , hr()    
                      , p(icon("internet-explorer"),'   Some features of this tool are not fully suppported in Internet Explorer.')
                      , p(icon("envelope-o"), '   If you wish to permanently add a material or process to our database or otherwise wish to comment on this tool, please contact 
-                         the developers by', span(strong(" email:")), 'Kristina Armstrong (', span('armstrongko@ornl.gov', style = "text-decoration: underline"),  ') or Sujit Das (', span('dass@ornl.gov', style = "text-decoration: underline"),').')
+                         the developers by', span(strong(" email:")), 'Kristina Armstrong (', span('armstrongko@ornl.gov', style = "text-decoration: underline"),  
+                         ') or Sujit Das (', span('dass@ornl.gov', style = "text-decoration: underline"),').')
                      , helpText(a("Or connect with us on GitHub", href = "https://github.com/koay9f/FRPC-Energy-Estimator", target= "_blank"))
                      , p(icon("save"),"When you exit the application, all data is lost.", style = "color: red")
                      , p(icon("times"),"Application will shut down after 5 minutes of inactivity (and data will be lost).", style = "color: red")
@@ -57,12 +58,16 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
             # Upload Tab ----
             tabPanel(div(icon("upload"), "Upload"), h1("Upload Data")
                      , p ("Upload a previous run from this tool.  If CSV file was changed, errors may occur.")
+                     , p(icon("arrow-circle-left"), "An example technology set can be automatically entered into Technolgoy Set 1 on the", 
+                          span("Guide Page", style = "text-decoration: underline"))
                      , fileInput("Re_Custom", "Choose CSV File to Upload Custom Data",
                                  accept = c('csv', 'comma-separated-values','.csv')) 
                      , fileInput("re_input1", "Choose CSV File for Technology Set 1",
                                  accept = c('csv', 'comma-separated-values','.csv'))
                      , fileInput("re_input2", "Choose CSV File for Technology Set 2",
                                  accept = c('csv', 'comma-separated-values','.csv'))
+                     
+                     
                ),
             
             # Add data tab ----
@@ -491,6 +496,7 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                                                  condition = "input.insertsBUSERYN2 == true"
                                                  , numericInput("insertsBfrac2","Additional Insert/Core Mass", 0.0,  min = 0.0, NA, NA)) ))
                               )
+                 , h5(icon("exclamation-triangle"), "Data must be entered into both technology sets to view Results", style = "color:red", align = "center")
                  #EndTab
                  )),
             
