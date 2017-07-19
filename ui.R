@@ -1,4 +1,3 @@
-
 # This is the user-interface definition of a Shiny web application.
 # You can find out more about building applications with Shiny here:
 #
@@ -860,12 +859,13 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
             # Results Tab ---- 
             tabPanel(div(icon("pie-chart"),"Results"), h1("Results")
                      #p("This is where users will be able to graphically compare the two technology pathways"),
-                  , selectizeInput("whichgraph", label = "Type of Graph"
+                  , fluidRow(selectizeInput("whichgraph", label = "Type of Graph"
                                    , choices = c("Bar", "Pie")
-                                   , selected = "Bar", multiple = FALSE)
-                    , conditionalPanel(
+                                   , selected = "Bar", multiple = FALSE))
+                  , fluidRow(  
+                   conditionalPanel(
                        condition = 'input.whichgraph == "Bar"'
-                      , plotlyOutput("plot1") )
+                      , column(12,plotlyOutput("plot1", width = "100%", height = "auto", inline=FALSE) ))
                      , conditionalPanel(
                        condition = 'input.whichgraph == "Pie"'
                      #, plotOutput("plot2") )
@@ -873,9 +873,9 @@ useShinyjs(), #(shinyjs is used for the custom data check marks)
                               h2("Technology Set 1"), plotlyOutput("plot2a", width = "100%", height = "auto"))
                      , column (6, 
                               h2("Technology Set 2"), plotlyOutput("plot2b", width = "100%", height = "auto"))
-                     )
+                     ))
                      , hr()
-                     , tableOutput("ResultsTable")
+                     , fluidRow(tableOutput("ResultsTable"))
             ),
             
             

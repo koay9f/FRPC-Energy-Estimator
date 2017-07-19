@@ -2167,15 +2167,24 @@ shinyServer(function(input, output, session) {
    
       # Bar Chart ----
    output$plot1 <- renderPlotly({
-    ggplot(energy_plot.df.p(), aes(x = Part, y = Energy, fill = Process_Segment )) +
+     p <- ggplot(energy_plot.df.p(), aes(x = Part, y = Energy, fill = Process_Segment )) +
        geom_bar(stat = "identity") +
        coord_flip() +
        labs(y = "Embodied Energy (MJ/part)", x = "") +
        scale_fill_manual(values = fillcolor, name = "") +
-
+       
        theme_bw() + theme(  legend.title = element_blank(), legend.text = element_text(size = 12), legend.background = element_rect(color = "black")
-                        , axis.text = element_text(size = 14), axis.title.x = element_text(size = 18), plot.margin = margin(t = 0, r = 0, b = 0, l = 30, unit = "pt") )
-         })
+                            , axis.text = element_text(size = 14), axis.title.x = element_text(size = 18), plot.margin = margin(t = 0, r = 0, b = 0, l = 30, unit = "pt") )
+
+     p1 <- ggplotly(p)
+     p1$x$layout$width <- NULL
+     p1$x$layout$height <- NULL
+     p1$width <- NULL
+     p1$height <- NULL
+     p1
+     
+        })
+
    
       # Pie Charts ----
 

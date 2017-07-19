@@ -3,9 +3,8 @@ title: FRPC-Energy-Estimator
 account: ornlenergyestimatortools
 server: shinyapps.io
 appId: 166821
-bundleId: 884447
+bundleId: 908996
 url: https://ornlenergyestimatortools.shinyapps.io/frpc-energy-estimator2/
-when: 1498593668.71626
+when: 1500478186.89865
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: .RData
