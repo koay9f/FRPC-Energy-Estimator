@@ -181,15 +181,15 @@ intlistfxn <- function(moldtype) {
   } else if (moldtype == "Vacuum Bag (Autoclave)"){
       c("Prepregs, Manual, Fabric (TS)", "Prepregs, Manual, Fabric (TP)")
   }else if (moldtype == "Automatic Fiber Placement"){
-      c("Prepregs, Auto, Fiber (TS)", "Prepregs, Auto, Fiber (TP)")
+      c("Prepregs, Automatic Layup, Fiber (TS)", "Prepregs, Automatic Layup, Fiber (TP)")
   } else if (moldtype == "Automatic Tape Placement"){
-      c("Prepregs, Auto, Tape (TS)", "Prepregs, Auto, Tape (TP)")
+      c("Prepregs, Automatic Layup, Tape (TS)", "Prepregs, Automatic Layup, Tape (TP)")
   }else if (moldtype == "Spray Up"){
       c("Chopped")
   }else if (moldtype == "Pultrusion"){
       c("Dry Braid", "Not Used")
   }else if (moldtype == "Filament Winding"){
-      c("Prepregs, Auto, Fiber (TS)", "Prepregs, Auto, Fiber (TP)", "Dry Braid", "Not Used")
+      c("Prepregs, Automatic Layup, Fiber (TS)", "Prepregs, Automatic Layup, Fiber (TP)", "Dry Braid", "Not Used")
   }else if (moldtype == "Sheet Molding Compound"){
       c("SMC")
   }else if (moldtype == "Injection Molding"){
@@ -197,7 +197,7 @@ intlistfxn <- function(moldtype) {
   }else if (moldtype == "Structural Reaction Injection Molding"){
       c("Chopped", "Dry Weave", "Dry Knit", "Powdered P4")
   }  else {
-      c("Prepregs, Manual, Fabric (TS)", "Prepregs, Auto, Tape (TS)", "Prepregs, Auto, Fiber (TS)", "Prepregs, Manual, Fabric (TP)", "Prepregs, Auto, Tape (TP)", "Prepregs, Auto, Fiber (TP)", "Powdered P4", "Dry Weave", "Dry Braid", "Dry Knit", "Not Used")
+      c("Prepregs, Manual, Fabric (TS)", "Prepregs, Automatic Layup, Tape (TS)", "Prepregs, Automatic Layup, Fiber (TS)", "Prepregs, Manual, Fabric (TP)", "Prepregs, Automatic Layup, Tape (TP)", "Prepregs, Automatic Layup, Fiber (TP)", "Powdered P4", "Dry Weave", "Dry Braid", "Dry Knit", "Not Used")
   }}
 
 #If all int  should be yes or no
