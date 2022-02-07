@@ -10,7 +10,8 @@ This tool will allow users to estimate the embodied energy of CFRP manufacturing
 - finishing yields/scrap rate
 
  This tool is available at:
- http://energytoolestimator.com/
+ https://ornlenergyestimatortools.shinyapps.io/frpc-energy-estimator2
+
 
  For more information on how to use this tool, please move to the `download` tab and download the background information.
 
